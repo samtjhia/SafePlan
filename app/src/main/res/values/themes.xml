@@ -3,6 +3,8 @@
     <style name="Base.Theme.B07DemoSummer2024" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="materialButtonStyle">@style/CustomButtonStyle</item>
+
     </style>
 
     <style name="Theme.B07DemoSummer2024" parent="Base.Theme.B07DemoSummer2024" />
