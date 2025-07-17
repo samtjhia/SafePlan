@@ -1,4 +1,4 @@
-package com.example.b07demosummer2024.models;
+package com.b07safetyplanapp.models;
 
 import java.util.List;
 
@@ -16,18 +16,22 @@ public class Branch {
 
     // Getters and setters
     public String getSituation() {
+
         return situation;
     }
 
     public void setSituation(String situation) {
+
         this.situation = situation;
     }
 
     public List<Question> getQuestions() {
+
         return questions;
     }
 
     public void setQuestions(List<Question> questions) {
+
         this.questions = questions;
     }
 }

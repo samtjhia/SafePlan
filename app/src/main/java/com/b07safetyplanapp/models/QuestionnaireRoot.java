@@ -1,4 +1,4 @@
-package com.example.b07demosummer2024.models;
+package com.b07safetyplanapp.models;
 
 import java.util.Map;
 
@@ -17,10 +17,13 @@ public class QuestionnaireRoot {
         this.questionnaire = questionnaire;
     }
 
+    // Andy will change this below to match Tips class
     public Map<String, Object> getTips() {
+
         return tips;
     }
     public void setTips(Map<String, Object> tips) {
+
         this.tips = tips;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.b07demosummer2024.models;
+package com.b07safetyplanapp.models;
 
 public class UserResponse {
     private String questionId;
@@ -15,23 +15,29 @@ public class UserResponse {
 
     // Getters and setters
     public String getQuestionId() {
+
         return questionId;
     }
     public void setQuestionId(String questionId) {
+
         this.questionId = questionId;
     }
 
     public String getAnswer() {
+
         return answer;
     }
     public void setAnswer(String answer) {
+
         this.answer = answer;
     }
 
     public String getSubAnswer() {
+
         return subAnswer;
     }
     public void setSubAnswer(String subAnswer) {
+
         this.subAnswer = subAnswer;
     }
 }

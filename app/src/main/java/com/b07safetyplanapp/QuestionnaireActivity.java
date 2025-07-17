@@ -1,4 +1,4 @@
-package com.example.b07demosummer2024;
+package com.b07safetyplanapp;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,12 +13,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.b07demosummer2024.models.Question;
-import com.example.b07demosummer2024.models.QuestionnaireData;
-import com.example.b07demosummer2024.models.QuestionnaireRoot;
-import com.example.b07demosummer2024.models.UserResponse;
-import com.example.b07demosummer2024.models.Branch;
-import com.example.b07demosummer2024.utils.QuestionnaireParser;
+import com.b07safetyplanapp.models.Branch;
+import com.b07safetyplanapp.models.Question;
+import com.b07safetyplanapp.models.QuestionnaireData;
+import com.b07safetyplanapp.models.QuestionnaireRoot;
+import com.b07safetyplanapp.models.UserResponse;
+import com.b07safetyplanapp.utils.QuestionnaireParser;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -67,10 +67,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
     private void initializeFirebase() {
         // Initialize Firebase Database
-        database = FirebaseDatabase.getInstance("https://cscb07-app-group8-default-rtdb.firebaseio.com/");
+        database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
         questionnaireRef = database.getReference("questionnaire_sessions");
 
         // Create a unique session ID
+        // Annie - Change to User IDs not sessions
         sessionId = "session_" + System.currentTimeMillis();
     }
 
@@ -101,7 +102,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private void setupClickListeners() {
         nextButton.setOnClickListener(v -> {
             if (saveCurrentAnswer()) {
-                // Save to Firebase immediately after saving locally
+                // Save to Firebase
                 saveResponseToFirebase();
                 moveToNextQuestion();
             }

@@ -1,4 +1,4 @@
-package com.example.b07demosummer2024.models;
+package com.b07safetyplanapp.models;
 
 public class SubQuestion {
     private String condition;
@@ -14,16 +14,20 @@ public class SubQuestion {
 
     // Getters and setters
     public String getCondition() {
+
         return condition;
     }
     public void setCondition(String condition) {
+
         this.condition = condition;
     }
 
     public QuestionField getField() {
+
         return field;
     }
     public void setField(QuestionField field) {
+
         this.field = field;
     }
 }

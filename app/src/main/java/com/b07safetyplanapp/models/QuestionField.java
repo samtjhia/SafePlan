@@ -1,4 +1,4 @@
-package com.example.b07demosummer2024.models;
+package com.b07safetyplanapp.models;
 
 public class QuestionField {
     private String question_id;
@@ -14,16 +14,20 @@ public class QuestionField {
 
     // Getters and setters
     public String getQuestion_id() {
+
         return question_id;
     }
     public void setQuestion_id(String question_id) {
+
         this.question_id = question_id;
     }
 
     public String getQuestion() {
+
         return question;
     }
     public void setQuestion(String question) {
+
         this.question = question;
     }
 }
