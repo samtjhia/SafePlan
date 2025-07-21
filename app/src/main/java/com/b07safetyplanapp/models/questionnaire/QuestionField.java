@@ -1,4 +1,4 @@
-package com.b07safetyplanapp.models;
+package com.b07safetyplanapp.models.questionnaire;
 
 public class QuestionField {
     private String question_id;
