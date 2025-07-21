@@ -13,11 +13,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.b07safetyplanapp.models.Branch;
-import com.b07safetyplanapp.models.Question;
-import com.b07safetyplanapp.models.QuestionnaireData;
-import com.b07safetyplanapp.models.QuestionnaireRoot;
-import com.b07safetyplanapp.models.UserResponse;
+import com.b07safetyplanapp.models.questionnaire.Branch;
+import com.b07safetyplanapp.models.questionnaire.Question;
+import com.b07safetyplanapp.models.questionnaire.QuestionnaireData;
+import com.b07safetyplanapp.models.questionnaire.QuestionnaireRoot;
+import com.b07safetyplanapp.models.questionnaire.UserResponse;
 import com.b07safetyplanapp.utils.QuestionnaireParser;
 
 import com.google.firebase.database.DatabaseReference;
