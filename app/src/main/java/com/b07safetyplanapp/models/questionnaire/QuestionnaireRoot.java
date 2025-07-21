@@ -1,7 +1,5 @@
 package com.b07safetyplanapp.models.questionnaire;
 
-import java.util.Map;
-
 public class QuestionnaireRoot {
     private QuestionnaireData questionnaire;
 
