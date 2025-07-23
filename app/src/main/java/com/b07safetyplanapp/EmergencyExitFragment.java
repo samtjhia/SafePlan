@@ -25,14 +25,12 @@ public class EmergencyExitFragment extends Fragment {
         FloatingActionButton powerButton = view.findViewById(R.id.powerButton);
         powerButton.setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"));
-
-            // These flags ensure a "clean" new task, removing any old activities
             browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(browserIntent);
 
-            // Now remove the app from Recents completely
-            requireActivity().finishAndRemoveTask();
+            requireActivity().finishAffinity();
         });
+
 
         return view;
     }
