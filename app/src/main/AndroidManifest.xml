@@ -24,6 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".TestExitActivity"
+            android:label="Test Exit"
+            android:exported="true" />
+
     </application>
 
 </manifest>
