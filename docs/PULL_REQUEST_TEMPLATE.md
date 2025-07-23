@@ -1,7 +1,7 @@
 ## Description
 <!-- Describe what this pull request changes -->
 
-## Type of ChangeAdd commentMore actions
+## Type of Change
 - [ ] Feature
 - [ ] Test
 - [ ] Fix
