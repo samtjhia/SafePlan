@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".HomeFragment"
+    android:padding="50dp">
 
     <Button
         android:id="@+id/buttonRecyclerView"
@@ -14,6 +15,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/start_questionnaire_button"/>
+
+    <Button
+        android:id="@+id/start_questionnaire_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Start Questionnaire"
+        tools:layout_editor_absoluteX="3dp"
+        tools:layout_editor_absoluteY="205dp"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRecyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/buttonScroller"/>
 
     <Button
@@ -21,7 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/scroller"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/start_questionnaire_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/buttonSpinner"/>
@@ -47,12 +61,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+
+
     <Button
-        android:id="@+id/start_questionnaire_button"
+        android:id="@+id/emergency_info_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Questionnaire"
         android:layout_gravity="center"
-        android:layout_marginTop="24dp"/>
+        android:text="Emergency Information"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="64dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
