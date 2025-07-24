@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="black_bean">#2D0B00</color>
+    <color name="sinopia">#C83D01</color>
+    <color name="burnt_orange">#C34E00</color>
+    <color name="sandy_brown">#F6AC6C</color>
+    <color name="peach">#FFBD86</color>
+    <color name="white">#FFFFFF</color>
+    <color name="background_peach">#f3dfce</color>
+    <color name="button_maroon">#4c1031</color>
+    <color name="power_red">#de4323</color>
 </resources>

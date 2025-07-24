@@ -1,14 +1,18 @@
-package com.example.b07demosummer2024;
+package com.b07safetyplanapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.b07safetyplanapp.R;
 
 public class HomeFragment extends Fragment {
     @Nullable
@@ -45,6 +49,15 @@ public class HomeFragment extends Fragment {
         buttonManageItems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { loadFragment(new ManageItemsFragment());}
+        });
+
+        // Get reference to the button
+        Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
+
+        // Set onClick listener
+        startQuestionnaireButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
+            startActivity(intent);
         });
 
         return view;

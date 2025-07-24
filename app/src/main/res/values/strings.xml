@@ -15,5 +15,18 @@
         <item>Movies</item>
     </string-array>
 
+    <!-- questionnaire_init -->
+    <string name="safe_plan_logo_desc">SafePlan logo</string>
+    <string name="safe_plan">SafePlan</string>
+    <string name="power_icon">Power icon</string>
+    <string name="progress_text">0% Complete</string>
+    <string name="relationship_status">Relationship Status</string>
+    <string name="relationship_prompt">Which best describes your relationship status?</string>
+    <string name="option_still">Still in a relationship</string>
+    <string name="option_leaving">Planning to leave</string>
+    <string name="option_post">Post-separation</string>
+    <string name="next">Next</string>
+
+
 
 </resources>
