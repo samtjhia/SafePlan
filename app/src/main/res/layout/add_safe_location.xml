@@ -62,7 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="60dp">
         <TextView
-            android:id="@+id/medications"
+            android:id="@+id/safe_locations"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Safe Locations"
@@ -74,11 +74,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp" />
         <EditText
-            android:id="@+id/editTextTitle"
+            android:id="@+id/editTextName"
             android:background="@color/white"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:textColor="@color/black_bean"
             android:hint="Name"
             app:layout_constraintTop_toTopOf="parent"
@@ -86,11 +86,11 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <EditText
-            android:id="@+id/editTextAuthor"
+            android:id="@+id/editTextAddress"
             android:background="@color/white"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:textColor="@color/black_bean"
             android:hint="Address"
             app:layout_constraintTop_toBottomOf="@+id/editTextTitle"
@@ -98,11 +98,11 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <EditText
-            android:id="@+id/editTextGenre"
+            android:id="@+id/editTextNotes"
             android:background="@color/white"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:textColor="@color/black_bean"
             android:hint="Notes"
             app:layout_constraintTop_toBottomOf="@+id/editTextAuthor"
@@ -122,7 +122,7 @@
         android:layout_marginTop="20dp"/>
 
     <Button
-        android:id="@+id/buttonAdd2"
+        android:id="@+id/buttonEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="92dp"
@@ -133,7 +133,7 @@
         app:layout_constraintTop_toBottomOf="@+id/inputArea" />
 
     <Button
-        android:id="@+id/buttonAdd3"
+        android:id="@+id/buttonDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="168dp"
