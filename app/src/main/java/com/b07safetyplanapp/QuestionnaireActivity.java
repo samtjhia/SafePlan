@@ -91,6 +91,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         QuestionnaireRoot root = QuestionnaireParser.loadQuestionnaire(this);
         if (root != null) {
             questionnaireData = root.getQuestionnaire();
+
             allQuestions = new ArrayList<>();
             userResponses = new ArrayList<>();
 
@@ -103,7 +104,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
         nextButton.setOnClickListener(v -> {
             if (saveCurrentAnswer()) {
                 // Save to Firebase
-                saveResponseToFirebase();
+                Question currQuestion = allQuestions.get(currentQuestionIndex);
+                saveResponseToFirebase(currQuestion.getQuestion_id());
+
+                if(currQuestion.getSub_question() != null) {
+                    String subQuestionId = currQuestion.getSub_question().getField().getQuestion_id();
+                    saveResponseToFirebase(subQuestionId);
+                }
+
                 moveToNextQuestion();
             }
         });
@@ -220,20 +228,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
             }
         }
 
-        // Get sub-answer if visible
-        if (subQuestionLayout.getVisibility() == View.VISIBLE) {
-            subAnswer = subQuestionInput.getText().toString().trim();
-            if (subAnswer.isEmpty()) {
-                Toast.makeText(this, "Please complete the additional field", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }
 
         // Save or update response
         UserResponse response = new UserResponse(currentQuestion.getQuestion_id(), answer);
-        if (subAnswer != null) {
-            response.setSubAnswer(subAnswer);
-        }
 
         // Update or add response
         boolean found = false;
@@ -248,27 +245,61 @@ public class QuestionnaireActivity extends AppCompatActivity {
             userResponses.add(response);
         }
 
+        // Get sub-answer if visible
+        if (subQuestionLayout.getVisibility() == View.VISIBLE) {
+            subAnswer = subQuestionInput.getText().toString().trim();
+            if (subAnswer.isEmpty()) {
+                Toast.makeText(this, "Please complete the additional field", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            String subQuestionId = currentQuestion.getSub_question().getField().getQuestion_id();
+            UserResponse subResponse = new UserResponse(subQuestionId, subAnswer);
+
+            boolean foundSub = false;
+            for (int i = 0; i < userResponses.size(); i++) {
+                if (userResponses.get(i).getQuestionId().equals(subQuestionId)) {
+                    userResponses.set(i, subResponse);
+                    foundSub = true;
+                    break;
+                }
+            }
+            if (!foundSub) {
+                userResponses.add(subResponse);
+            }
+
+        }
+
         return true;
     }
 
     // Save response to Firebase
-    private void saveResponseToFirebase() {
-        if (userResponses.isEmpty()) return;
+        private void saveResponseToFirebase(String questionId) {
+            if (userResponses.isEmpty()) return;
 
-        // Get the most recent response
-        UserResponse latestResponse = userResponses.get(userResponses.size() - 1);
 
-        // Save the UserResponse object directly to Firebase
-        questionnaireRef.child(sessionId)
-                .child("responses")
-                .child(latestResponse.getQuestionId())
-                .setValue(latestResponse)
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
+            // Get the response by question id
+            UserResponse response = null;
+            for(UserResponse u : userResponses) {
+                if(u.getQuestionId().equalsIgnoreCase(questionId)) {
+                    response = u;
+                    break;
+                }
+            }
+
+            if(response != null) {
+                // Save the UserResponse object directly to Firebase
+                questionnaireRef.child(sessionId)
+                        .child("responses")
+                        .child(response.getQuestionId())
+                        .setValue(response)
+                        .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }
 
     private void loadPreviousAnswer() {
         Question currentQuestion = allQuestions.get(currentQuestionIndex);
@@ -287,8 +318,16 @@ public class QuestionnaireActivity extends AppCompatActivity {
                     textInput.setText(response.getAnswer());
                 }
 
-                if (response.getSubAnswer() != null) {
-                    subQuestionInput.setText(response.getSubAnswer());
+                if (currentQuestion.hasSubQuestion()) {
+                    String subQuestionId = currentQuestion.getSub_question().getField().getQuestion_id();
+                    for (UserResponse u : userResponses) {
+                        if (u.getQuestionId().equals(subQuestionId)) {
+                            subQuestionLayout.setVisibility(View.VISIBLE);
+                            subQuestionText.setText(currentQuestion.getSub_question().getField().getQuestion());
+                            subQuestionInput.setText(u.getAnswer());
+                            break;
+                        }
+                    }
                 }
                 break;
             }
