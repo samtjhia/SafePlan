@@ -64,7 +64,7 @@
     android:layout_marginTop="60dp">
 
     <TextView
-        android:id="@+id/medications"
+        android:id="@+id/contacts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Contacts"
@@ -77,7 +77,7 @@
         android:layout_marginTop="20dp" />
 
     <EditText
-        android:id="@+id/editTextTitle"
+        android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -89,7 +89,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
-        android:id="@+id/editTextAuthor"
+        android:id="@+id/editTextRelationship"
         android:background="@color/white"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
@@ -101,7 +101,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
-        android:id="@+id/editTextGenre"
+        android:id="@+id/editTextPhone"
         android:background="@color/white"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
@@ -113,7 +113,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
 
-</LinearLayout>
+
     <Button
         android:id="@+id/buttonAdd"
         android:layout_width="match_parent"
@@ -125,10 +125,10 @@
         android:layout_marginTop="20dp"/>
 
     <Button
-        android:id="@+id/buttonAdd2"
+        android:id="@+id/buttonEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="20dp"
         android:text="Edit Contact"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -136,13 +136,15 @@
         app:layout_constraintTop_toBottomOf="@+id/inputArea" />
 
     <Button
-        android:id="@+id/buttonAdd3"
+        android:id="@+id/buttonDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="20dp"
         android:text="Delete Contact"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputArea" />
+</LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
