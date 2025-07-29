@@ -85,7 +85,7 @@ public class DocumentActivity extends AppCompatActivity {
         fabAdd = findViewById(R.id.fabAddDocument);
 
         documentsList = new ArrayList<>();
-        adapter = new DocumentAdapter(documentsList, this::viewDocument, this::deleteDocument);
+        adapter = new DocumentAdapter(documentsList, this::viewDocument, this::editDocument, this::deleteDocument);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -159,7 +159,7 @@ public class DocumentActivity extends AppCompatActivity {
         Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
 
         String fileId = UUID.randomUUID().toString();
-        StorageReference fileRef = storage.child(fileId);  // Clean - no path building!
+        StorageReference fileRef = storage.child(fileId);
 
         fileRef.putFile(fileUri)
                 .addOnSuccessListener(taskSnapshot -> {
@@ -224,12 +224,42 @@ public class DocumentActivity extends AppCompatActivity {
         }
     }
 
+    private void editDocument(Document document) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_document, null);
+
+        EditText titleInput = dialogView.findViewById(R.id.etDocumentTitle);
+        EditText descriptionInput = dialogView.findViewById(R.id.etDocumentDescription);
+
+        titleInput.setText(document.getTitle());
+        descriptionInput.setText(document.getDescription());
+
+        builder.setView(dialogView)
+                .setTitle("Edit Document")
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String newTitle = titleInput.getText().toString().trim();
+                    String newDescription = descriptionInput.getText().toString().trim();
+
+                    if (!newTitle.isEmpty()) {
+                        document.setTitle(newTitle);
+                        document.setDescription(newDescription);
+
+                        database.child(document.getId()).setValue(document)
+                                .addOnSuccessListener(aVoid ->
+                                        Toast.makeText(this, "Document updated!", Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     private void deleteDocument(Document document) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Document")
                 .setMessage("Delete " + document.getTitle() + "?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    // Clean calls - no path building!
                     storage.child(document.getId()).delete();
                     database.child(document.getId()).removeValue()
                             .addOnSuccessListener(aVoid -> {

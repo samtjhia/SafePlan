@@ -18,6 +18,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
 
     private List<Document> documents;
     private OnItemClickListener clickListener;
+    private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
     public interface OnItemClickListener {
@@ -26,9 +27,11 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
 
     public DocumentAdapter(List<Document> documents,
                            OnItemClickListener clickListener,
+                           OnItemClickListener editListener,
                            OnItemClickListener deleteListener) {
         this.documents = documents;
         this.clickListener = clickListener;
+        this.editListener = editListener;
         this.deleteListener = deleteListener;
     }
 
@@ -36,6 +39,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
         private final TextView titleText;
         private final TextView descriptionText;
         private final TextView dateText;
+        private final ImageButton editButton;
         private final ImageButton deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
@@ -43,6 +47,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
             titleText = itemView.findViewById(R.id.tvDocumentTitle);
             descriptionText = itemView.findViewById(R.id.tvDocumentDescription);
             dateText = itemView.findViewById(R.id.tvDocumentDate);
+            editButton = itemView.findViewById(R.id.btnEditDocument);
             deleteButton = itemView.findViewById(R.id.btnDeleteDocument);
         }
 
@@ -56,6 +61,10 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
 
         public TextView getDateText() {
             return dateText;
+        }
+
+        public ImageButton getEditButton() {
+            return editButton;
         }
 
         public ImageButton getDeleteButton() {
@@ -85,6 +94,12 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
                 clickListener.onClick(document);
+            }
+        });
+
+        holder.getEditButton().setOnClickListener(v -> {
+            if (editListener != null) {
+                editListener.onClick(document);
             }
         });
 
