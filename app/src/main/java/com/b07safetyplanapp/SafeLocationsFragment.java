@@ -26,8 +26,8 @@ public class SafeLocationsFragment extends Fragment {
     private Button buttonEdit;
     private Button buttonDelete;
 
-    private FirebaseDatabase db;
-    private DatabaseReference itemsRef;
+    //private FirebaseDatabase db;
+    private DatabaseReference db;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,8 +40,14 @@ public class SafeLocationsFragment extends Fragment {
         buttonEdit = view.findViewById(R.id.buttonEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
-        db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
-        itemsRef = db.getReference("users/userId123/safe_locations");
+        //db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
+        String userId = "userId123"; // hardcoded for testing
+
+        db = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(userId).child("safe_locations");
+
+        //storage = FirebaseStorage.getInstance().getReference()
+          //      .child("documents").child(userId);
 
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +60,7 @@ public class SafeLocationsFragment extends Fragment {
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addItem();
+                editItem();
             }
         });
 
@@ -82,15 +88,55 @@ public class SafeLocationsFragment extends Fragment {
         //String id = itemsRef.push().getKey();
         SafeLocation item = new SafeLocation(name, address, notes);
 
-        itemsRef.child("location").child(name).setValue(item).addOnCompleteListener(task -> {
+        db.child(name).setValue(item).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Safe Location added", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), "Failed to add item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Failed to add safe location", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void editItem(){
+        String name = editTextName.getText().toString().trim();
+        String address = editTextAddress.getText().toString().trim();
+        String notes = editTextNotes.getText().toString().trim();
+
+        if (name.isEmpty() || address.isEmpty() || notes.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                boolean itemFound = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    SafeLocation item = snapshot.getValue(SafeLocation.class);
+                    if (item != null && item.getName().equalsIgnoreCase(name) ) {
+                        SafeLocation location = new SafeLocation(name, address, notes);
+
+                        db.child(name).setValue(location).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getContext(), "Safe location Edited", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Failed to edit safe location", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        itemFound = true;
+                        break;
+                    }
+                }
+                if (!itemFound) {
+                    Toast.makeText(getContext(), "Safe location not found. Please enter the name of an existing safe location.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getContext(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
     private void deleteItem() {
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
@@ -100,12 +146,13 @@ public class SafeLocationsFragment extends Fragment {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
             boolean itemFound = false;
             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                 SafeLocation item = snapshot.getValue(SafeLocation.class);
-                if (item != null && item.getName().equalsIgnoreCase(name) && item.getName().equalsIgnoreCase(address)) {
+                if (item != null && item.getName().equalsIgnoreCase(name) && item.getAddress().equalsIgnoreCase(address)) {
                     snapshot.getRef().removeValue().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
