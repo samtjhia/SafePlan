@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp">
 
-            <!-- Logo (Top-Left) -->
+            <!-- Logo -->
             <ImageView
                 android:id="@+id/imageLogo"
                 android:layout_width="40dp"
@@ -30,7 +30,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp" />
 
-            <!-- Escape Button Fragment (Top-Right) -->
+            <!-- Escape Button Fragment -->
             <fragment
                 android:id="@+id/emergencyExitFragment"
                 android:name="com.b07safetyplanapp.EmergencyExitFragment"
