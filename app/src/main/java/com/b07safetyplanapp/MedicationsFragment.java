@@ -26,8 +26,8 @@ public class MedicationsFragment extends Fragment {
     private Button buttonEdit;
     private Button buttonDelete;
 
-    private FirebaseDatabase db;
-    private DatabaseReference itemsRef;
+    //private FirebaseDatabase db;
+    private DatabaseReference db;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,8 +39,10 @@ public class MedicationsFragment extends Fragment {
         buttonEdit = view.findViewById(R.id.buttonEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
-        db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
-        itemsRef = db.getReference("users/userId123/safe_locations");
+        String userId = "userId123"; // hardcoded for testing
+
+        db = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(userId).child("medications");
 
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +55,7 @@ public class MedicationsFragment extends Fragment {
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addItem();
+                editItem();
             }
         });
 
@@ -80,13 +82,54 @@ public class MedicationsFragment extends Fragment {
         //String id = itemsRef.push().getKey();
         Medication item = new Medication(name, dosage);
 
-        itemsRef.child("medication").child(name).setValue(item).addOnCompleteListener(task -> {
+        db.child(name).setValue(item).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "Failed to add item", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    private void editItem(){
+        String name = editTextName.getText().toString().trim();
+        String dosage = editTextDosage.getText().toString().trim();
+
+        if (name.isEmpty() || dosage.isEmpty() ) {
+            Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                boolean itemFound = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Medication item = snapshot.getValue(Medication.class);
+                    if (item != null && item.getName().equalsIgnoreCase(name) ) {
+                        Medication medication = new Medication(name, dosage);
+
+                        db.child(name).setValue(medication).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getContext(), "Medication Edited", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "Failed to edit medication", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        itemFound = true;
+                        break;
+                    }
+                }
+                if (!itemFound) {
+                    Toast.makeText(getContext(), "Medication not found. Please enter the name of an existing medication.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getContext(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void deleteItem() {
@@ -98,12 +141,12 @@ public class MedicationsFragment extends Fragment {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean itemFound = false;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    SafeLocation item = snapshot.getValue(SafeLocation.class);
-                    if (item != null && item.getName().equalsIgnoreCase(name) && item.getName().equalsIgnoreCase(dosage)) {
+                    Medication item = snapshot.getValue(Medication.class);
+                    if (item != null && item.getName().equalsIgnoreCase(name) && item.getDosage().equalsIgnoreCase(dosage)) {
                         snapshot.getRef().removeValue().addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
