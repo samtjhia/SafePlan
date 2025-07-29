@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pinSetupLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_peach"
+    android:orientation="vertical"
+    android:paddingTop="24dp"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp">
+
+    <!-- Top Content (Left-aligned) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="24dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <!-- Logo -->
+
+            <!-- Escape Button Fragment -->
+
+            <ImageView
+                android:id="@+id/imageLogo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="App Logo"
+                android:src="@drawable/ic_safe_plan_logo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <fragment
+                android:id="@+id/emergencyExitFragment"
+                android:name="com.b07safetyplanapp.EmergencyExitFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/pinTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Your Pin"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black_bean"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/pinSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose a 4 or 6 digit pin for future logins."
+            android:textSize="16sp"
+            android:textColor="@color/black_bean"
+            android:layout_marginBottom="24dp" />
+
+        <RadioGroup
+            android:id="@+id/digitSelector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio4Digits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 Digits"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/radio6Digits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6 Digits"
+                android:layout_marginStart="24dp" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <!-- Center Content (Centered) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Dot Indicator Row -->
+        <LinearLayout
+            android:id="@+id/dotContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Keypad -->
+        <GridLayout
+            android:id="@+id/keypad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alignmentMode="alignMargins"
+            android:columnCount="3"
+            android:rowCount="4"
+            android:rowOrderPreserved="false"
+            android:layout_marginBottom="24dp">
+
+            <!-- Buttons 1–9 -->
+            <Button android:id="@+id/button1" style="@style/KeypadButton" android:text="1" />
+            <Button android:id="@+id/button2" style="@style/KeypadButton" android:text="2" />
+            <Button android:id="@+id/button3" style="@style/KeypadButton" android:text="3" />
+            <Button android:id="@+id/button4" style="@style/KeypadButton" android:text="4" />
+            <Button android:id="@+id/button5" style="@style/KeypadButton" android:text="5" />
+            <Button android:id="@+id/button6" style="@style/KeypadButton" android:text="6" />
+            <Button android:id="@+id/button7" style="@style/KeypadButton" android:text="7" />
+            <Button android:id="@+id/button8" style="@style/KeypadButton" android:text="8" />
+            <Button android:id="@+id/button9" style="@style/KeypadButton" android:text="9" />
+            <View android:layout_width="0dp" android:layout_height="0dp" />
+            <Button android:id="@+id/button0" style="@style/KeypadButton" android:text="0" />
+            <Button android:id="@+id/buttonBackspace" style="@style/KeypadButton" android:text="←" />
+        </GridLayout>
+
+        <!-- Save PIN Button -->
+        <Button
+            android:id="@+id/buttonSavePin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save PIN"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:backgroundTint="@color/button_maroon"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+</LinearLayout>
