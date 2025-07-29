@@ -51,7 +51,7 @@ android:padding="24dp">
 
 </LinearLayout>
     <LinearLayout
-        android:id="@+id/editingArea"
+        android:id="@+id/inputArea"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -59,89 +59,77 @@ android:padding="24dp">
         app:layout_constraintTop_toTopOf="@id/topBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="60dp">
 
         <TextView
-        android:id="@+id/medications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Medications"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textColor="@color/black_bean"
-        app:layout_constraintTop_toBottomOf="@id/editingArea"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
-
-        <EditText
-            android:id="@+id/add_document"
+            android:id="@+id/medications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:textSize="18sp"
+            android:text="Medications"
+            android:textSize="25sp"
+            android:textStyle="bold"
             android:textColor="@color/black_bean"
-            android:background="@color/white"
-            android:hint="Type Document Path"
-            />
+            app:layout_constraintTop_toBottomOf="@id/inputArea"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
 
-        <Button
-        android:id="@+id/add_button"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Add Document"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="0dp"
-        />
         <EditText
-            android:id="@+id/old_path"
+            android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:textSize="18sp"
-            android:textColor="@color/black_bean"
-            android:background="@color/white"
-            android:hint="Type Old Document Path"
-            />
-        <EditText
-            android:id="@+id/new_path"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:textSize="18sp"
-            android:textColor="@color/black_bean"
-            android:background="@color/white"
-            android:hint="Type New Document Path"
-            />
-
-
-        <Button
-            android:id="@+id/replace_button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Replace Document"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="0dp"
-            />
+            android:background="@color/white"
+            android:textColor="@color/black_bean"
+            android:hint="Name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <EditText
-            android:id="@+id/delete_path"
+            android:id="@+id/editTextDosage"
+            android:background="@color/white"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:textSize="18sp"
             android:textColor="@color/black_bean"
-            android:background="@color/white"
-            android:hint="Type Document Path To Delete"
-            />
+            android:hint="Dosage"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
 
         <Button
-            android:id="@+id/delete_button"
+            android:id="@+id/buttonAdd"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Delete Document"
+            android:layout_height="wrap_content"
+            android:text="Add Medication"
+            app:layout_constraintTop_toBottomOf="@+id/inputArea"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/buttonEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="0dp"
-            />
+            android:text="Edit Medication"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputArea" />
+
+        <Button
+            android:id="@+id/buttonDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Delete Medication"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputArea" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
