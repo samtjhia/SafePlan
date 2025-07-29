@@ -44,7 +44,6 @@ public class EmergencyContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency_contact);
-
         setupFirebase();
         setupUI();
         loadContacts();
@@ -64,7 +63,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
         String userId = "userId123"; // hardcoded for testing
 
         database = FirebaseDatabase.getInstance().getReference()
-                .child("users").child(userId).child("emergencyContacts");
+                .child("users").child(userId).child("emergency_contacts");
     }
 
     private void setupUI() {
@@ -72,7 +71,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
         fabAdd = findViewById(R.id.fabAddContact);
 
         contactsList = new ArrayList<>();
-        adapter = new EmergencyContactAdapter(contactsList, this::callContact, this::editContact, this::deleteContact);
+        adapter = new EmergencyContactAdapter(contactsList, this::editContact, this::deleteContact);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -152,17 +151,6 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 Toast.makeText(EmergencyContactActivity.this, "Failed to load contacts", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void callContact(EmergencyContact contact) {
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + contact.getPhone()));
-
-        try {
-            startActivity(intent);
-        } catch (Exception e) {
-            Toast.makeText(this, "Cannot make call", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void editContact(EmergencyContact contact) {

@@ -9,15 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.b07safetyplanapp.models.emergencyinfo.EmergencyContact;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyContactAdapter.ViewHolder> {
 
     private List<EmergencyContact> contacts;
-    private OnItemClickListener clickListener;
     private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
@@ -26,11 +22,9 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
     }
 
     public EmergencyContactAdapter(List<EmergencyContact> contacts,
-                                   OnItemClickListener clickListener,
                                    OnItemClickListener editListener,
                                    OnItemClickListener deleteListener) {
         this.contacts = contacts;
-        this.clickListener = clickListener;
         this.editListener = editListener;
         this.deleteListener = deleteListener;
     }
@@ -39,7 +33,6 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
         private final TextView nameText;
         private final TextView relationshipText;
         private final TextView phoneText;
-//        private final TextView dateText;
         private final ImageButton editButton;
         private final ImageButton deleteButton;
 
@@ -95,12 +88,6 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
         } else {
             holder.getRelationshipText().setVisibility(View.GONE);
         }
-
-        holder.itemView.setOnClickListener(v -> {
-            if (clickListener != null) {
-                clickListener.onClick(contact);
-            }
-        });
 
         holder.getEditButton().setOnClickListener(v -> {
             if (editListener != null) {
