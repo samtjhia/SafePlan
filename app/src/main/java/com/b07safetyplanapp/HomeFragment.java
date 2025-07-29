@@ -60,6 +60,15 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
 
+        // Get reference to the button
+        Button emergencyInfoButton = view.findViewById(R.id.emergency_info_button);
+
+        // Set onClick listener
+        emergencyInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { loadFragment(new EmergencyInfo());}
+        });
+
         return view;
     }
 
