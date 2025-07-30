@@ -53,7 +53,6 @@ public class DocumentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document);
-
         setupFirebase();
         setupUI();
         setupFilePicker();
@@ -109,6 +108,45 @@ public class DocumentActivity extends AppCompatActivity {
         );
     }
 
+    private boolean isDuplicateTitle(String title, String excludeDocumentId) {
+        try {
+            if (title == null || title.trim().isEmpty()) {
+                return false;
+            }
+
+            String normalizedTitle = title.trim().toLowerCase();
+
+            if (documentsList == null || documentsList.isEmpty()) {
+                return false;
+            }
+
+            for (Document document : documentsList) {
+                if (document == null || document.getTitle() == null) {
+                    continue;
+                }
+
+                // Skip the document we're editing (if any)
+                String documentId = document.getId();
+                if (excludeDocumentId != null && documentId != null && documentId.equals(excludeDocumentId)) {
+                    continue;
+                }
+
+                String existingTitle = document.getTitle().trim().toLowerCase();
+
+                if (existingTitle.equals(normalizedTitle)) {
+                    Toast.makeText(this, "A document with this title already exists!", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            }
+
+            return false;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Allow saving if there's an error
+        }
+    }
+
     private void showAddDocumentDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_document, null);
@@ -129,6 +167,10 @@ public class DocumentActivity extends AppCompatActivity {
 
             if (title.isEmpty()) {
                 titleInput.setError("Please enter a title");
+                return;
+            }
+
+            if (isDuplicateTitle(title, null)) {
                 return;
             }
 
@@ -240,16 +282,23 @@ public class DocumentActivity extends AppCompatActivity {
                     String newTitle = titleInput.getText().toString().trim();
                     String newDescription = descriptionInput.getText().toString().trim();
 
-                    if (!newTitle.isEmpty()) {
-                        document.setTitle(newTitle);
-                        document.setDescription(newDescription);
-
-                        database.child(document.getId()).setValue(document)
-                                .addOnSuccessListener(aVoid ->
-                                        Toast.makeText(this, "Document updated!", Toast.LENGTH_SHORT).show())
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
+                    if (newTitle.isEmpty()) {
+                        Toast.makeText(this, "Title is required", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+
+                    if (isDuplicateTitle(newTitle, document.getId())) {
+                        return;
+                    }
+
+                    document.setTitle(newTitle);
+                    document.setDescription(newDescription);
+
+                    database.child(document.getId()).setValue(document)
+                            .addOnSuccessListener(aVoid ->
+                                    Toast.makeText(this, "Document updated!", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
