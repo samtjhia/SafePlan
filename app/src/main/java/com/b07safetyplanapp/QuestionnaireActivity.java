@@ -20,8 +20,14 @@ import com.b07safetyplanapp.models.questionnaire.QuestionnaireRoot;
 import com.b07safetyplanapp.models.questionnaire.UserResponse;
 import com.b07safetyplanapp.utils.QuestionnaireParser;
 
+import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +53,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private boolean branchQuestionsAdded = false;
     private boolean followUpQuestionsAdded = false;
 
+    private boolean isEditMode = false;
+    private boolean hasCompletedBefore = false;
+
     private FirebaseDatabase database;
     private DatabaseReference questionnaireRef;
+//    private FirebaseAuth mAuth;
     private String sessionId;
 
     @Override
@@ -56,23 +66,49 @@ public class QuestionnaireActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionnaire);
 
+        isEditMode = getIntent().getBooleanExtra("edit_mode", false);
+
         // Initialize Firebase
         initializeFirebase();
 
         initializeViews();
         loadQuestionnaire();
         setupClickListeners();
-        displayCurrentQuestion();
+
+        if (isEditMode) {
+            loadPreviousResponsesFromFirebase();
+        } else {
+            displayCurrentQuestion();
+        }
     }
 
     private void initializeFirebase() {
         // Initialize Firebase Database
+//        mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
         questionnaireRef = database.getReference("questionnaire_sessions");
 
         // Create a unique session ID
         // Annie - Change to User IDs not sessions
-        sessionId = "session_" + System.currentTimeMillis();
+        sessionId = getIntent().getStringExtra("session_id");
+        if (sessionId == null) {
+            // Create a new session ID if none provided
+            sessionId = "session_" + System.currentTimeMillis();
+        }
+
+//        // Get user ID from intent or current user
+//        userId = getIntent().getStringExtra("user_id");
+//        if (userId == null) {
+//            FirebaseUser currentUser = mAuth.getCurrentUser();
+//            if (currentUser != null) {
+//                userId = currentUser.getUid();
+//            } else {
+//                // User not logged in - shouldn't happen, but handle gracefully
+//                Toast.makeText(this, "Please log in to access questionnaire", Toast.LENGTH_LONG).show();
+//                finish();
+//                return;
+//            }
+//        }
     }
 
     private void initializeViews() {
@@ -97,7 +133,87 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
             // Start with warm-up questions
             allQuestions.addAll(questionnaireData.getWarm_up());
+
+            if (isEditMode) {
+                loadAllQuestionsForEdit();
+            }
         }
+    }
+
+    private void loadAllQuestionsForEdit() {
+        // Add all warm-up questions (already added)
+
+        // Add all branch-specific questions
+        for (Branch branch : questionnaireData.getBranch_specific()) {
+            allQuestions.addAll(branch.getQuestions());
+        }
+
+        // Add follow-up questions
+        if (questionnaireData.getFollow_up() != null) {
+            allQuestions.addAll(questionnaireData.getFollow_up());
+        }
+
+        branchQuestionsAdded = true;
+        followUpQuestionsAdded = true;
+    }
+
+    private void loadPreviousResponsesFromFirebase() {
+        questionnaireRef.child(sessionId).child("responses")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        userResponses.clear();
+
+                        for (DataSnapshot responseSnapshot : dataSnapshot.getChildren()) {
+                            UserResponse response = responseSnapshot.getValue(UserResponse.class);
+                            if (response != null) {
+                                userResponses.add(response);
+                            }
+                        }
+
+                        // Filter questions based on previous responses if not in edit mode
+                        if (!isEditMode) {
+                            filterQuestionsBasedOnResponses();
+                        }
+
+                        displayCurrentQuestion();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(QuestionnaireActivity.this,
+                                "Failed to load previous responses", Toast.LENGTH_SHORT).show();
+                        displayCurrentQuestion();
+                    }
+                });
+    }
+
+    private void filterQuestionsBasedOnResponses() {
+        // Find the situation response to load appropriate branch questions
+        for (UserResponse response : userResponses) {
+            if (response.getQuestionId().equals("situation")) {
+                String situation = response.getAnswer();
+                List<Question> branchQuestions = null;
+                for (Branch branch : questionnaireData.getBranch_specific()) {
+                    if (branch.getSituation().equalsIgnoreCase(situation)) {
+                        branchQuestions = branch.getQuestions();
+                        break;
+                    }
+                }
+                if (branchQuestions != null) {
+                    allQuestions.addAll(branchQuestions);
+                }
+                break;
+            }
+        }
+
+        // Add follow-up questions
+        if (questionnaireData.getFollow_up() != null) {
+            allQuestions.addAll(questionnaireData.getFollow_up());
+        }
+
+        branchQuestionsAdded = true;
+        followUpQuestionsAdded = true;
     }
 
     private void setupClickListeners() {
@@ -127,7 +243,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private void displayCurrentQuestion() {
         if (currentQuestionIndex >= allQuestions.size()) {
             // Questionnaire complete
-            Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+            if (isEditMode) {
+                Toast.makeText(this, "Questionnaire Editing Complete!", Toast.LENGTH_SHORT).show();
+                // Questionnaire editing completed
+            } else {
+                Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+                // Questionnaire completed
+            }
+            finish();
             return;
         }
 
@@ -159,9 +282,16 @@ public class QuestionnaireActivity extends AppCompatActivity {
         // Load previous answer if exists
         loadPreviousAnswer();
 
-        // Change Next button to "Finish" on last question
+        updateButtonText();
+    }
+
+    private void updateButtonText() {
         if (currentQuestionIndex == allQuestions.size() - 1) {
-            nextButton.setText("Finish");
+            if (isEditMode) {
+                nextButton.setText("Done Editing");
+            } else {
+                nextButton.setText("Finish");
+            }
         } else {
             nextButton.setText("Next");
         }
@@ -274,32 +404,32 @@ public class QuestionnaireActivity extends AppCompatActivity {
     }
 
     // Save response to Firebase
-        private void saveResponseToFirebase(String questionId) {
-            if (userResponses.isEmpty()) return;
+    private void saveResponseToFirebase(String questionId) {
+        if (userResponses.isEmpty()) return;
 
 
-            // Get the response by question id
-            UserResponse response = null;
-            for(UserResponse u : userResponses) {
-                if(u.getQuestionId().equalsIgnoreCase(questionId)) {
-                    response = u;
-                    break;
-                }
-            }
-
-            if(response != null) {
-                // Save the UserResponse object directly to Firebase
-                questionnaireRef.child(sessionId)
-                        .child("responses")
-                        .child(response.getQuestionId())
-                        .setValue(response)
-                        .addOnCompleteListener(task -> {
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+        // Get the response by question id
+        UserResponse response = null;
+        for(UserResponse u : userResponses) {
+            if(u.getQuestionId().equalsIgnoreCase(questionId)) {
+                response = u;
+                break;
             }
         }
+
+        if(response != null) {
+            // Save the UserResponse object directly to Firebase
+            questionnaireRef.child(sessionId)
+                    .child("responses")
+                    .child(response.getQuestionId())
+                    .setValue(response)
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
 
     private void loadPreviousAnswer() {
         Question currentQuestion = allQuestions.get(currentQuestionIndex);
@@ -336,23 +466,29 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
     private void moveToNextQuestion() {
         if (currentQuestionIndex == allQuestions.size() - 1) {
-            Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+            if (isEditMode) {
+                Toast.makeText(this, "Questionnaire Editing Complete!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+            }
             finish();
             return;
         }
 
         currentQuestionIndex++;
 
-        if (!branchQuestionsAdded &&
-                currentQuestionIndex == questionnaireData.getWarm_up().size()) {
-            loadBranchSpecificQuestions();
-            branchQuestionsAdded = true;
-        }
+        if (!isEditMode) {
+            if (!branchQuestionsAdded &&
+                    currentQuestionIndex == questionnaireData.getWarm_up().size()) {
+                loadBranchSpecificQuestions();
+                branchQuestionsAdded = true;
+            }
 
-        if (!followUpQuestionsAdded &&
-                currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
-            allQuestions.addAll(questionnaireData.getFollow_up());
-            followUpQuestionsAdded = true;
+            if (!followUpQuestionsAdded &&
+                    currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
+                allQuestions.addAll(questionnaireData.getFollow_up());
+                followUpQuestionsAdded = true;
+            }
         }
 
         displayCurrentQuestion();
