@@ -1,8 +1,6 @@
 package com.b07safetyplanapp;
 
 import android.app.AlertDialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +24,7 @@ import com.b07safetyplanapp.models.emergencyinfo.EmergencyContact;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import com.b07safetyplanapp.R;
+import android.util.Log;
 
 public class EmergencyContactActivity extends AppCompatActivity {
 
@@ -79,6 +75,63 @@ public class EmergencyContactActivity extends AppCompatActivity {
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
+    private String normalizePhoneNumber(String phone) {
+        if (phone == null) return "";
+
+        String cleaned = phone.replaceAll("[^+0-9]", "");
+
+        if (cleaned.startsWith("+1") && cleaned.length() == 12) {
+            cleaned = cleaned.substring(2);
+        } else if (cleaned.startsWith("1") && cleaned.length() == 11) {
+            cleaned = cleaned.substring(1);
+        }
+
+        return cleaned;
+    }
+    private boolean isDuplicatePhone(String phone, String excludeContactId) {
+        try {
+            // Safety check
+            if (phone == null || phone.trim().isEmpty()) {
+                return false;
+            }
+
+            String normalizedPhone = normalizePhoneNumber(phone);
+
+            // Safety check for contactsList
+            if (contactsList == null || contactsList.isEmpty()) {
+                return false;
+            }
+
+            for (EmergencyContact contact : contactsList) {
+                // Safety checks for contact and its properties
+                if (contact == null || contact.getPhone() == null) {
+                    continue;
+                }
+
+                // FIXED: Check if contact ID is null before calling equals
+                String contactId = contact.getId();
+                if (excludeContactId != null && contactId != null && contactId.equals(excludeContactId)) {
+                    continue;
+                }
+
+                String existingPhone = normalizePhoneNumber(contact.getPhone());
+
+                if (existingPhone.equals(normalizedPhone)) {
+                    Toast.makeText(this, "This phone number already exists!", Toast.LENGTH_SHORT).show();
+                    return true; // Duplicate found
+                }
+            }
+
+            return false; // No duplicate
+
+        } catch (Exception e) {
+            // Log the error for debugging
+            e.printStackTrace();
+            Toast.makeText(this, "Error checking for duplicates", Toast.LENGTH_SHORT).show();
+            return false; // Allow saving if there's an error
+        }
+    }
+
     private void showAddContactDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_emergency_contact, null);
@@ -94,25 +147,25 @@ public class EmergencyContactActivity extends AppCompatActivity {
             String relationship = relationshipInput.getText().toString().trim();
             String phone = phoneInput.getText().toString().trim();
 
-            if (name.isEmpty()) {
-                Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
+            if (name.isEmpty() || relationship.isEmpty() || phone.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (phone.isEmpty()) {
-                Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_SHORT).show();
+            if (isDuplicatePhone(phone, null)) {
                 return;
             }
 
             saveContact(name, relationship, phone);
         });
+
         builder.setNegativeButton("Cancel", null);
 
         builder.create().show();
     }
 
     private void saveContact(String name, String relationship, String phone) {
-        String contactId = UUID.randomUUID().toString();
+        String contactId = database.push().getKey();
 
         EmergencyContact contact = new EmergencyContact(
                 contactId,
@@ -172,24 +225,35 @@ public class EmergencyContactActivity extends AppCompatActivity {
                     String newRelationship = relationshipInput.getText().toString().trim();
                     String newPhone = phoneInput.getText().toString().trim();
 
-                    if (!newName.isEmpty() && !newPhone.isEmpty()) {
-                        contact.setName(newName);
-                        contact.setRelationship(newRelationship);
-                        contact.setPhone(newPhone);
-
-                        database.child(contact.getId()).setValue(contact)
-                                .addOnSuccessListener(aVoid ->
-                                        Toast.makeText(this, "Contact updated!", Toast.LENGTH_SHORT).show())
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
-                    } else {
+                    if (newName.isEmpty() || newPhone.isEmpty()) {
                         Toast.makeText(this, "Name and phone are required", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+
+                    if (isDuplicatePhone(newPhone, contact.getId())) {
+                        return;
+                    }
+
+                    contact.setName(newName);
+                    contact.setRelationship(newRelationship);
+                    contact.setPhone(newPhone);
+
+                    Log.d("EditContact", "After update: " + contact.getName() + ", " + contact.getPhone());
+
+                    database.child(contact.getId()).setValue(contact)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("EditContact", "Firebase update successful");
+                                Toast.makeText(this, "Contact updated!", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("EditContact", "Firebase update failed", e);
+                                Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
     private void deleteContact(EmergencyContact contact) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Contact")
