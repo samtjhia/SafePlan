@@ -1,6 +1,7 @@
 package com.b07safetyplanapp.pinsetup;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.security.keystore.KeyGenParameterSpec;
@@ -14,6 +15,7 @@ import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.b07safetyplanapp.QuestionnaireActivity;
 import com.b07safetyplanapp.R;
 
 import java.nio.charset.StandardCharsets;
@@ -66,7 +68,10 @@ public class PinSetupActivity extends AppCompatActivity {
         savePinButton.setOnClickListener(v -> {
             if (currentPin.length() == pinLength) {
                 saveEncryptedPin(currentPin.toString());
-                Toast.makeText(this, "PIN saved successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(PinSetupActivity.this, QuestionnaireActivity.class);
+                startActivity(intent);
+                finish();
+
             } else {
                 Toast.makeText(this, "Please enter a complete PIN", Toast.LENGTH_SHORT).show();
             }

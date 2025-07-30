@@ -13,31 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.B07SafetyPlanApp"
         tools:targetApi="31">
-        <!-- Disable this temporarily while testing SignupActivity
-                <activity android:name=".QuestionnaireActivity" />
-                <activity
-                    android:name=".MainActivity"
-                    android:exported="true">
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
 
-                        <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
-                </activity>
-                -->
-        <!-- Disable this temporarily while testing SignupActivity
-                <activity
-                    android:name=".signup.SignupActivity"
-                    android:exported="true">
-
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
-                        <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
-                </activity>
--->
+        <!-- Entry point -->
         <activity
-            android:name=".pinsetup.PinSetupActivity"
+            android:name=".signup.SignupActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,8 +24,21 @@
             </intent-filter>
         </activity>
 
+        <!-- Pin setup screen -->
+        <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
 
 
-    </application>
+        <activity android:name=".QuestionnaireActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        </manifest>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+   </application>
+
+       </manifest>

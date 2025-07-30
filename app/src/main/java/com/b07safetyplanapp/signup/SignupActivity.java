@@ -1,5 +1,6 @@
 package com.b07safetyplanapp.signup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.b07safetyplanapp.R;
+import com.b07safetyplanapp.pinsetup.PinSetupActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class SignupActivity extends AppCompatActivity implements SignupContract.View {
@@ -93,7 +95,8 @@ public class SignupActivity extends AppCompatActivity implements SignupContract.
 
     @Override
     public void navigateToPinSetup() {
-        // TODO: Launch PIN setup screen
-        Toast.makeText(this, "signup works", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(SignupActivity.this, PinSetupActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
