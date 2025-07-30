@@ -25,6 +25,7 @@
                     </intent-filter>
                 </activity>
                 -->
+        <!-- Disable this temporarily while testing SignupActivity
                 <activity
                     android:name=".signup.SignupActivity"
                     android:exported="true">
@@ -34,8 +35,18 @@
                         <category android:name="android.intent.category.LAUNCHER" />
                     </intent-filter>
                 </activity>
+-->
+        <activity
+            android:name=".pinsetup.PinSetupActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
 
-            </application>
+
+    </application>
 
         </manifest>

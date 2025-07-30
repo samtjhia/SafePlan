@@ -24,8 +24,6 @@
 
             <!-- Logo -->
 
-            <!-- Escape Button Fragment -->
-
             <ImageView
                 android:id="@+id/imageLogo"
                 android:layout_width="40dp"
@@ -34,6 +32,8 @@
                 android:src="@drawable/ic_safe_plan_logo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Escape Button Fragment -->
 
             <fragment
                 android:id="@+id/emergencyExitFragment"

@@ -1,0 +1,151 @@
+package com.b07safetyplanapp.pinsetup;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.view.View;
+import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.b07safetyplanapp.R;
+
+import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
+import android.util.Base64;
+import android.widget.Toast;
+
+public class PinSetupActivity extends AppCompatActivity {
+
+    private RadioGroup digitSelector;
+    private LinearLayout dotContainer;
+    private GridLayout keypad;
+    private Button savePinButton;
+
+    private int pinLength = 4; // default
+    private StringBuilder currentPin = new StringBuilder();
+
+    private static final String KEY_ALIAS = "PIN_KEY_ALIAS";
+    private static final String PREF_NAME = "pin_prefs";
+    private static final String ENCRYPTED_PIN_KEY = "encrypted_pin";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pin_setup);
+
+        digitSelector = findViewById(R.id.digitSelector);
+        dotContainer = findViewById(R.id.dotContainer);
+        keypad = findViewById(R.id.keypad);
+        savePinButton = findViewById(R.id.buttonSavePin);
+
+        digitSelector.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.radio4Digits) {
+                pinLength = 4;
+            } else if (checkedId == R.id.radio6Digits) {
+                pinLength = 6;
+            }
+            currentPin.setLength(0); // clear pin input
+            updateDotIndicators();
+        });
+
+        setupKeypad();
+        updateDotIndicators();
+
+        savePinButton.setOnClickListener(v -> {
+            if (currentPin.length() == pinLength) {
+                saveEncryptedPin(currentPin.toString());
+                Toast.makeText(this, "PIN saved successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Please enter a complete PIN", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateDotIndicators() {
+        dotContainer.removeAllViews();
+        for (int i = 0; i < pinLength; i++) {
+            ImageView dot = new ImageView(this);
+            dot.setImageResource(i < currentPin.length() ? R.drawable.dot_filled : R.drawable.dot_empty);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(24, 24);
+            params.setMargins(8, 0, 8, 0);
+            dot.setLayoutParams(params);
+            dotContainer.addView(dot);
+        }
+        savePinButton.setVisibility(currentPin.length() == pinLength ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void setupKeypad() {
+        for (int i = 0; i < keypad.getChildCount(); i++) {
+            View view = keypad.getChildAt(i);
+            if (view instanceof Button) {
+                Button btn = (Button) view;
+                String text = btn.getText().toString();
+
+                if (text.equals("←")) {
+                    btn.setOnClickListener(v -> {
+                        if (currentPin.length() > 0) {
+                            currentPin.deleteCharAt(currentPin.length() - 1);
+                            updateDotIndicators();
+                        }
+                    });
+                } else {
+                    btn.setOnClickListener(v -> {
+                        if (currentPin.length() < pinLength) {
+                            currentPin.append(text);
+                            updateDotIndicators();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    private void saveEncryptedPin(String pin) {
+        try {
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+
+            if (!keyStore.containsAlias(KEY_ALIAS)) {
+                KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+                KeyGenParameterSpec spec = new KeyGenParameterSpec.Builder(
+                        KEY_ALIAS,
+                        KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                        .build();
+                keyGenerator.init(spec);
+                keyGenerator.generateKey();
+            }
+
+            SecretKey secretKey = ((KeyStore.SecretKeyEntry) keyStore.getEntry(KEY_ALIAS, null)).getSecretKey();
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            byte[] iv = cipher.getIV();
+            byte[] encrypted = cipher.doFinal(pin.getBytes(StandardCharsets.UTF_8));
+
+            String encryptedBase64 = Base64.encodeToString(encrypted, Base64.DEFAULT);
+            String ivBase64 = Base64.encodeToString(iv, Base64.DEFAULT);
+
+            SharedPreferences prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+            prefs.edit()
+                    .putString(ENCRYPTED_PIN_KEY, encryptedBase64)
+                    .putString("pin_iv", ivBase64)
+                    .apply();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
