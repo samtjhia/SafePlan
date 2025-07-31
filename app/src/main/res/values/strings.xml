@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">B07 Demo Summer 2024</string>
+    <string name="app_name">Victim Services Toronto</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_item">Delete Item</string>
@@ -26,6 +26,15 @@
     <string name="option_leaving">Planning to leave</string>
     <string name="option_post">Post-separation</string>
     <string name="next">Next</string>
+
+
+    <!-- reminder_options -->
+    <string-array name="frequency_options">
+        <item>Once</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+    </string-array>
 
 
 

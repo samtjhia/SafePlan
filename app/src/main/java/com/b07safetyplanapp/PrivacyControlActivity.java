@@ -20,7 +20,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
 
         deleteButton = findViewById(R.id.btnDeleteAccount);
         deleteButton.setOnClickListener(v ->
-                deleteSpecificQuestionnaireSession("session_1753199739453"));
+                deleteSpecificQuestionnaireSession("session_1753633425698"));
     }
 
     private void deleteSpecificQuestionnaireSession(String sessionId) {
