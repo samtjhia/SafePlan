@@ -66,6 +66,14 @@ public class PinSetupActivity extends AppCompatActivity {
             updateDotIndicators();
         });
 
+        //set onboarding flags to false
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        prefs.edit()
+                .putBoolean("pin_setup_complete", false)
+                .putBoolean("questionnaire_complete", false)
+                .apply();
+
+
         setupKeypad();
         updateDotIndicators();
 
@@ -166,6 +174,7 @@ public class PinSetupActivity extends AppCompatActivity {
             prefs.edit()
                     .putString(ENCRYPTED_PIN_KEY, encryptedBase64)
                     .putString(PIN_IV_KEY, ivBase64)
+                    .putBoolean("pin_setup_complete", true)
                     .apply();
 
         } catch (Exception e) {
