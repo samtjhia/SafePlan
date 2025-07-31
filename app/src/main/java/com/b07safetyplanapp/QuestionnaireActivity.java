@@ -72,7 +72,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
         // Create a unique session ID
         // Annie - Change to User IDs not sessions
-        sessionId = "session_" + System.currentTimeMillis();
+        sessionId = "session_";//+ System.currentTimeMillis();
     }
 
     private void initializeViews() {
