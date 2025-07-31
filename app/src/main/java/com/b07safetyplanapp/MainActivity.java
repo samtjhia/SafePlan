@@ -1,16 +1,20 @@
 package com.b07safetyplanapp;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.b07safetyplanapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
+    private TextView textUserName;
 
     FirebaseDatabase db;
 
@@ -27,6 +31,22 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
+        }
+
+        textUserName = findViewById(R.id.textUserName);
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String name = currentUser.getDisplayName(); // may be null
+            String email = currentUser.getEmail();       // usually available
+
+            if (name != null && !name.isEmpty()) {
+                textUserName.setText("Hello, " + name);
+            } else {
+                textUserName.setText("Hello, " + email);
+            }
+        } else {
+            textUserName.setText("No user signed in.");
         }
     }
 

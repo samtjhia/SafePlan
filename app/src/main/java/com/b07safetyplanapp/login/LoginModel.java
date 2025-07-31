@@ -68,10 +68,44 @@ public class LoginModel implements LoginContract.Model {
             String decryptedPin = new String(decryptedBytes, StandardCharsets.UTF_8);
 
             if (inputPin.equals(decryptedPin)) {
-                listener.onSuccess();
+                //try to decrypt saved email and password
+                String encryptedEmail = prefs.getString("encrypted_email", null);
+                String emailIv = prefs.getString("email_iv", null);
+                String encryptedPassword = prefs.getString("encrypted_password", null);
+                String passwordIv = prefs.getString("password_iv", null);
+
+                if (encryptedEmail == null || emailIv == null || encryptedPassword == null || passwordIv == null) {
+                    listener.onFailure("Saved credentials missing. Please login with email/password.");
+                    return;
+                }
+
+                // Decrypt email
+                Cipher emailCipher = Cipher.getInstance("AES/GCM/NoPadding");
+                GCMParameterSpec emailSpec = new GCMParameterSpec(128, Base64.decode(emailIv, Base64.DEFAULT));
+                emailCipher.init(Cipher.DECRYPT_MODE, secretKey, emailSpec);
+                String decryptedEmail = new String(emailCipher.doFinal(Base64.decode(encryptedEmail, Base64.DEFAULT)), StandardCharsets.UTF_8);
+
+                // Decrypt password
+                Cipher passwordCipher = Cipher.getInstance("AES/GCM/NoPadding");
+                GCMParameterSpec passwordSpec = new GCMParameterSpec(128, Base64.decode(passwordIv, Base64.DEFAULT));
+                passwordCipher.init(Cipher.DECRYPT_MODE, secretKey, passwordSpec);
+                String decryptedPassword = new String(passwordCipher.doFinal(Base64.decode(encryptedPassword, Base64.DEFAULT)), StandardCharsets.UTF_8);
+
+                // Firebase re-authentication
+                firebaseAuth.signInWithEmailAndPassword(decryptedEmail, decryptedPassword)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                listener.onSuccess();
+                            } else {
+                                listener.onFailure("Firebase login failed: " +
+                                        (task.getException() != null ? task.getException().getMessage() : ""));
+                            }
+                        });
+
             } else {
                 listener.onFailure("Incorrect PIN.");
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();

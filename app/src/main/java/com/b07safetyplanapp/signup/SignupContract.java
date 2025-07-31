@@ -12,7 +12,7 @@ public interface SignupContract {
         void showConfirmPasswordError(String message);
         void showSignupError(String message);
 
-        void navigateToPinSetup();
+        void navigateToPinSetup(String email, String password);
     }
 
     interface Presenter {

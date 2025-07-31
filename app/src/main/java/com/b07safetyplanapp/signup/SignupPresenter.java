@@ -56,7 +56,7 @@ public class SignupPresenter implements SignupContract.Presenter {
             public void onSuccess() {
                 if (view != null) {
                     view.hideLoading();
-                    view.navigateToPinSetup();
+                    view.navigateToPinSetup(email, password);
                 }
             }
 

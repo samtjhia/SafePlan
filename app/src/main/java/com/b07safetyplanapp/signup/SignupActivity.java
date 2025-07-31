@@ -96,9 +96,12 @@ public class SignupActivity extends AppCompatActivity implements SignupContract.
     }
 
     @Override
-    public void navigateToPinSetup() {
+    public void navigateToPinSetup(String email, String password) {
         Intent intent = new Intent(SignupActivity.this, PinSetupActivity.class);
+        intent.putExtra("user_email", email);
+        intent.putExtra("user_password", password);
         startActivity(intent);
         finish();
     }
+
 }

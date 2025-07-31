@@ -17,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.b07safetyplanapp.QuestionnaireActivity;
 import com.b07safetyplanapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
@@ -70,6 +72,20 @@ public class PinSetupActivity extends AppCompatActivity {
         savePinButton.setOnClickListener(v -> {
             if (currentPin.length() == pinLength) {
                 saveEncryptedPin(currentPin.toString());
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    String email = user.getEmail();
+                    String password = getIntent().getStringExtra("user_password");
+
+                    try {
+                        saveCredentials(email, password);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Failed to save login credentials", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
                 Intent intent = new Intent(PinSetupActivity.this, QuestionnaireActivity.class);
                 startActivity(intent);
                 finish();
@@ -78,6 +94,7 @@ public class PinSetupActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a complete PIN", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void updateDotIndicators() {
@@ -155,4 +172,43 @@ public class PinSetupActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private static final String EMAIL_KEY = "encrypted_email";
+    private static final String PASSWORD_KEY = "encrypted_password";
+
+    private void saveCredentials(String email, String password) throws Exception {
+        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+        keyStore.load(null);
+        SecretKey secretKey = ((KeyStore.SecretKeyEntry) keyStore.getEntry(KEY_ALIAS, null)).getSecretKey();
+
+        // Encrypt email
+        Cipher emailCipher = Cipher.getInstance("AES/GCM/NoPadding");
+        emailCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] emailIv = emailCipher.getIV();
+        byte[] encryptedEmail = emailCipher.doFinal(email.getBytes(StandardCharsets.UTF_8));
+
+        // Encrypt password
+        Cipher passwordCipher = Cipher.getInstance("AES/GCM/NoPadding");
+        passwordCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] passwordIv = passwordCipher.getIV();
+        byte[] encryptedPassword = passwordCipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
+
+        // Base64 encode everything
+        String emailEncoded = Base64.encodeToString(encryptedEmail, Base64.DEFAULT);
+        String emailIvEncoded = Base64.encodeToString(emailIv, Base64.DEFAULT);
+
+        String passwordEncoded = Base64.encodeToString(encryptedPassword, Base64.DEFAULT);
+        String passwordIvEncoded = Base64.encodeToString(passwordIv, Base64.DEFAULT);
+
+        // Save to SharedPreferences
+        SharedPreferences prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putString("encrypted_email", emailEncoded)
+                .putString("email_iv", emailIvEncoded)
+                .putString("encrypted_password", passwordEncoded)
+                .putString("password_iv", passwordIvEncoded)
+                .apply();
+    }
+
+
 }
