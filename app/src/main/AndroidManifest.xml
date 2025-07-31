@@ -16,7 +16,7 @@
 
         <!-- Entry point -->
         <activity
-            android:name=".signup.SignupActivity"
+            android:name=".WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,16 +24,15 @@
             </intent-filter>
         </activity>
 
-        <!-- Pin setup screen -->
+        <!-- Auth flow -->
+        <activity android:name=".signup.SignupActivity" android:exported="true" />
+        <activity android:name=".login.LoginActivity" android:exported="true" />
         <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
 
-
-        <activity android:name=".QuestionnaireActivity" android:exported="true"/>
-
+        <!-- Main app -->
+        <activity android:name=".QuestionnaireActivity" android:exported="true" />
         <activity android:name=".MainActivity" android:exported="true" />
-
-        <activity android:name=".login.LoginActivity" android:exported="true" />
 
    </application>
 
-       </manifest>
+</manifest>

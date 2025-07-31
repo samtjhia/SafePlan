@@ -1,6 +1,8 @@
 package com.b07safetyplanapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +50,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             textUserName.setText("No user signed in.");
         }
+
+        Button logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut(); // sign out the current user
+
+            // Redirect to Welcome screen
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void loadFragment(Fragment fragment) {
