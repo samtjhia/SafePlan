@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.b07safetyplanapp.R;
+import com.b07safetyplanapp.login.LoginActivity;
 import com.b07safetyplanapp.pinsetup.PinSetupActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -47,8 +48,9 @@ public class SignupActivity extends AppCompatActivity implements SignupContract.
         });
 
         textLoginRedirect.setOnClickListener(v -> {
-            // TODO: Intent to LoginActivity
-            Toast.makeText(this, "redirect to login", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 

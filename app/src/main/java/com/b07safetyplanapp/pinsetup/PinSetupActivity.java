@@ -38,9 +38,11 @@ public class PinSetupActivity extends AppCompatActivity {
     private int pinLength = 4; // default
     private StringBuilder currentPin = new StringBuilder();
 
-    private static final String KEY_ALIAS = "PIN_KEY_ALIAS";
-    private static final String PREF_NAME = "pin_prefs";
+    private static final String PREF_NAME = "safeplan_prefs";
     private static final String ENCRYPTED_PIN_KEY = "encrypted_pin";
+    private static final String PIN_IV_KEY = "pin_iv";
+    private static final String KEY_ALIAS = "safeplan_key";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +148,7 @@ public class PinSetupActivity extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             prefs.edit()
                     .putString(ENCRYPTED_PIN_KEY, encryptedBase64)
-                    .putString("pin_iv", ivBase64)
+                    .putString(PIN_IV_KEY, ivBase64)
                     .apply();
 
         } catch (Exception e) {
