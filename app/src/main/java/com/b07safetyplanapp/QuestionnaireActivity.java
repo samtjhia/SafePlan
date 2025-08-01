@@ -1,5 +1,6 @@
 package com.b07safetyplanapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -341,7 +342,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
         // Now check if we're at the actual end
         if (currentQuestionIndex == allQuestions.size() - 1) {
+            //onboarding complete
+            getSharedPreferences("safeplan_prefs", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("questionnaire_complete", true)
+                    .apply();
+
             Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
         }
