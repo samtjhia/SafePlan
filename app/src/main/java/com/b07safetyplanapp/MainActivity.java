@@ -9,53 +9,48 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.b07safetyplanapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textUserName;
-
-    FirebaseDatabase db;
+    private FirebaseDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = FirebaseDatabase.getInstance("https://b07-demo-summer-2024-default-rtdb.firebaseio.com/");
-        DatabaseReference myRef = db.getReference("testDemo");
+        db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
-//        myRef.setValue("B07 Demo!");
-        myRef.child("movies").setValue("B07 Demo!");
-
+        // Load initial fragment
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
 
         textUserName = findViewById(R.id.textUserName);
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String name = currentUser.getDisplayName(); // may be null
-            String email = currentUser.getEmail();       // usually available
 
-            if (name != null && !name.isEmpty()) {
-                textUserName.setText("Hello, " + name);
-            } else {
-                textUserName.setText("Hello, " + email);
-            }
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            DatabaseReference userRef = db.getReference("users").child(uid).child("fullName");
+
+            userRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().exists()) {
+                    String fullName = task.getResult().getValue(String.class);
+                    textUserName.setText("Hello, " + fullName);
+                } else {
+                    textUserName.setText("Hello, " + currentUser.getEmail());
+                }
+            });
         } else {
             textUserName.setText("No user signed in.");
         }
 
         Button logoutButton = findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut(); // sign out the current user
-
-            // Redirect to Welcome screen
+            FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -63,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
