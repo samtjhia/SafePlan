@@ -5,9 +5,15 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -33,6 +39,7 @@ public class LoginModel implements LoginContract.Model {
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        storeUserDataToRealtimeDB();
                         listener.onSuccess();
                     } else {
                         listener.onFailure(task.getException() != null ?
@@ -68,7 +75,6 @@ public class LoginModel implements LoginContract.Model {
             String decryptedPin = new String(decryptedBytes, StandardCharsets.UTF_8);
 
             if (inputPin.equals(decryptedPin)) {
-                //try to decrypt saved email and password
                 String encryptedEmail = prefs.getString("encrypted_email", null);
                 String emailIv = prefs.getString("email_iv", null);
                 String encryptedPassword = prefs.getString("encrypted_password", null);
@@ -91,10 +97,10 @@ public class LoginModel implements LoginContract.Model {
                 passwordCipher.init(Cipher.DECRYPT_MODE, secretKey, passwordSpec);
                 String decryptedPassword = new String(passwordCipher.doFinal(Base64.decode(encryptedPassword, Base64.DEFAULT)), StandardCharsets.UTF_8);
 
-                // Firebase re-authentication
                 firebaseAuth.signInWithEmailAndPassword(decryptedEmail, decryptedPassword)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
+                                storeUserDataToRealtimeDB();
                                 listener.onSuccess();
                             } else {
                                 listener.onFailure("Firebase login failed: " +
@@ -106,10 +112,28 @@ public class LoginModel implements LoginContract.Model {
                 listener.onFailure("Incorrect PIN.");
             }
 
-
         } catch (Exception e) {
             e.printStackTrace();
             listener.onFailure("PIN verification failed.");
+        }
+    }
+
+    // ✅ New method to store user profile to Realtime Database
+    private void storeUserDataToRealtimeDB() {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+            String email = user.getEmail();
+
+            DatabaseReference userRef = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/")
+                    .getReference("users")
+                    .child(uid);
+
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("email", email);
+            userData.put("createdAt", ServerValue.TIMESTAMP);
+
+            userRef.updateChildren(userData);
         }
     }
 }
