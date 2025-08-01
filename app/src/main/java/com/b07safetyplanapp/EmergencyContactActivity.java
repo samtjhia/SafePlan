@@ -24,7 +24,6 @@ import com.b07safetyplanapp.models.emergencyinfo.EmergencyContact;
 
 import java.util.ArrayList;
 import java.util.List;
-import android.util.Log;
 
 public class EmergencyContactActivity extends AppCompatActivity {
 
@@ -48,15 +47,14 @@ public class EmergencyContactActivity extends AppCompatActivity {
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-//        if (currentUser == null) {
-//            Toast.makeText(this, "Please log in first", Toast.LENGTH_SHORT).show();
-//            finish();
-//            return;
-//        }
+        if (currentUser == null) {
+            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // below should be what we are doing once we have user authentication
-//         String userId = currentUser.getUid();
-        String userId = "userId123"; // hardcoded for testing
+        String userId = currentUser.getUid();
+//        String userId = "userId123"; // hardcoded for testing
 
         database = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(userId).child("emergency_contacts");
@@ -76,39 +74,54 @@ public class EmergencyContactActivity extends AppCompatActivity {
     }
 
     private String normalizePhoneNumber(String phone) {
-        if (phone == null) return "";
-
-        String cleaned = phone.replaceAll("[^+0-9]", "");
-
-        if (cleaned.startsWith("+1") && cleaned.length() == 12) {
-            cleaned = cleaned.substring(2);
-        } else if (cleaned.startsWith("1") && cleaned.length() == 11) {
-            cleaned = cleaned.substring(1);
+        if (phone == null) {
+            return "";
         }
+
+        // Remove spaces and dashes
+        String cleaned = phone.replaceAll("[\\s-]", "");
 
         return cleaned;
     }
+
+    private boolean isValidPhoneNumber(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        String normalizedPhone = normalizePhoneNumber(phone);
+
+        if (normalizedPhone.length() != 10) {
+            Toast.makeText(this, "Phone number must be 10 digits long", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!normalizedPhone.matches("\\d{10}")) {
+            Toast.makeText(this, "Phone number can only contain digits, spaces, and dashes", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
     private boolean isDuplicatePhone(String phone, String excludeContactId) {
         try {
-            // Safety check
             if (phone == null || phone.trim().isEmpty()) {
                 return false;
             }
 
             String normalizedPhone = normalizePhoneNumber(phone);
 
-            // Safety check for contactsList
             if (contactsList == null || contactsList.isEmpty()) {
                 return false;
             }
 
             for (EmergencyContact contact : contactsList) {
-                // Safety checks for contact and its properties
                 if (contact == null || contact.getPhone() == null) {
                     continue;
                 }
 
-                // FIXED: Check if contact ID is null before calling equals
                 String contactId = contact.getId();
                 if (excludeContactId != null && contactId != null && contactId.equals(excludeContactId)) {
                     continue;
@@ -117,17 +130,15 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 String existingPhone = normalizePhoneNumber(contact.getPhone());
 
                 if (existingPhone.equals(normalizedPhone)) {
-                    Toast.makeText(this, "This phone number already exists!", Toast.LENGTH_SHORT).show();
-                    return true; // Duplicate found
+                    Toast.makeText(this, "Phone number already exists!", Toast.LENGTH_SHORT).show();
+                    return true;
                 }
             }
 
-            return false; // No duplicate
+            return false;
 
         } catch (Exception e) {
-            // Log the error for debugging
-            e.printStackTrace();
-            Toast.makeText(this, "Error checking for duplicates", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
             return false; // Allow saving if there's an error
         }
     }
@@ -152,11 +163,16 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 return;
             }
 
+            if (!isValidPhoneNumber(phone)) {
+                return;
+            }
+
             if (isDuplicatePhone(phone, null)) {
                 return;
             }
 
-            saveContact(name, relationship, phone);
+            String normalizedPhone = normalizePhoneNumber(phone);
+            saveContact(name, relationship, normalizedPhone);
         });
 
         builder.setNegativeButton("Cancel", null);
@@ -230,23 +246,24 @@ public class EmergencyContactActivity extends AppCompatActivity {
                         return;
                     }
 
+                    if (!isValidPhoneNumber(newPhone)) {
+                        return;
+                    }
+
                     if (isDuplicatePhone(newPhone, contact.getId())) {
                         return;
                     }
 
+                    String normalizedPhone = normalizePhoneNumber(newPhone);
                     contact.setName(newName);
                     contact.setRelationship(newRelationship);
-                    contact.setPhone(newPhone);
-
-                    Log.d("EditContact", "After update: " + contact.getName() + ", " + contact.getPhone());
+                    contact.setPhone(normalizedPhone);
 
                     database.child(contact.getId()).setValue(contact)
                             .addOnSuccessListener(aVoid -> {
-                                Log.d("EditContact", "Firebase update successful");
                                 Toast.makeText(this, "Contact updated!", Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
-                                Log.e("EditContact", "Firebase update failed", e);
                                 Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             });
 
@@ -254,6 +271,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
     private void deleteContact(EmergencyContact contact) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Contact")
@@ -274,9 +292,9 @@ public class EmergencyContactActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-//            Toast.makeText(this, "Session expired, please log in again", Toast.LENGTH_SHORT).show();
-//            finish();
-//        }
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 }

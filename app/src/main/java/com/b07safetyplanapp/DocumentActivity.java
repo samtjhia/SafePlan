@@ -39,7 +39,6 @@ public class DocumentActivity extends AppCompatActivity {
     private DocumentAdapter adapter;
     private List<Document> documentsList;
     private FloatingActionButton fabAdd;
-
     private FirebaseUser currentUser;
     private DatabaseReference database;
     private StorageReference storage;
@@ -62,15 +61,14 @@ public class DocumentActivity extends AppCompatActivity {
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-//        if (currentUser == null) {
-//            Toast.makeText(this, "Please log in first", Toast.LENGTH_SHORT).show();
-//            finish();
-//            return;
-//        }
+        if (currentUser == null) {
+            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // below should be what we are doing once we have user authentication
-//         String userId = currentUser.getUid();
-        String userId = "userId123"; // hardcoded for testing
+        String userId = currentUser.getUid();
+//        String userId = "userId123"; // hardcoded for testing
 
         database = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(userId).child("documents");
@@ -108,45 +106,6 @@ public class DocumentActivity extends AppCompatActivity {
         );
     }
 
-    private boolean isDuplicateTitle(String title, String excludeDocumentId) {
-        try {
-            if (title == null || title.trim().isEmpty()) {
-                return false;
-            }
-
-            String normalizedTitle = title.trim().toLowerCase();
-
-            if (documentsList == null || documentsList.isEmpty()) {
-                return false;
-            }
-
-            for (Document document : documentsList) {
-                if (document == null || document.getTitle() == null) {
-                    continue;
-                }
-
-                // Skip the document we're editing (if any)
-                String documentId = document.getId();
-                if (excludeDocumentId != null && documentId != null && documentId.equals(excludeDocumentId)) {
-                    continue;
-                }
-
-                String existingTitle = document.getTitle().trim().toLowerCase();
-
-                if (existingTitle.equals(normalizedTitle)) {
-                    Toast.makeText(this, "A document with this title already exists!", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-            }
-
-            return false;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false; // Allow saving if there's an error
-        }
-    }
-
     private void showAddDocumentDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_document, null);
@@ -170,10 +129,6 @@ public class DocumentActivity extends AppCompatActivity {
                 return;
             }
 
-            if (isDuplicateTitle(title, null)) {
-                return;
-            }
-
             currentTitle = title;
             currentDescription = description;
 
@@ -193,10 +148,10 @@ public class DocumentActivity extends AppCompatActivity {
     }
 
     private void uploadFile(Uri fileUri) {
-//        if (currentUser == null) {
-//            Toast.makeText(this, "Please log in again", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
+        if (currentUser == null) {
+            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
 
@@ -287,10 +242,6 @@ public class DocumentActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if (isDuplicateTitle(newTitle, document.getId())) {
-                        return;
-                    }
-
                     document.setTitle(newTitle);
                     document.setDescription(newDescription);
 
@@ -322,9 +273,9 @@ public class DocumentActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-//            Toast.makeText(this, "Session expired, please log in again", Toast.LENGTH_SHORT).show();
-//            finish();
-//        }
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 }
