@@ -51,6 +51,8 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private DatabaseReference questionnaireRef;
     private String sessionId;
 
+    private int branchQuestionsCount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -295,28 +297,67 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+//    private void moveToNextQuestion() {
+//        if (currentQuestionIndex == allQuestions.size() - 1) {
+//            Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+//            finish();
+//            return;
+//        }
+//
+//        currentQuestionIndex++;
+//
+//        if (!branchQuestionsAdded &&
+//                currentQuestionIndex == questionnaireData.getWarm_up().size()) {
+//            loadBranchSpecificQuestions();
+//            branchQuestionsAdded = true;
+//        }
+//
+//        if (!followUpQuestionsAdded &&
+//                currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
+//            allQuestions.addAll(questionnaireData.getFollow_up());
+//            followUpQuestionsAdded = true;
+//        }
+//
+//        displayCurrentQuestion();
+//    }
+
     private void moveToNextQuestion() {
+        // First, add questions if needed BEFORE checking if we're at the end
+        // Add branch questions after completing warm-up questions
+        if (!branchQuestionsAdded && currentQuestionIndex == questionnaireData.getWarm_up().size() - 1) {
+            loadBranchSpecificQuestions();
+            branchQuestionsAdded = true;
+        }
+
+        // Add follow-up questions after completing branch questions
+        if (!followUpQuestionsAdded && branchQuestionsAdded) {
+            // Calculate where branch questions end
+            int branchEndIndex = questionnaireData.getWarm_up().size() + getCurrentBranchQuestionsCount() - 1;
+            if (currentQuestionIndex == branchEndIndex) {
+                allQuestions.addAll(questionnaireData.getFollow_up());
+                followUpQuestionsAdded = true;
+            }
+        }
+
+        // Now check if we're at the actual end
         if (currentQuestionIndex == allQuestions.size() - 1) {
             Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        // Move to next question
         currentQuestionIndex++;
-
-        if (!branchQuestionsAdded &&
-                currentQuestionIndex == questionnaireData.getWarm_up().size()) {
-            loadBranchSpecificQuestions();
-            branchQuestionsAdded = true;
-        }
-
-        if (!followUpQuestionsAdded &&
-                currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
-            allQuestions.addAll(questionnaireData.getFollow_up());
-            followUpQuestionsAdded = true;
-        }
-
         displayCurrentQuestion();
+    }
+
+    private int getCurrentBranchQuestionsCount() {
+        // Calculate current branch questions count
+        int totalQuestions = allQuestions.size();
+        int warmUpCount = questionnaireData.getWarm_up().size();
+        int followUpCount = followUpQuestionsAdded ? questionnaireData.getFollow_up().size() : 0;
+
+        return totalQuestions - warmUpCount - followUpCount;
     }
 
 
