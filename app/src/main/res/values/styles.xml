@@ -16,4 +16,13 @@
         <item name="android:backgroundTint">@drawable/rounded_dark_button</item>
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
+    <style name="KeypadButton">
+        <item name="android:layout_width">64dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:backgroundTint">@color/button_maroon</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

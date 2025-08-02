@@ -1,5 +1,6 @@
 package com.b07safetyplanapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,9 @@ import com.b07safetyplanapp.utils.QuestionnaireParser;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +55,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private DatabaseReference questionnaireRef;
     private String sessionId;
 
+    private String uid;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,14 +73,25 @@ public class QuestionnaireActivity extends AppCompatActivity {
     }
 
     private void initializeFirebase() {
-        // Initialize Firebase Database
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
-        questionnaireRef = database.getReference("questionnaire_sessions");
 
-        // Create a unique session ID
-        // Annie - Change to User IDs not sessions
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+            finish(); // Exit activity
+            return;
+        }
+
+        uid = currentUser.getUid();
+
+        // Path: users/{uid}/questionnaire_sessions/{sessionId}
         sessionId = "session_" + System.currentTimeMillis();
+        questionnaireRef = database.getReference("users")
+                .child(uid)
+                .child("questionnaire_sessions")
+                .child(sessionId);
     }
+
 
     private void initializeViews() {
         questionText = findViewById(R.id.question_text);
@@ -297,7 +315,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
     private void moveToNextQuestion() {
         if (currentQuestionIndex == allQuestions.size() - 1) {
+            //onboarding complete
+            getSharedPreferences("safeplan_prefs", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("questionnaire_complete", true)
+                    .apply();
+
             Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
         }

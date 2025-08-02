@@ -21,17 +21,10 @@
         android:theme="@style/Theme.B07SafetyPlanApp"
         tools:targetApi="33">
 
-        <!-- Broadcast receiver for AlarmManager -->
-        <receiver android:name=".ReminderReceiver"
-            android:exported="false" /> <!-- not exported; it's local to app -->
 
-        <!-- Activities -->
-        <activity android:name=".QuestionnaireActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".PrivacyControlActivity" />
-        <activity android:name=".ReminderScheduleActivity" />
+        <!-- Entry point -->
         <activity
-            android:name=".MainActivity"
+            android:name=".WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +32,17 @@
             </intent-filter>
         </activity>
 
-    </application>
+        <!-- Auth flow -->
+        <activity android:name=".signup.SignupActivity" android:exported="true" />
+        <activity android:name=".login.LoginActivity" android:exported="true" />
+        <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
+
+        <!-- Main app -->
+        <activity android:name=".QuestionnaireActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".PrivacyControlActivity" />
+        <activity android:name=".MainActivity" android:exported="true" />
+
+   </application>
 
 </manifest>
