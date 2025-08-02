@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
+    <!-- Emergency Exit Fragment -->
     <fragment
         android:id="@+id/emergencyExitFragment"
         android:name="com.b07safetyplanapp.EmergencyExitFragment"
@@ -16,16 +17,62 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- RecyclerView Button -->
+    <Button
+        android:id="@+id/buttonRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/recyclerview"
+        app:layout_constraintTop_toBottomOf="@id/emergencyExitFragment"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Scroller Button -->
+    <Button
+        android:id="@+id/buttonScroller"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/scroller"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRecyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Spinner Button -->
+    <Button
+        android:id="@+id/buttonSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/spinner"
+        app:layout_constraintTop_toBottomOf="@+id/buttonScroller"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Manage Items Button -->
+    <Button
+        android:id="@+id/buttonManageItems"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_items"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Start Questionnaire Button -->
     <Button
         android:id="@+id/start_questionnaire_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Start Questionnaire"
+        app:layout_constraintTop_toBottomOf="@id/buttonManageItems"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emergencyExitFragment"
-        app:layout_constraintBottom_toTopOf="@+id/documents_button"/>
+        android:layout_marginTop="8dp" />
 
+    <!-- Emergency Documents Button -->
     <Button
         android:id="@+id/documents_button"
         android:layout_width="0dp"
@@ -34,8 +81,9 @@
         app:layout_constraintTop_toBottomOf="@+id/start_questionnaire_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/emergency_contacts_button"/>
+        android:layout_marginTop="8dp" />
 
+    <!-- Emergency Contacts Button -->
     <Button
         android:id="@+id/emergency_contacts_button"
         android:layout_width="0dp"
@@ -44,6 +92,17 @@
         app:layout_constraintTop_toBottomOf="@+id/documents_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:layout_marginTop="8dp" />
+
+    <!-- Settings Button -->
+    <Button
+        android:id="@+id/buttonSettings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        app:layout_constraintTop_toBottomOf="@+id/emergency_contacts_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

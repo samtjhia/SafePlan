@@ -24,14 +24,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity
-            android:name=".DocumentActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".EmergencyContactActivity"
-            android:exported="false" />
-
         <!-- Entry point -->
         <activity
             android:name=".WelcomeActivity"
@@ -48,8 +40,14 @@
         <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
 
         <!-- Main app -->
-        <activity android:name=".QuestionnaireActivity" android:exported="true" />
         <activity android:name=".MainActivity" android:exported="true" />
+        <activity android:name=".QuestionnaireActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".PrivacyControlActivity" />
+
+        <!-- Document and Emergency features -->
+        <activity android:name=".DocumentActivity" android:exported="false" />
+        <activity android:name=".EmergencyContactActivity" android:exported="false" />
 
    </application>
 
