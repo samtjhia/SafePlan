@@ -35,7 +35,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textColor="@color/button_maroon"
-        android:fontFamily="@font/playfairdisplay_bold"/>
+        android:fontFamily="@font/inter_bold"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
