@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"
-        android:fontFamily="@font/poppins_regular"/>
+        android:fontFamily="@font/inter_regular"/>
 
     <!-- Question Prompt (subtitle) -->
     <TextView
@@ -103,7 +103,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/poppins_regular"/>
+        android:fontFamily="@font/inter_regular"/>
 
     <!-- Multiple Choice Options -->
     <RadioGroup
@@ -116,7 +116,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/poppins_regular"/>
+        android:fontFamily="@font/inter_regular"/>
 
     <!-- Open-ended Input -->
     <EditText
@@ -143,7 +143,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/poppins_regular">
+        android:fontFamily="@font/inter_regular">
 
         <TextView
             android:id="@+id/sub_question_text"
