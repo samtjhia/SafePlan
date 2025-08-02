@@ -20,43 +20,48 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home_fragment, container, false);
 
-        Button buttonRecyclerView = view.findViewById(R.id.buttonRecyclerView);
-        Button buttonScroller = view.findViewById(R.id.buttonScroller);
-        Button buttonSpinner = view.findViewById(R.id.buttonSpinner);
-        Button buttonManageItems = view.findViewById(R.id.buttonManageItems);
+//        Button buttonRecyclerView = view.findViewById(R.id.documents_button);
+//        Button buttonScroller = view.findViewById(R.id.start_questionnaire_button);
+//        Button buttonSpinner = view.findViewById(R.id.emergency_contacts_button);
+//
+//        buttonRecyclerView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                loadFragment(new RecyclerViewFragment());
+//            }
+//        });
+//
+//        buttonScroller.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                loadFragment(new ScrollerFragment());
+//            }
+//        });
+//
+//        buttonSpinner.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                loadFragment(new SpinnerFragment());
+//            }
+//        });
 
-        buttonRecyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new RecyclerViewFragment());
-            }
-        });
 
-        buttonScroller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new ScrollerFragment());
-            }
-        });
 
-        buttonSpinner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new SpinnerFragment());
-            }
-        });
-
-        buttonManageItems.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { loadFragment(new ManageItemsFragment());}
-        });
-
-        // Get reference to the button
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
-
-        // Set onClick listener
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
+            startActivity(intent);
+        });
+
+        Button documentsButton = view.findViewById(R.id.documents_button);
+        documentsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DocumentActivity.class);
+            startActivity(intent);
+        });
+
+        Button emergencyContactButton = view.findViewById(R.id.emergency_contacts_button);
+        emergencyContactButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencyContactActivity.class);
             startActivity(intent);
         });
 
