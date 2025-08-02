@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -15,8 +16,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.documentfile.provider.DocumentFile;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,57 +26,73 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import com.b07safetyplanapp.models.emergencyinfo.Document;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class DocumentActivity extends AppCompatActivity {
 
+    private static final String TAG = "DocumentActivity";
+
+    // UI Components
     private RecyclerView recyclerView;
     private DocumentAdapter adapter;
     private List<Document> documentsList;
     private FloatingActionButton fabAdd;
+
+    // Firebase
     private FirebaseUser currentUser;
     private DatabaseReference database;
-    private StorageReference storage;
 
+    // File handling
+    private File documentsDir;
     private ActivityResultLauncher<Intent> filePicker;
+    private Uri selectedFileUri;
 
-    private String currentTitle;
-    private String currentDescription;
+    // Dialog components
+    private AlertDialog addDocumentDialog;
+    private EditText titleInput;
+    private EditText descriptionInput;
+    private TextView selectedFileText;
+    private Button uploadButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document);
-        setupFirebase();
-        setupUI();
-        setupFilePicker();
-        loadDocuments();
-    }
 
-    private void setupFirebase() {
+        // Check if user is logged in
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
         if (currentUser == null) {
             Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        String userId = currentUser.getUid();
-//        String userId = "userId123"; // hardcoded for testing
+        setupFirebase();
+        setupFileStorage();
+        setupUI();
+        setupFilePicker();
+        loadDocuments();
+    }
 
+    private void setupFirebase() {
+        String userId = currentUser.getUid();
         database = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(userId).child("documents");
+    }
 
-        storage = FirebaseStorage.getInstance().getReference()
-                .child("documents").child(userId);
+    private void setupFileStorage() {
+        documentsDir = new File(getFilesDir(), "documents");
+        if (!documentsDir.exists()) {
+            documentsDir.mkdirs();
+        }
     }
 
     private void setupUI() {
@@ -82,7 +100,11 @@ public class DocumentActivity extends AppCompatActivity {
         fabAdd = findViewById(R.id.fabAddDocument);
 
         documentsList = new ArrayList<>();
-        adapter = new DocumentAdapter(documentsList, this::viewDocument, this::editDocument, this::deleteDocument);
+        adapter = new DocumentAdapter(documentsList,
+                this::openDocument,
+                this::editDocument,
+                this::deleteDocument);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
@@ -95,12 +117,13 @@ public class DocumentActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Uri fileUri = result.getData().getData();
-                        if (fileUri != null) {
-                            uploadFile(fileUri);
+                        selectedFileUri = result.getData().getData();
+                        if (selectedFileUri != null) {
+                            String fileName = getFileName(selectedFileUri);
+                            selectedFileText.setText("Selected: " + fileName);
+                            selectedFileText.setVisibility(View.VISIBLE);
+                            uploadButton.setEnabled(true);
                         }
-                    } else if (result.getResultCode() == RESULT_CANCELED) {
-                        Toast.makeText(this, "File selection canceled", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -110,81 +133,128 @@ public class DocumentActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_document, null);
 
-        EditText titleInput = dialogView.findViewById(R.id.etDocumentTitle);
-        EditText descriptionInput = dialogView.findViewById(R.id.etDocumentDescription);
+        // Get dialog components
+        titleInput = dialogView.findViewById(R.id.etDocumentTitle);
+        descriptionInput = dialogView.findViewById(R.id.etDocumentDescription);
         Button selectFileButton = dialogView.findViewById(R.id.btnSelectFile);
+        selectedFileText = dialogView.findViewById(R.id.tvSelectedFileName);
+        uploadButton = dialogView.findViewById(R.id.btnUploadDocument);
 
-        builder.setView(dialogView);
-        builder.setTitle("Add Document");
-        builder.setNegativeButton("Cancel", null);
+        // Reset dialog state
+        selectedFileUri = null;
+        uploadButton.setEnabled(false);
+        selectedFileText.setVisibility(View.GONE);
 
-        AlertDialog dialog = builder.create();
+        // Set up button clicks
+        selectFileButton.setOnClickListener(v -> selectFile());
+        uploadButton.setOnClickListener(v -> uploadDocument());
 
-        selectFileButton.setOnClickListener(v -> {
-            String title = titleInput.getText().toString().trim();
-            String description = descriptionInput.getText().toString().trim();
+        builder.setView(dialogView)
+                .setTitle("Add Document")
+                .setNegativeButton("Cancel", null);
 
-            if (title.isEmpty()) {
-                titleInput.setError("Please enter a title");
-                return;
-            }
-
-            currentTitle = title;
-            currentDescription = description;
-
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            String[] mimeTypes = {"image/*", "application/pdf", "text/*"};
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-
-            Intent chooser = Intent.createChooser(intent, "Select Document");
-            filePicker.launch(chooser);
-
-            dialog.dismiss();
-        });
-
-        dialog.show();
+        addDocumentDialog = builder.create();
+        addDocumentDialog.show();
     }
 
-    private void uploadFile(Uri fileUri) {
-        if (currentUser == null) {
-            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
+    private void selectFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        filePicker.launch(Intent.createChooser(intent, "Select Document"));
+    }
+
+    private void uploadDocument() {
+        String title = titleInput.getText().toString().trim();
+        String description = descriptionInput.getText().toString().trim();
+
+        // Validate input has all fields filled
+        if (title.isEmpty()) {
+            titleInput.setError("Please enter a title");
             return;
         }
 
-        Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
+        if (selectedFileUri == null) {
+            Toast.makeText(this, "Please select a file", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        String fileId = UUID.randomUUID().toString();
-        StorageReference fileRef = storage.child(fileId);
+        // Disable button and show progress
+        uploadButton.setEnabled(false);
+        uploadButton.setText("Uploading...");
+        Toast.makeText(this, "Saving document...", Toast.LENGTH_SHORT).show();
 
-        fileRef.putFile(fileUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    fileRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
-                        saveDocumentInfo(fileId, downloadUrl.toString());
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Upload failed", Toast.LENGTH_SHORT).show();
-                });
+        // Save file
+        saveDocument(title, description);
     }
 
-    private void saveDocumentInfo(String fileId, String downloadUrl) {
-        Document document = new Document(
-                fileId,
-                currentTitle,
-                currentDescription,
-                downloadUrl,
-                System.currentTimeMillis()
-        );
+    private void saveDocument(String title, String description) {
+        new Thread(() -> {
+            try {
+                // Create unique file name
+                String fileId = UUID.randomUUID().toString();
+                String originalFileName = getFileName(selectedFileUri);
+                String extension = getFileExtension(originalFileName);
+                String localFileName = fileId + "." + extension;
 
-        database.child(fileId).setValue(document)
+                // Copy file to app storage
+                File localFile = new File(documentsDir, localFileName);
+                copyFile(selectedFileUri, localFile);
+
+                // Save to Firebase
+                Document document = new Document(
+                        fileId,
+                        title,
+                        description,
+                        localFile.getAbsolutePath(),
+                        System.currentTimeMillis()
+                );
+
+                runOnUiThread(() -> saveToFirebase(document, originalFileName));
+
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Error when saving file", Toast.LENGTH_SHORT).show();
+                    resetUploadButton();
+                });
+            }
+        }).start();
+    }
+
+    private void copyFile(Uri sourceUri, File destinationFile) throws Exception {
+        try (InputStream input = getContentResolver().openInputStream(sourceUri);
+             FileOutputStream output = new FileOutputStream(destinationFile)) {
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = input.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+        }
+    }
+
+    private void saveToFirebase(Document document, String originalFileName) {
+        database.child(document.getId()).setValue(document)
                 .addOnSuccessListener(aVoid -> {
+                    // Also save original filename
+                    database.child(document.getId()).child("originalFileName").setValue(originalFileName);
+
+                    // Success
+                    addDocumentDialog.dismiss();
                     Toast.makeText(this, "Document saved!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to save document", Toast.LENGTH_SHORT).show();
+                    resetUploadButton();
+
+                    // Clean up local file
+                    new File(document.getDownloadUrl()).delete();
                 });
+    }
+
+    private void resetUploadButton() {
+        uploadButton.setEnabled(true);
+        uploadButton.setText("Upload Document");
     }
 
     private void loadDocuments() {
@@ -196,7 +266,11 @@ public class DocumentActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Document document = snapshot.getValue(Document.class);
                     if (document != null) {
-                        documentsList.add(document);
+                        // Only add if file still exists
+                        File localFile = new File(document.getDownloadUrl());
+                        if (localFile.exists()) {
+                            documentsList.add(document);
+                        }
                     }
                 }
 
@@ -205,17 +279,35 @@ public class DocumentActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Toast.makeText(DocumentActivity.this, "Failed to load documents", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DocumentActivity.this, "Cannot load documents", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void viewDocument(Document document) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(document.getDownloadUrl()));
-
+    private void openDocument(Document document) {
         try {
-            startActivity(intent);
+            File file = new File(document.getDownloadUrl());
+
+            if (!file.exists()) {
+                Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Create URI for file
+            Uri fileUri = androidx.core.content.FileProvider.getUriForFile(
+                    this, getPackageName() + ".fileprovider", file);
+
+            // Open with appropriate app
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(fileUri, getFileType(file.getName()));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(Intent.createChooser(intent, "Open with"));
+            } else {
+                Toast.makeText(this, "No app found to open this file", Toast.LENGTH_SHORT).show();
+            }
+
         } catch (Exception e) {
             Toast.makeText(this, "Cannot open document", Toast.LENGTH_SHORT).show();
         }
@@ -231,6 +323,11 @@ public class DocumentActivity extends AppCompatActivity {
         titleInput.setText(document.getTitle());
         descriptionInput.setText(document.getDescription());
 
+        // Hide file selection components because it doesn't make sense for user to upload a new file; just create a new file
+        dialogView.findViewById(R.id.btnSelectFile).setVisibility(View.GONE);
+        dialogView.findViewById(R.id.btnUploadDocument).setVisibility(View.GONE);
+        dialogView.findViewById(R.id.tvSelectedFileName).setVisibility(View.GONE);
+
         builder.setView(dialogView)
                 .setTitle("Edit Document")
                 .setPositiveButton("Save", (dialog, which) -> {
@@ -238,10 +335,11 @@ public class DocumentActivity extends AppCompatActivity {
                     String newDescription = descriptionInput.getText().toString().trim();
 
                     if (newTitle.isEmpty()) {
-                        Toast.makeText(this, "Title is required", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
+                    // Update document
                     document.setTitle(newTitle);
                     document.setDescription(newDescription);
 
@@ -258,24 +356,61 @@ public class DocumentActivity extends AppCompatActivity {
     private void deleteDocument(Document document) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Document")
-                .setMessage("Delete " + document.getTitle() + "?")
+                .setMessage("Are you sure you want to delete \"" + document.getTitle() + "\"?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    storage.child(document.getId()).delete();
+                    // Delete local file
+                    File localFile = new File(document.getDownloadUrl());
+                    if (localFile.exists()) {
+                        localFile.delete();
+                    }
+
+                    // Delete from Firebase
                     database.child(document.getId()).removeValue()
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Document deleted", Toast.LENGTH_SHORT).show();
-                            });
+                            .addOnSuccessListener(aVoid ->
+                                    Toast.makeText(this, "Document deleted", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
-            finish();
+    private String getFileName(Uri uri) {
+        DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
+        if (documentFile != null && documentFile.getName() != null) {
+            return documentFile.getName();
+        }
+        return "unknown_file";
+    }
+
+    private String getFileExtension(String fileName) {
+        if (fileName != null && fileName.contains(".")) {
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        }
+        return "txt";
+    }
+
+    private String getFileType(String fileName) {
+        String extension = getFileExtension(fileName).toLowerCase();
+
+        if (extension.equals("pdf")) {
+            return "application/pdf";
+        } else if (extension.equals("jpg") || extension.equals("jpeg")) {
+            return "image/jpeg";
+        } else if (extension.equals("png")) {
+            return "image/png";
+        } else if (extension.equals("txt")) {
+            return "text/plain";
+        } else if (extension.equals("doc")) {
+            return "application/msword";
+        } else if (extension.equals("docx")) {
+            return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        } else if (extension.equals("mp3")) {
+            return "audio/mpeg";
+        } else if (extension.equals("mp4")) {
+            return "video/mp4";
+        } else {
+            return "*/*";
         }
     }
 }
