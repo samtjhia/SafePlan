@@ -18,7 +18,6 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- RecyclerView Button -->
-
     <Button
         android:id="@+id/buttonPlan"
         android:layout_width="0dp"
@@ -68,7 +67,29 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Start Questionnaire"
-        app:layout_constraintTop_toBottomOf="@+id/buttonManageItems"
+        app:layout_constraintTop_toBottomOf="@id/buttonManageItems"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Emergency Documents Button -->
+    <Button
+        android:id="@+id/documents_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Emergency Documents"
+        app:layout_constraintTop_toBottomOf="@+id/start_questionnaire_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Emergency Contacts Button -->
+    <Button
+        android:id="@+id/emergency_contacts_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Emergency Contacts"
+        app:layout_constraintTop_toBottomOf="@+id/documents_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
@@ -79,7 +100,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Settings"
-        app:layout_constraintTop_toBottomOf="@+id/start_questionnaire_button"
+        app:layout_constraintTop_toBottomOf="@+id/emergency_contacts_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
