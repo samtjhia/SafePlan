@@ -40,7 +40,7 @@ public class EmergencyMedicationsAdapter extends RecyclerView.Adapter<EmergencyM
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameText = itemView.findViewById(R.id.tvMedicationName);
-            DosageText = itemView.findViewById(R.id.editTextDosage);
+            DosageText = itemView.findViewById(R.id.tvMedicationDosage);
 
             editButton = itemView.findViewById(R.id.btnEditMedication);
             deleteButton = itemView.findViewById(R.id.btnDeleteMedication);
@@ -75,22 +75,22 @@ public class EmergencyMedicationsAdapter extends RecyclerView.Adapter<EmergencyM
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Medication med = medications.get(position);
+        Medication medication = medications.get(position);
 
-        holder.getNameText().setText(med.getName());
-        holder.getDosageText().setText(med.getDosage());
+        holder.getNameText().setText(medication.getName());
+        holder.getDosageText().setText(medication.getDosage());
 
 
 
         holder.getEditButton().setOnClickListener(v -> {
             if (editListener != null) {
-                editListener.onClick(med);
+                editListener.onClick(medication);
             }
         });
 
         holder.getDeleteButton().setOnClickListener(v -> {
             if (deleteListener != null) {
-                deleteListener.onClick(med);
+                deleteListener.onClick(medication);
             }
         });
     }
