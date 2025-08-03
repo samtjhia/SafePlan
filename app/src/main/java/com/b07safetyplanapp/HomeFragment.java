@@ -12,8 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.b07safetyplanapp.R;
-
 public class HomeFragment extends Fragment {
     @Nullable
     @Override
@@ -25,48 +23,34 @@ public class HomeFragment extends Fragment {
         Button buttonSpinner = view.findViewById(R.id.buttonSpinner);
         Button buttonManageItems = view.findViewById(R.id.buttonManageItems);
 
-        buttonRecyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new RecyclerViewFragment());
-            }
-        });
-
-        buttonScroller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new ScrollerFragment());
-            }
-        });
-
-        buttonSpinner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new SpinnerFragment());
-            }
-        });
-
-        buttonManageItems.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { loadFragment(new ManageItemsFragment());}
-        });
-
-        // Get reference to the button
+        Button buttonSettings = view.findViewById(R.id.buttonSettings);
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
+        Button documentsButton = view.findViewById(R.id.documents_button);
+        Button emergencyContactButton = view.findViewById(R.id.emergency_contacts_button);
 
-        // Set onClick listener
+        buttonRecyclerView.setOnClickListener(v -> loadFragment(new RecyclerViewFragment()));
+        buttonScroller.setOnClickListener(v -> loadFragment(new ScrollerFragment()));
+        buttonSpinner.setOnClickListener(v -> loadFragment(new SpinnerFragment()));
+        buttonManageItems.setOnClickListener(v -> loadFragment(new ManageItemsFragment()));
+
+        buttonSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intent);
+        });
+
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
             startActivity(intent);
         });
 
-        // Get reference to the button
-        Button emergencyInfoButton = view.findViewById(R.id.emergency_info_button);
+        documentsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DocumentActivity.class);
+            startActivity(intent);
+        });
 
-        // Set onClick listener
-        emergencyInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { loadFragment(new EmergencyInfo());}
+        emergencyContactButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencyContactActivity.class);
+            startActivity(intent);
         });
 
         return view;
