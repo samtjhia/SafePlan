@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
-        // Load initial fragment
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
         }
