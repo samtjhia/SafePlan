@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.b07safetyplanapp.models.questionnaire.Branch;
 import com.b07safetyplanapp.models.questionnaire.Question;
@@ -22,7 +23,7 @@ import com.b07safetyplanapp.models.questionnaire.UserResponse;
 import com.b07safetyplanapp.utils.QuestionnaireParser;
 
 import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
@@ -368,7 +369,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 radioButton.setPadding(16, 20, 16, 20); // Add padding for better spacing
 
                 // Set Inter Regular font
-                radioButton.setTypeface(getResources().getFont(R.font.inter_regular));
+                radioButton.setTypeface(ResourcesCompat.getFont(this, R.font.inter_regular));
 
                 // Add margin between radio buttons
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -600,11 +601,19 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private void moveToNextQuestion() {
         try {
             if (currentQuestionIndex == allQuestions.size() - 1) {
+                //onboarding complete
+                getSharedPreferences("safeplan_prefs", MODE_PRIVATE)
+                        .edit()
+                        .putBoolean("questionnaire_complete", true)
+                        .apply();
+
                 if (isEditMode) {
                     Toast.makeText(this, "Questionnaire Editing Complete!", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
                 }
+
+                startActivity(new Intent(this, MainActivity.class));
                 finish();
                 return;
             }
