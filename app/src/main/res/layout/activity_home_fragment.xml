@@ -93,6 +93,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
+    <!-- Emergency Medications Button -->
+    <Button
+        android:id="@+id/emergency_Medications_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Emergency Medications"
+        app:layout_constraintTop_toBottomOf="@+id/emergency_contacts_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Emergency Safe Locations Button -->
+    <Button
+        android:id="@+id/emergency_Safe_Locations_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Emergency Safe Locations"
+        app:layout_constraintTop_toBottomOf="@+id/emergency_Medications_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
 
     <!-- Settings Button -->
     <Button
@@ -100,7 +121,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Settings"
-        app:layout_constraintTop_toBottomOf="@+id/emergency_contacts_button"
+        app:layout_constraintTop_toBottomOf="@+id/emergency_Safe_Locations_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />
