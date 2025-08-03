@@ -1,5 +1,5 @@
 package com.b07safetyplanapp;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,9 +39,10 @@ public class EmergencyInfo extends Fragment{
             @Override
             public void onClick(View v) { loadFragment(new SafeLocationsFragment());}
         });
-        buttonMedications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { loadFragment(new MedicationsFragment());}
+
+        buttonMedications.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencyMedicationActivity.class);
+            startActivity(intent);
         });
 
         return view;

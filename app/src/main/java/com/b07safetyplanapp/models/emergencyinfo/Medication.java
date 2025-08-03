@@ -1,4 +1,4 @@
-package com.b07safetyplanapp;
+package com.b07safetyplanapp.models.emergencyinfo;
 
 public class Medication {
     private String name;
@@ -6,7 +6,7 @@ public class Medication {
 
     Medication(){
     }
-    Medication(String name, String dosage){
+    public Medication(String name, String dosage){
         this.name = name;
         this.dosage = dosage;
 
@@ -18,5 +18,13 @@ public class Medication {
 
     public String getDosage() {
         return dosage;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
     }
 }
