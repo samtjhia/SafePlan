@@ -26,7 +26,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Emergency Contacts"
+        android:text="Emergency Medications"
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="start"
@@ -46,7 +46,7 @@
         android:clipToPadding="false" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddContact"
+        android:id="@+id/fabAddMedication"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
