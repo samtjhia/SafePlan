@@ -14,18 +14,42 @@
         android:theme="@style/Theme.B07SafetyPlanApp"
         tools:targetApi="31">
 
-        <activity android:name=".QuestionnaireActivity" />
-        <activity android:name=".TipsActivity" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- Entry point -->
         <activity
-            android:name=".MainActivity"
+            android:name=".WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-    </application>
+        <!-- Auth flow -->
+        <activity android:name=".signup.SignupActivity" android:exported="true" />
+        <activity android:name=".login.LoginActivity" android:exported="true" />
+        <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
+
+        <!-- Main app -->
+        <activity android:name=".MainActivity" android:exported="true" />
+        <activity android:name=".QuestionnaireActivity" />
+        <activity android:name=".TipsActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".PrivacyControlActivity" />
+
+        <!-- Document and Emergency features -->
+        <activity android:name=".DocumentActivity" android:exported="false" />
+        <activity android:name=".EmergencyContactActivity" android:exported="false" />
+
+   </application>
 
 </manifest>

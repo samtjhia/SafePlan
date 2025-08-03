@@ -1,5 +1,6 @@
 package com.b07safetyplanapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +60,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private DatabaseReference questionnaireRef;
     //    private FirebaseAuth mAuth;
     private String sessionId;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,18 +84,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
     }
 
     private void initializeFirebase() {
+
         // Initialize Firebase Database
 //        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
-        questionnaireRef = database.getReference("questionnaire_sessions");
 
-        // Create a unique session ID
-        // Annie - Change to User IDs not sessions
-        sessionId = getIntent().getStringExtra("session_id");
-        if (sessionId == null) {
-            // Create a new session ID if none provided
-            sessionId = "session_" + System.currentTimeMillis();
-        }
+        database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
+
 
 //        // Get user ID from intent or current user
 //        userId = getIntent().getStringExtra("user_id");
@@ -109,6 +104,21 @@ public class QuestionnaireActivity extends AppCompatActivity {
 //                return;
 //            }
 //        }
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
+            finish(); // Exit activity
+            return;
+        }
+
+        uid = currentUser.getUid();
+
+        // Path: users/{uid}/questionnaire_sessions/{sessionId}
+        sessionId = "session_" + System.currentTimeMillis();
+        questionnaireRef = database.getReference("users")
+                .child(uid)
+                .child("questionnaire_sessions")
+                .child(sessionId);
     }
 
     private void initializeViews() {

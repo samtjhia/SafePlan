@@ -19,11 +19,13 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:id="@+id/logoIcon"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:id="@+id/imageLogo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_safe_plan_logo"
-            android:contentDescription="@string/safe_plan_logo_desc" />
+            android:contentDescription="App Logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/logoText"
@@ -122,7 +124,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/inter_regular"/>
 
     <!-- Open-ended Input -->
     <EditText
@@ -149,7 +152,8 @@
         app:layout_constraintTop_toBottomOf="@id/text_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_regular">
 
         <TextView
             android:id="@+id/sub_question_text"
