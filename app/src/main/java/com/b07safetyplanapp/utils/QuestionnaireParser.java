@@ -2,7 +2,7 @@ package com.b07safetyplanapp.utils;
 
 import android.content.Context;
 
-import com.b07safetyplanapp.models.QuestionnaireRoot;
+import com.b07safetyplanapp.models.questionnaire.QuestionnaireRoot;
 import com.google.gson.Gson;
 
 import java.io.IOException;

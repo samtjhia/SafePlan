@@ -1,5 +1,6 @@
 package com.b07safetyplanapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,11 +14,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.b07safetyplanapp.models.Branch;
-import com.b07safetyplanapp.models.Question;
-import com.b07safetyplanapp.models.QuestionnaireData;
-import com.b07safetyplanapp.models.QuestionnaireRoot;
-import com.b07safetyplanapp.models.UserResponse;
+import com.b07safetyplanapp.models.questionnaire.Branch;
+import com.b07safetyplanapp.models.questionnaire.Question;
+import com.b07safetyplanapp.models.questionnaire.QuestionnaireData;
+import com.b07safetyplanapp.models.questionnaire.QuestionnaireRoot;
+import com.b07safetyplanapp.models.questionnaire.UserResponse;
 import com.b07safetyplanapp.utils.QuestionnaireParser;
 
 import com.google.firebase.database.DatabaseReference;
@@ -297,7 +298,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
     private void moveToNextQuestion() {
         if (currentQuestionIndex == allQuestions.size() - 1) {
+            //onboarding complete
+            getSharedPreferences("safeplan_prefs", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean("questionnaire_complete", true)
+                    .apply();
+
             Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
         }

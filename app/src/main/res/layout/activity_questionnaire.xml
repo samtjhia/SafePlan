@@ -40,14 +40,13 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <ImageView
-            android:id="@+id/powerButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_power"
-            android:background="@drawable/power_circle"
-            android:contentDescription="@string/power_icon"
-            android:padding="12dp" />
+        <fragment
+            android:id="@+id/emergencyExitFragment"
+            android:name="com.b07safetyplanapp.EmergencyExitFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp" />
+
     </LinearLayout>
 
     <!-- Progress Bar -->
