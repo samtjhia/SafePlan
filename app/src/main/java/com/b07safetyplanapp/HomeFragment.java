@@ -22,24 +22,34 @@ public class HomeFragment extends Fragment {
         Button buttonScroller = view.findViewById(R.id.buttonScroller);
         Button buttonSpinner = view.findViewById(R.id.buttonSpinner);
         Button buttonManageItems = view.findViewById(R.id.buttonManageItems);
+
         Button buttonSettings = view.findViewById(R.id.buttonSettings);
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
+        Button documentsButton = view.findViewById(R.id.documents_button);
+        Button emergencyContactButton = view.findViewById(R.id.emergency_contacts_button);
 
-        // These load fragments
         buttonRecyclerView.setOnClickListener(v -> loadFragment(new RecyclerViewFragment()));
         buttonScroller.setOnClickListener(v -> loadFragment(new ScrollerFragment()));
         buttonSpinner.setOnClickListener(v -> loadFragment(new SpinnerFragment()));
         buttonManageItems.setOnClickListener(v -> loadFragment(new ManageItemsFragment()));
 
-        // ✅ Start SettingsActivity (ACTIVITY, not Fragment!)
         buttonSettings.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), SettingsActivity.class);
             startActivity(intent);
         });
 
-        // ✅ Start QuestionnaireActivity
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
+            startActivity(intent);
+        });
+
+        documentsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DocumentActivity.class);
+            startActivity(intent);
+        });
+
+        emergencyContactButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencyContactActivity.class);
             startActivity(intent);
         });
 
