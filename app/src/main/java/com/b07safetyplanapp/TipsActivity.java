@@ -1,6 +1,9 @@
 package com.b07safetyplanapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +13,8 @@ import com.b07safetyplanapp.models.questionnaire.QuestionnaireRoot;
 import com.b07safetyplanapp.models.questionnaire.TipData;
 import com.b07safetyplanapp.models.questionnaire.UserResponse;
 import com.b07safetyplanapp.utils.QuestionnaireParser;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -29,7 +34,9 @@ public class TipsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private TipAdapter tipAdapter;
+    private String uid;
 
+    private Button backButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,17 +50,39 @@ public class TipsActivity extends AppCompatActivity {
         initializeFirebase();
         loadUserResponses();
 
+        backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> {
+            System.out.println("BACK");
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+
 
     }
 
     private void initializeFirebase() {
         // Initialize Firebase Database
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
-        questionnaireRef = database.getReference("questionnaire_sessions");
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+            finish(); // Exit activity
+            return;
+        }
+
+        uid = currentUser.getUid();
+
+        // Path: users/{uid}/questionnaire
+        questionnaireRef = database.getReference("users")
+                .child(uid);
+
     }
 
     private void loadUserResponses() {
-        questionnaireRef.child("session_1753579047919")
+        questionnaireRef.child("questionnaire")
                 .child("responses")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -81,6 +110,12 @@ public class TipsActivity extends AppCompatActivity {
     }
 
     private void generateTips() {
+        if (userResponses == null) {
+            return;
+        }
+
+        tipList.clear();
+
         for(UserResponse u : userResponses) {
             String questionId = u.getQuestionId();
 
@@ -102,8 +137,12 @@ public class TipsActivity extends AppCompatActivity {
             }
         }
 
-        tipAdapter = new TipAdapter(tipList);
-        recyclerView.setAdapter(tipAdapter);
+        if (tipAdapter == null) {
+            tipAdapter = new TipAdapter(tipList);
+            recyclerView.setAdapter(tipAdapter);
+        } else {
+            tipAdapter.notifyDataSetChanged();
+        }
     }
 
     private String replacePlaceholders(String s) {

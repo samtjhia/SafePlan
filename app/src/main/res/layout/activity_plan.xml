@@ -6,28 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FECBA1">
 
-    <!-- Back Button -->
-    <!--<ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/ic_back"  &lt;!&ndash; Replace with your drawable &ndash;&gt;
-        android:contentDescription="Back"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
 
-    &lt;!&ndash; Power Button &ndash;&gt;
-    <ImageButton
-        android:id="@+id/powerButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/ic_power" &lt;!&ndash; Replace with your drawable &ndash;&gt;
-    android:contentDescription="Power"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:layout_margin="16dp"/>
--->
     <!-- Title -->
     <TextView
         android:id="@+id/title"
@@ -43,14 +22,44 @@
         android:layout_marginHorizontal="16dp"/>
 
     <!-- RecyclerView -->
+
+    <!-- Navigation Buttons -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tipsRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="16dp"
         android:paddingTop="16dp"
+        app:layout_constraintBottom_toTopOf="@id/back_button_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/back_button_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/tipsRecyclerView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="0dp"
+            android:layout_height="61dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_dark_button"
+            android:enabled="true"
+            android:text="Back"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

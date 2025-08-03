@@ -14,18 +14,29 @@
         android:theme="@style/Theme.B07SafetyPlanApp"
         tools:targetApi="31">
 
-        <activity android:name=".QuestionnaireActivity" />
-        <activity android:name=".TipsActivity" />
+
+        <!-- Entry point -->
         <activity
-            android:name=".MainActivity"
+            android:name=".WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-    </application>
+        <!-- Auth flow -->
+        <activity android:name=".signup.SignupActivity" android:exported="true" />
+        <activity android:name=".login.LoginActivity" android:exported="true" />
+        <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
+
+        <!-- Main app -->
+        <activity android:name=".TipsActivity" />
+        <activity android:name=".QuestionnaireActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".PrivacyControlActivity" />
+        <activity android:name=".MainActivity" android:exported="true" />
+
+   </application>
 
 </manifest>

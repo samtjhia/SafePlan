@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:contentDescription="@string/safe_plan_logo_desc"
+        android:src="@drawable/ic_safe_plan_logo"
+        android:clickable="true"
+        android:focusable="true" />
+</FrameLayout>
