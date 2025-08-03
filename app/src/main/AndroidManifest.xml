@@ -48,7 +48,10 @@
         <!-- Document and Emergency features -->
         <activity android:name=".DocumentActivity" android:exported="false" />
         <activity android:name=".EmergencyContactActivity" android:exported="false" />
+        <activity android:name=".EmergencyMedicationActivity" android:exported="false" />
+        <activity android:name=".EmergencySafeLocationsActivity" android:exported="false" />
 
-   </application>
+
+    </application>
 
 </manifest>
