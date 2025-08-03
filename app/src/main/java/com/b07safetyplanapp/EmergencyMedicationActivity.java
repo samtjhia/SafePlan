@@ -63,50 +63,21 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
 
     private void setupUI() {
         recyclerView = findViewById(R.id.recyclerViewMedications);
-        fabAdd = findViewById(R.id.fabAddContact);
+        fabAdd = findViewById(R.id.fabAddMedication);
 
         medicationList = new ArrayList<>();
-        adapter = new EmergencyMedicationsAdapter(medicationList, this::editContact, this::deleteContact);
+        adapter = new EmergencyMedicationsAdapter(medicationList, this::editMedication, this::deleteMedication);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        fabAdd.setOnClickListener(v -> showAddContactDialog());
+        fabAdd.setOnClickListener(v -> showAddMedicationDialog());
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
-    private String normalizePhoneNumber(String phone) {
-        if (phone == null) {
-            return "";
-        }
-
-        // Remove spaces and dashes
-        String cleaned = phone.replaceAll("[\\s-]", "");
-
-        return cleaned;
+    private String normalizeName(String address) {
+        return address.trim().replaceAll("\\s+", " ").toLowerCase();
     }
-
-    private boolean isValidPhoneNumber(String phone) {
-        if (phone == null || phone.trim().isEmpty()) {
-            Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        String normalizedPhone = normalizePhoneNumber(phone);
-
-        if (normalizedPhone.length() != 10) {
-            Toast.makeText(this, "Phone number must be 10 digits long", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!normalizedPhone.matches("\\d{10}")) {
-            Toast.makeText(this, "Phone number can only contain digits, spaces, and dashes", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean isDuplicateName(String name) {
+    private boolean isDuplicateName(String name, String excludeMedicationId) {
         try {
             if (name == null || name.trim().isEmpty()) {
                 return false;
@@ -124,10 +95,14 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
                 }
 
 
+                String medicationId = medication.getMedicationId();
 
-                String existingName = medication.getName();
-
-                if (existingName.equals(name)) {
+                if (excludeMedicationId != null && medicationId != null && medicationId.equals(excludeMedicationId)) {
+                    continue;
+                }
+                String existingName = normalizeName(medication.getName());
+                String currentName = normalizeName(name);
+                if (existingName.equals(currentName)) {
                     Toast.makeText(this, "Medication name already exists!", Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -141,7 +116,7 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         }
     }
 
-    private void showAddContactDialog() {
+    private void showAddMedicationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_medication, null);
 
@@ -163,7 +138,7 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
 
 
 
-            if (isDuplicateName(name)){
+            if (isDuplicateName(name,null)){
                 return;
             }
 
@@ -177,14 +152,15 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
     }
 
     private void saveMedication(String name, String dosage) {
-        String contactId = database.push().getKey();
+        String medicationId = database.push().getKey();
 
         Medication medication = new Medication(
                 name,
-                dosage
+                dosage,
+                medicationId
         );
 
-        database.child(contactId).setValue(medication)
+        database.child(medicationId).setValue(medication)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Medication saved!", Toast.LENGTH_SHORT).show();
                 })
@@ -216,7 +192,7 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         });
     }
 
-    private void editContact(Medication medication) {
+    private void editMedication(Medication medication) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_medication, null);
 
@@ -239,16 +215,17 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
                     }
 
 
-                    if (isDuplicateName(newName)) {
-                        return;
-                    }
+                    //if (isDuplicateName(newName, medication.getMedicationId())) {
+                      //  return;
+
+                    //}
 
 
                     medication.setName(newName);
                     medication.setDosage(newDosage);
 
 
-                    database.child(medication.getName()).setValue(medication)
+                    database.child(medication.getMedicationId()).setValue(medication)
                             .addOnSuccessListener(aVoid -> {
                                 Toast.makeText(this, "Medication updated!", Toast.LENGTH_SHORT).show();
                             })
@@ -261,14 +238,14 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void deleteContact(Medication medication) {
+    private void deleteMedication(Medication medication) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Medication")
                 .setMessage("Delete " + medication.getName() + "?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    database.child(medication.getName()).removeValue()
+                    database.child(medication.getMedicationId()).removeValue()
                             .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Contact deleted", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "Medication deleted", Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show();
