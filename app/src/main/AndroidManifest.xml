@@ -39,7 +39,7 @@
         <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
 
         <!-- Main app -->
-        <activity android:name=".HomeActivity" />
+
         <activity android:name=".QuestionnaireActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PrivacyControlActivity" />
