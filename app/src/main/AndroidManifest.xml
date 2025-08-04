@@ -41,6 +41,7 @@
 
         <!-- Main app -->
         <activity android:name=".MainActivity" android:exported="true" />
+        <activity android:name=".TipsActivity" />
         <activity android:name=".QuestionnaireActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PrivacyControlActivity" />

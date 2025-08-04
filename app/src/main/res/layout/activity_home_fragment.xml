@@ -19,10 +19,10 @@
 
     <!-- RecyclerView Button -->
     <Button
-        android:id="@+id/buttonRecyclerView"
+        android:id="@+id/buttonPlan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/recyclerview"
+        android:text="Plan"
         app:layout_constraintTop_toBottomOf="@id/emergencyExitFragment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/scroller"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRecyclerView"
+        app:layout_constraintTop_toBottomOf="@+id/buttonPlan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp" />

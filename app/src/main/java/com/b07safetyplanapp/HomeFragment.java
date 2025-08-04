@@ -18,7 +18,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home_fragment, container, false);
 
-        Button buttonRecyclerView = view.findViewById(R.id.buttonRecyclerView);
+        Button buttonPlan = view.findViewById(R.id.buttonPlan);
         Button buttonScroller = view.findViewById(R.id.buttonScroller);
         Button buttonSpinner = view.findViewById(R.id.buttonSpinner);
         Button buttonManageItems = view.findViewById(R.id.buttonManageItems);
@@ -28,10 +28,14 @@ public class HomeFragment extends Fragment {
         Button documentsButton = view.findViewById(R.id.documents_button);
         Button emergencyContactButton = view.findViewById(R.id.emergency_contacts_button);
 
-        buttonRecyclerView.setOnClickListener(v -> loadFragment(new RecyclerViewFragment()));
         buttonScroller.setOnClickListener(v -> loadFragment(new ScrollerFragment()));
         buttonSpinner.setOnClickListener(v -> loadFragment(new SpinnerFragment()));
         buttonManageItems.setOnClickListener(v -> loadFragment(new ManageItemsFragment()));
+
+        buttonPlan.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), TipsActivity.class);
+            startActivity(intent);
+        });
 
         buttonSettings.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), SettingsActivity.class);

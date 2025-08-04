@@ -1,7 +1,10 @@
 package com.b07safetyplanapp.models.questionnaire;
 
+import java.util.Map;
+
 public class QuestionnaireRoot {
     private QuestionnaireData questionnaire;
+    private Map<String, TipData> tips;
 
     // Constructor
     public QuestionnaireRoot() {}
@@ -13,5 +16,11 @@ public class QuestionnaireRoot {
     }
     public void setQuestionnaire(QuestionnaireData questionnaire) {
         this.questionnaire = questionnaire;
+    }
+    public Map<String, TipData> getTips() {
+        return tips;
+    }
+    public void setTips(Map<String, TipData> tips) {
+        this.tips = tips;
     }
 }
