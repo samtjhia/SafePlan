@@ -12,8 +12,6 @@ public class Medication {
         this.name = name;
         this.dosage = dosage;
         this.medicationId =  contactId;
-
-
     }
 
     public String getName() {
