@@ -20,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.B07SafetyPlanApp"
         tools:targetApi="33">
+        <receiver android:name=".reminders.ReminderReceiver" />
 
 
         <!-- Entry point -->
@@ -38,9 +39,11 @@
         <activity android:name=".pinsetup.PinSetupActivity" android:exported="true" />
 
         <!-- Main app -->
+        <activity android:name=".HomeActivity" />
         <activity android:name=".QuestionnaireActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PrivacyControlActivity" />
+        <activity android:name=".reminders.ReminderScheduleActivity" />
         <activity android:name=".MainActivity" android:exported="true" />
 
    </application>

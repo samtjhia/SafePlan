@@ -1,4 +1,4 @@
-package com.b07safetyplanapp;
+package com.b07safetyplanapp.reminders;
 
 public class Reminder {
     private String id;

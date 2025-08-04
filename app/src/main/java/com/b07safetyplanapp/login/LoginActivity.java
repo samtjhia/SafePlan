@@ -10,6 +10,7 @@ import com.b07safetyplanapp.MainActivity;
 import com.b07safetyplanapp.R;
 import com.b07safetyplanapp.signup.SignupActivity;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +26,12 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // 👇 Force logout if launched from ReminderReceiver
+        if (getIntent().getBooleanExtra("forceLogout", false)) {
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(this, "Session expired. Please sign in again.", Toast.LENGTH_SHORT).show();
+        }
 
         emailInput = findViewById(R.id.editTextEmail);
         passwordInput = findViewById(R.id.editTextPassword);
@@ -45,7 +52,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             } else {
                 presenter.onEmailLoginClicked(email, password);
             }
-
         });
 
         signupRedirect.setOnClickListener(v -> {
@@ -90,7 +96,6 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         startActivity(intent);
         finish();
     }
-
 
     @Override
     protected void onDestroy() {
