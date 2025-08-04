@@ -27,6 +27,9 @@ public class HomeFragment extends Fragment {
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
         Button documentsButton = view.findViewById(R.id.documents_button);
         Button emergencyContactButton = view.findViewById(R.id.emergency_contacts_button);
+        Button emergencyMedicationButton = view.findViewById(R.id.emergency_Medications_button);
+        Button emergencySafeLocationsButton = view.findViewById(R.id.emergency_Safe_Locations_button);
+
 
         buttonScroller.setOnClickListener(v -> loadFragment(new ScrollerFragment()));
         buttonSpinner.setOnClickListener(v -> loadFragment(new SpinnerFragment()));
@@ -54,6 +57,16 @@ public class HomeFragment extends Fragment {
 
         emergencyContactButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EmergencyContactActivity.class);
+            startActivity(intent);
+        });
+
+        emergencyMedicationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencyMedicationActivity.class);
+            startActivity(intent);
+        });
+
+        emergencySafeLocationsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencySafeLocationsActivity.class);
             startActivity(intent);
         });
 

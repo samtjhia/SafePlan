@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_peach"
+    android:padding="24dp">
+    <!-- Top bar -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <ImageView
+            android:id="@+id/logoIcon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_safe_plan_logo"
+            android:contentDescription="@string/safe_plan_logo_desc" />
+
+        <TextView
+            android:id="@+id/logoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/safe_plan"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/black_bean" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/powerButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_power"
+            android:background="@drawable/power_circle"
+            android:contentDescription="@string/power_icon"
+            android:padding="12dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/inputArea"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="60dp">
+        <TextView
+            android:id="@+id/safe_locations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Safe Locations"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/black_bean"
+            app:layout_constraintTop_toBottomOf="@id/inputArea"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
+        <EditText
+            android:id="@+id/editTextName"
+            android:background="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:textColor="@color/black_bean"
+            android:hint="Name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/editTextAddress"
+            android:background="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:textColor="@color/black_bean"
+            android:hint="Address"
+            app:layout_constraintTop_toBottomOf="@+id/editTextTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <EditText
+            android:id="@+id/editTextNotes"
+            android:background="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:textColor="@color/black_bean"
+            android:hint="Notes"
+            app:layout_constraintTop_toBottomOf="@+id/editTextAuthor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/buttonAdd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Safe Location"
+        app:layout_constraintTop_toBottomOf="@+id/inputArea"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/buttonEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:text="Edit Safe Location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputArea" />
+
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="168dp"
+        android:text="Delete Safe Location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputArea" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
