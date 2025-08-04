@@ -12,12 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 
+import com.b07safetyplanapp.models.emergencyinfo.SafeLocation;
+
+import java.util.UUID;
 
 public class SafeLocationsFragment extends Fragment {
     private EditText editTextName, editTextAddress, editTextNotes;
@@ -25,6 +30,8 @@ public class SafeLocationsFragment extends Fragment {
     private Button buttonAdd;
     private Button buttonEdit;
     private Button buttonDelete;
+
+    private FirebaseUser currentUser;
 
     //private FirebaseDatabase db;
     private DatabaseReference db;
@@ -41,7 +48,9 @@ public class SafeLocationsFragment extends Fragment {
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
         //db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
-        String userId = "userId123"; // hardcoded for testing
+//        String userId = "userId123"; // hardcoded for testing
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = currentUser.getUid();
 
         db = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(userId).child("safe_locations");
@@ -78,6 +87,7 @@ public class SafeLocationsFragment extends Fragment {
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
         String notes = editTextNotes.getText().toString().trim();
+        String id = UUID.randomUUID().toString();
 
         if (name.isEmpty() || address.isEmpty() || notes.isEmpty()) {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
@@ -86,7 +96,7 @@ public class SafeLocationsFragment extends Fragment {
 
 
         //String id = itemsRef.push().getKey();
-        SafeLocation item = new SafeLocation(name, address, notes);
+        SafeLocation item = new SafeLocation(name, address, notes, id);
 
         db.child(name).setValue(item).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -101,6 +111,7 @@ public class SafeLocationsFragment extends Fragment {
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
         String notes = editTextNotes.getText().toString().trim();
+        String id = UUID.randomUUID().toString();
 
         if (name.isEmpty() || address.isEmpty() || notes.isEmpty()) {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
@@ -113,7 +124,7 @@ public class SafeLocationsFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     SafeLocation item = snapshot.getValue(SafeLocation.class);
                     if (item != null && item.getName().equalsIgnoreCase(name) ) {
-                        SafeLocation location = new SafeLocation(name, address, notes);
+                        SafeLocation location = new SafeLocation(name, address, notes, id);
 
                         db.child(name).setValue(location).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
