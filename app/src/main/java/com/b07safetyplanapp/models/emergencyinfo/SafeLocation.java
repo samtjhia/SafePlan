@@ -11,7 +11,6 @@ public class SafeLocation {
     SafeLocation(){
     }
     public SafeLocation(String name, String address, String notes, String id){
-        //this.id = id;
         this.name = name;
         this.address = address;
         this.notes = notes;
