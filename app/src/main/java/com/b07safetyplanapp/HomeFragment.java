@@ -28,7 +28,6 @@ public class HomeFragment extends Fragment {
         Button documentsButton = view.findViewById(R.id.documents_button);
         Button emergencyContactButton = view.findViewById(R.id.emergency_contacts_button);
 
-        buttonRecyclerView.setOnClickListener(v -> loadFragment(new RecyclerViewFragment()));
         buttonScroller.setOnClickListener(v -> loadFragment(new ScrollerFragment()));
         buttonSpinner.setOnClickListener(v -> loadFragment(new SpinnerFragment()));
         buttonManageItems.setOnClickListener(v -> loadFragment(new ManageItemsFragment()));
