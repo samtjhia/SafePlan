@@ -53,10 +53,8 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference questionnaireRef;
-    private String sessionId;
 
     private String uid;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +82,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
         uid = currentUser.getUid();
 
-        // Path: users/{uid}/questionnaire_sessions/{sessionId}
-        sessionId = "session_" + System.currentTimeMillis();
+        // Path: users/{uid}/questionnaire
         questionnaireRef = database.getReference("users")
-                .child(uid)
-                .child("questionnaire_sessions")
-                .child(sessionId);
+                .child(uid);
     }
 
 
@@ -109,6 +104,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         QuestionnaireRoot root = QuestionnaireParser.loadQuestionnaire(this);
         if (root != null) {
             questionnaireData = root.getQuestionnaire();
+
             allQuestions = new ArrayList<>();
             userResponses = new ArrayList<>();
 
@@ -121,7 +117,14 @@ public class QuestionnaireActivity extends AppCompatActivity {
         nextButton.setOnClickListener(v -> {
             if (saveCurrentAnswer()) {
                 // Save to Firebase
-                saveResponseToFirebase();
+                Question currQuestion = allQuestions.get(currentQuestionIndex);
+                saveResponseToFirebase(currQuestion.getQuestion_id());
+
+                if(currQuestion.getSub_question() != null) {
+                    String subQuestionId = currQuestion.getSub_question().getField().getQuestion_id();
+                    saveResponseToFirebase(subQuestionId);
+                }
+
                 moveToNextQuestion();
             }
         });
@@ -238,20 +241,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
             }
         }
 
-        // Get sub-answer if visible
-        if (subQuestionLayout.getVisibility() == View.VISIBLE) {
-            subAnswer = subQuestionInput.getText().toString().trim();
-            if (subAnswer.isEmpty()) {
-                Toast.makeText(this, "Please complete the additional field", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }
 
         // Save or update response
         UserResponse response = new UserResponse(currentQuestion.getQuestion_id(), answer);
-        if (subAnswer != null) {
-            response.setSubAnswer(subAnswer);
-        }
 
         // Update or add response
         boolean found = false;
@@ -266,27 +258,61 @@ public class QuestionnaireActivity extends AppCompatActivity {
             userResponses.add(response);
         }
 
+        // Get sub-answer if visible
+        if (subQuestionLayout.getVisibility() == View.VISIBLE) {
+            subAnswer = subQuestionInput.getText().toString().trim();
+            if (subAnswer.isEmpty()) {
+                Toast.makeText(this, "Please complete the additional field", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            String subQuestionId = currentQuestion.getSub_question().getField().getQuestion_id();
+            UserResponse subResponse = new UserResponse(subQuestionId, subAnswer);
+
+            boolean foundSub = false;
+            for (int i = 0; i < userResponses.size(); i++) {
+                if (userResponses.get(i).getQuestionId().equals(subQuestionId)) {
+                    userResponses.set(i, subResponse);
+                    foundSub = true;
+                    break;
+                }
+            }
+            if (!foundSub) {
+                userResponses.add(subResponse);
+            }
+
+        }
+
         return true;
     }
 
     // Save response to Firebase
-    private void saveResponseToFirebase() {
-        if (userResponses.isEmpty()) return;
+        private void saveResponseToFirebase(String questionId) {
+            if (userResponses.isEmpty()) return;
 
-        // Get the most recent response
-        UserResponse latestResponse = userResponses.get(userResponses.size() - 1);
 
-        // Save the UserResponse object directly to Firebase
-        questionnaireRef.child(sessionId)
-                .child("responses")
-                .child(latestResponse.getQuestionId())
-                .setValue(latestResponse)
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
+            // Get the response by question id
+            UserResponse response = null;
+            for(UserResponse u : userResponses) {
+                if(u.getQuestionId().equalsIgnoreCase(questionId)) {
+                    response = u;
+                    break;
+                }
+            }
+
+            if(response != null) {
+                // Save the UserResponse object directly to Firebase
+                questionnaireRef.child("questionnaire")
+                        .child("responses")
+                        .child(response.getQuestionId())
+                        .setValue(response)
+                        .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }
 
     private void loadPreviousAnswer() {
         Question currentQuestion = allQuestions.get(currentQuestionIndex);
@@ -305,15 +331,65 @@ public class QuestionnaireActivity extends AppCompatActivity {
                     textInput.setText(response.getAnswer());
                 }
 
-                if (response.getSubAnswer() != null) {
-                    subQuestionInput.setText(response.getSubAnswer());
+                if (currentQuestion.hasSubQuestion()) {
+                    String subQuestionId = currentQuestion.getSub_question().getField().getQuestion_id();
+                    for (UserResponse u : userResponses) {
+                        if (u.getQuestionId().equals(subQuestionId)) {
+                            subQuestionLayout.setVisibility(View.VISIBLE);
+                            subQuestionText.setText(currentQuestion.getSub_question().getField().getQuestion());
+                            subQuestionInput.setText(u.getAnswer());
+                            break;
+                        }
+                    }
                 }
                 break;
             }
         }
     }
 
+//    private void moveToNextQuestion() {
+//        if (currentQuestionIndex == allQuestions.size() - 1) {
+//            Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+//            finish();
+//            return;
+//        }
+//
+//        currentQuestionIndex++;
+//
+//        if (!branchQuestionsAdded &&
+//                currentQuestionIndex == questionnaireData.getWarm_up().size()) {
+//            loadBranchSpecificQuestions();
+//            branchQuestionsAdded = true;
+//        }
+//
+//        if (!followUpQuestionsAdded &&
+//                currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
+//            allQuestions.addAll(questionnaireData.getFollow_up());
+//            followUpQuestionsAdded = true;
+//        }
+//
+//        displayCurrentQuestion();
+//    }
+
     private void moveToNextQuestion() {
+        // First, add questions if needed BEFORE checking if we're at the end
+        // Add branch questions after completing warm-up questions
+        if (!branchQuestionsAdded && currentQuestionIndex == questionnaireData.getWarm_up().size() - 1) {
+            loadBranchSpecificQuestions();
+            branchQuestionsAdded = true;
+        }
+
+        // Add follow-up questions after completing branch questions
+        if (!followUpQuestionsAdded && branchQuestionsAdded) {
+            // Calculate where branch questions end
+            int branchEndIndex = questionnaireData.getWarm_up().size() + getCurrentBranchQuestionsCount() - 1;
+            if (currentQuestionIndex == branchEndIndex) {
+                allQuestions.addAll(questionnaireData.getFollow_up());
+                followUpQuestionsAdded = true;
+            }
+        }
+
+        // Now check if we're at the actual end
         if (currentQuestionIndex == allQuestions.size() - 1) {
             //onboarding complete
             getSharedPreferences("safeplan_prefs", MODE_PRIVATE)
@@ -327,21 +403,18 @@ public class QuestionnaireActivity extends AppCompatActivity {
             return;
         }
 
+        // Move to next question
         currentQuestionIndex++;
-
-        if (!branchQuestionsAdded &&
-                currentQuestionIndex == questionnaireData.getWarm_up().size()) {
-            loadBranchSpecificQuestions();
-            branchQuestionsAdded = true;
-        }
-
-        if (!followUpQuestionsAdded &&
-                currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
-            allQuestions.addAll(questionnaireData.getFollow_up());
-            followUpQuestionsAdded = true;
-        }
-
         displayCurrentQuestion();
+    }
+
+    private int getCurrentBranchQuestionsCount() {
+        // Calculate current branch questions count
+        int totalQuestions = allQuestions.size();
+        int warmUpCount = questionnaireData.getWarm_up().size();
+        int followUpCount = followUpQuestionsAdded ? questionnaireData.getFollow_up().size() : 0;
+
+        return totalQuestions - warmUpCount - followUpCount;
     }
 
 

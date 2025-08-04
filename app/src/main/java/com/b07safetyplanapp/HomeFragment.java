@@ -21,18 +21,45 @@ public class HomeFragment extends Fragment {
 
         Button buttonSettings = view.findViewById(R.id.buttonSettings);
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
+        Button documentsButton = view.findViewById(R.id.documents_button);
+        Button emergencyContactButton = view.findViewById(R.id.emergency_contacts_button);
+        Button emergencyMedicationButton = view.findViewById(R.id.emergency_Medications_button);
+        Button emergencySafeLocationsButton = view.findViewById(R.id.emergency_Safe_Locations_button);
 
 
 
-        // ✅ Start SettingsActivity (ACTIVITY, not Fragment!)
+        buttonPlan.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), TipsActivity.class);
+            startActivity(intent);
+        });
+
         buttonSettings.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), SettingsActivity.class);
             startActivity(intent);
         });
 
-        // ✅ Start QuestionnaireActivity
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
+            startActivity(intent);
+        });
+
+        documentsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DocumentActivity.class);
+            startActivity(intent);
+        });
+
+        emergencyContactButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencyContactActivity.class);
+            startActivity(intent);
+        });
+
+        emergencyMedicationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencyMedicationActivity.class);
+            startActivity(intent);
+        });
+
+        emergencySafeLocationsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EmergencySafeLocationsActivity.class);
             startActivity(intent);
         });
 

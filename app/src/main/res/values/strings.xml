@@ -26,6 +26,9 @@
     <string name="option_leaving">Planning to leave</string>
     <string name="option_post">Post-separation</string>
     <string name="next">Next</string>
+    <string name="storage_of_emergency_info">Storage of Emergency Info</string>
+    <string name="disclaimer">Please note that this app is NOT a substitute for emergency services.</string>
+
 
 
     <!-- reminder_options -->

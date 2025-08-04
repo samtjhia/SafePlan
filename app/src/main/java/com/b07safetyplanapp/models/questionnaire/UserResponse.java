@@ -3,7 +3,6 @@ package com.b07safetyplanapp.models.questionnaire;
 public class UserResponse {
     private String questionId;
     private String answer;
-    private String subAnswer;
 
     // Constructors
     public UserResponse() {}
@@ -24,20 +23,10 @@ public class UserResponse {
     }
 
     public String getAnswer() {
-
         return answer;
     }
     public void setAnswer(String answer) {
-
         this.answer = answer;
     }
 
-    public String getSubAnswer() {
-
-        return subAnswer;
-    }
-    public void setSubAnswer(String subAnswer) {
-
-        this.subAnswer = subAnswer;
-    }
 }

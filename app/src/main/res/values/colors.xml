@@ -6,8 +6,13 @@
     <color name="sandy_brown">#F6AC6C</color>
     <color name="peach">#FFBD86</color>
     <color name="white">#FFFFFF</color>
-    <color name="background_peach">#f3dfce</color>
+    <color name="background_peach">#f4dfce</color>
     <color name="button_maroon">#4c1031</color>
     <color name="deep_maroon">#800000</color>
     <color name="power_red">#de4323</color>
+    <color name="flesh">#ffcca1</color>
+    <color name="cararra">#eeede9</color>
+    <color name="alabaster">#f9f9f9</color>
+
+
 </resources>
