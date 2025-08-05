@@ -41,18 +41,15 @@ public class LoginPresenter implements LoginContract.Presenter {
         model.loginWithEmail(email, password, new LoginContract.Model.OnLoginFinishedListener() {
             @Override
             public void onSuccess() {
-                if (view != null) {
-                    view.hideLoading();
-                    view.navigateToDashboard();
-                }
+                view.hideLoading();
+                view.navigateToDashboard();
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                if (view != null) {
-                    view.hideLoading();
-                    view.showLoginError(errorMessage);
-                }
+                view.hideLoading();
+                view.showLoginError(errorMessage);
+
             }
         });
     }
@@ -88,7 +85,7 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     @Override
     public boolean isEmailValid(String email) {
-        return email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
 
     @Override
