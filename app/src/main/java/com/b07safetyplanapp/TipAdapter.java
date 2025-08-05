@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import com.b07safetyplanapp.models.questionnaire.Tip;
+
 public class TipAdapter extends RecyclerView.Adapter<TipAdapter.TipViewHolder> {
 
-    private List<String> tipList;
+    private List<Tip> tipList;
 
-    public TipAdapter(List<String> tipList) {
+    public TipAdapter(List<Tip> tipList) {
         this.tipList = tipList;
     }
 
@@ -26,9 +28,10 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.TipViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TipAdapter.TipViewHolder holder, int position) {
-        String tip = tipList.get(position);
-        holder.tipTextView.setText(tip);
+    public void onBindViewHolder(@NonNull TipViewHolder holder, int position) {
+        Tip tip = tipList.get(position);
+        holder.tipTitle.setText(tip.getTitle());
+        holder.tipBody.setText(tip.getBody());
     }
 
     @Override
@@ -36,13 +39,14 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.TipViewHolder> {
         return tipList.size();
     }
 
-
     public static class TipViewHolder extends RecyclerView.ViewHolder {
-        TextView tipTextView;
+        TextView tipTitle;
+        TextView tipBody;
 
         public TipViewHolder(@NonNull View itemView) {
             super(itemView);
-            tipTextView = itemView.findViewById(R.id.textViewTip);
+            tipTitle = itemView.findViewById(R.id.tipTitle);
+            tipBody = itemView.findViewById(R.id.tipBody);
         }
     }
 }
