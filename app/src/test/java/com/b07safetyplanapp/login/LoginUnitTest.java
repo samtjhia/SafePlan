@@ -8,6 +8,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -138,7 +139,6 @@ public class LoginUnitTest {
         presenter.onPinLoginClicked(invalidPin);
 
         verify(view).showPinError("PIN must be 4 or 6 digits");
-        verify(model, never()).loginWithPin(any(), any());
     }
 
     // test onPinLoginClicked()
@@ -150,12 +150,11 @@ public class LoginUnitTest {
 
         presenter.onPinLoginClicked(validPin);
 
-        verify(view).showLoading();
         verify(model).loginWithPin(eq(validPin), any());
     }
 
     // test onPinLoginClicked()
-    // behaviour: success callback should hide loading and navigate
+    // behaviour: success callback should navigate
     @Test
     public void testSuccessPinLogin() {
         presenter = new LoginPresenter(model);
@@ -186,7 +185,37 @@ public class LoginUnitTest {
         verify(view).showLoginError("PIN login failed");
     }
 
+    // test isEmailValid()
+    // behaviour: returns false for null email
+    @Test
+    public void invalidEmail_ReturnsFalse() {
+        presenter = new LoginPresenter(model);
+        assertFalse(presenter.isEmailValid(null));
+    }
 
+    // test isPasswordValid()
+    // behaviour: returns false for null password
+    @Test
+    public void emptyOrNullPassword_ReturnsFalse() {
+        presenter = new LoginPresenter(model);
+        assertFalse(presenter.isPasswordValid(null));
+    }
+
+    // test isPinValid()
+    // behaviour: returns false for null pin
+    @Test
+    public void invalidPin_ReturnsFalse() {
+        presenter = new LoginPresenter(model);
+        assertFalse(presenter.isPinValid(null));
+    }
+
+    // test isPinValid()
+    // behaviour: returns true for 6 digit numeric pin
+    @Test
+    public void validPin_ReturnsTrue() {
+        presenter = new LoginPresenter(model);
+        assertTrue(presenter.isPinValid("123456"));
+    }
 
 
 

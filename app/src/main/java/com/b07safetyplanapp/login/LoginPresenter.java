@@ -67,18 +67,16 @@ public class LoginPresenter implements LoginContract.Presenter {
         model.loginWithPin(pin, new LoginContract.Model.OnLoginFinishedListener() {
             @Override
             public void onSuccess() {
-                if (view != null) {
-                    view.hideLoading();
-                    view.navigateToDashboard();
-                }
+                view.hideLoading();
+                view.navigateToDashboard();
+
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                if (view != null) {
-                    view.hideLoading();
-                    view.showLoginError(errorMessage);
-                }
+                view.hideLoading();
+                view.showLoginError(errorMessage);
+
             }
         });
     }
