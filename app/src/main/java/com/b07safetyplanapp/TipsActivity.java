@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.b07safetyplanapp.models.questionnaire.Tip;
+
 public class TipsActivity extends AppCompatActivity {
 
     private Map<String, TipData> tipMap;
-    private List<String> tipList;
+    private List<Tip> tipList;
     private List<UserResponse> userResponses;
 
     private FirebaseDatabase database;
@@ -50,13 +52,7 @@ public class TipsActivity extends AppCompatActivity {
         initializeFirebase();
         loadUserResponses();
 
-        backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> {
-            System.out.println("BACK");
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
 
 
@@ -110,30 +106,29 @@ public class TipsActivity extends AppCompatActivity {
     }
 
     private void generateTips() {
-        if (userResponses == null) {
-            return;
-        }
+        if (userResponses == null || tipMap == null) return;
 
         tipList.clear();
+        int count = 1;
 
-        for(UserResponse u : userResponses) {
+        for (UserResponse u : userResponses) {
             String questionId = u.getQuestionId();
-
             TipData tipInfo = tipMap.get(questionId);
-            if(tipInfo == null) {
-                continue;
-            }
-            String tipType = tipInfo.getTip_type();
+            if (tipInfo == null) continue;
 
-            if(tipType.equalsIgnoreCase("general")) {
-                String tip = tipInfo.getGeneral_tip();
-                tip = replacePlaceholders(tip);
-                tipList.add(tip);
+            String rawTip;
+
+            if (tipInfo.getTip_type().equalsIgnoreCase("general")) {
+                rawTip = tipInfo.getGeneral_tip();
+            } else {
+                rawTip = tipInfo.getOption_tips().get(u.getAnswer());
             }
-            else {
-                String tip = tipInfo.getOption_tips().get(u.getAnswer());
-                tip = replacePlaceholders(tip);
-                tipList.add(tip);
+
+            if (rawTip != null && !rawTip.trim().isEmpty()) {
+                String formattedTip = replacePlaceholders(rawTip);
+                String title = "Tip " + count + ":";
+                tipList.add(new Tip(title, formattedTip));
+                count++;
             }
         }
 
@@ -144,6 +139,7 @@ public class TipsActivity extends AppCompatActivity {
             tipAdapter.notifyDataSetChanged();
         }
     }
+
 
     private String replacePlaceholders(String s) {
         if(!s.contains("{")) {
