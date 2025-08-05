@@ -6,7 +6,7 @@
     <color name="sandy_brown">#F6AC6C</color>
     <color name="peach">#FFBD86</color>
     <color name="white">#FFFFFF</color>
-    <color name="background_peach">#f4dfce</color>
+    <color name="background_peach">#FFF0E6</color>
     <color name="button_maroon">#4c1031</color>
     <color name="deep_maroon">#800000</color>
     <color name="power_red">#de4323</color>
@@ -14,9 +14,11 @@
     <color name="cararra">#eeede9</color>
     <color name="alabaster">#f9f9f9</color>
     <color name="royal_orange">#FF8C42</color>
-    <color name="deep_champ">#FFD4A3</color>
+    <color name="deep_champ">#ffcca2</color>
     <color name="progress_red">#D32F2F</color>
     <color name="progress_background">#E0E0E0</color>
+    <color name="icon_orange">#fb6400</color>
+    <color name="icon_card">#f6ac6c</color>
 
 
 </resources>
