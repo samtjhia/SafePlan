@@ -132,6 +132,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         subQuestionLayout = findViewById(R.id.sub_question_layout);
         subQuestionText = findViewById(R.id.sub_question_text);
         subQuestionInput = findViewById(R.id.sub_question_input);
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
     private void loadQuestionnaire() {
