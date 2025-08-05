@@ -1,5 +1,7 @@
 package com.b07safetyplanapp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -37,6 +39,8 @@ public class SupportResourcesActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference questionnaireRef;
     private String uid;
+    private ResourceDirectory resourceDirectory;
+    private List<SupportResource> resourceList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class SupportResourcesActivity extends AppCompatActivity {
 
         initializeFirebase();
         initializeViews();
+        loadResources();
 
     }
 
@@ -81,7 +86,7 @@ public class SupportResourcesActivity extends AppCompatActivity {
         victimSubtext = findViewById(R.id.VictimSubtitle);
     }
 
-    private void initializeText() {
+    private void loadResources() {
         questionnaireRef.child("questionnaire")
                 .child("responses")
                 .child("city")
@@ -92,17 +97,68 @@ public class SupportResourcesActivity extends AppCompatActivity {
                         DataSnapshot snapshot = task.getResult();
                         String city = snapshot.getValue(String.class);
 
-                        System.out.println(city);
-
-                        ResourceDirectory rd = ResourceParser.loadResourceDirectory(this);
-                        if(rd.getResourceMap() == null) {
+                        resourceDirectory = ResourceParser.loadResourceDirectory(this);
+                        if(resourceDirectory.getResourceMap() == null) {
                             return;
                         }
-                        List<SupportResource> resourceList = rd.getResourceMap().get(city);
-                        System.out.println(resourceList.get(0));
+
+                        resourceList = resourceDirectory.getResourceMap().get(city);
+                        if(resourceList == null) {
+                            return;
+                        }
+
+                        initializeUI();
+
                     }
                 });
 
 
+    }
+
+    private void initializeUI() {
+        for(SupportResource s : resourceList) {
+            switch(s.getType()) {
+                case "Hotline":
+                    hotlineSubtext.setText(s.getName());
+                    hotlineButton.setOnClickListener(v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(s.getUrl()));
+                        startActivity(intent);
+                    });
+                    break;
+                case "Shelter":
+                    shelterSubtext.setText(s.getName());
+                    shelterButton.setOnClickListener(v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(s.getUrl()));
+                        startActivity(intent);
+                    });
+                    break;
+                case "Police":
+                    policeSubtext.setText(s.getName());
+                    policeButton.setOnClickListener(v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(s.getUrl()));
+                        startActivity(intent);
+                    });
+                    break;
+                case "Legal Aid":
+                    legalSubtext.setText(s.getName());
+                    legalButton.setOnClickListener(v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(s.getUrl()));
+                        startActivity(intent);
+                    });
+                    break;
+                case "Victim Services":
+                    victimSubtext.setText(s.getName());
+                    victimButton.setOnClickListener(v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(s.getUrl()));
+                        startActivity(intent);
+                    });
+                    break;
+            }
+        }
     }
 }

@@ -45,6 +45,7 @@
         <activity android:name=".QuestionnaireActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PrivacyControlActivity" />
+        <activity android:name=".SupportResourcesActivity" />
 
         <!-- Document and Emergency features -->
         <activity android:name=".DocumentActivity" android:exported="false" />

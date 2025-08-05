@@ -37,6 +37,7 @@ public class HomeFragment extends Fragment {
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
         Button buttonPlan = view.findViewById(R.id.show_plan_button);
         Button reviewButton = view.findViewById(R.id.reviewButton);
+        Button helpButton = view.findViewById(R.id.findButton);
 
         // Set up user name display
         setupUserName();
@@ -66,6 +67,11 @@ public class HomeFragment extends Fragment {
 
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
+            startActivity(intent);
+        });
+
+        helpButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SupportResourcesActivity.class);
             startActivity(intent);
         });
 

@@ -114,12 +114,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
         uid = currentUser.getUid();
 
-        // Path: users/{uid}/questionnaire_sessions/{sessionId}
-        sessionId = "session_" + System.currentTimeMillis();
+        // Path: users/{uid}/questionnaire
+
         questionnaireRef = database.getReference("users")
-                .child(uid)
-                .child("questionnaire_sessions")
-                .child(sessionId);
+                .child(uid);
     }
 
     private void initializeViews() {
@@ -538,7 +536,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
             if(response != null) {
                 // Save the UserResponse object directly to Firebase
-                questionnaireRef.child(sessionId)
+                questionnaireRef.child("questionnaire")
                         .child("responses")
                         .child(response.getQuestionId())
                         .setValue(response)
