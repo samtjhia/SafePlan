@@ -18,7 +18,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home_fragment, container, false);
 
-
+        Button buttonPlan = view.findViewById(R.id.buttonPlan);
         Button buttonSettings = view.findViewById(R.id.buttonSettings);
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
         Button documentsButton = view.findViewById(R.id.documents_button);

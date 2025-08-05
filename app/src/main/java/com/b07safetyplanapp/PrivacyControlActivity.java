@@ -1,5 +1,6 @@
 package com.b07safetyplanapp;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.Button;
@@ -18,6 +19,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
 
     private Button deleteButton;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,8 @@ public class PrivacyControlActivity extends AppCompatActivity {
         deleteButton = findViewById(R.id.btnDeleteAccount);
 
         deleteButton.setOnClickListener(v -> promptForReauth());
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
     private void promptForReauth() {

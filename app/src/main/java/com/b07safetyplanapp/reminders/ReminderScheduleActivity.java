@@ -1,5 +1,6 @@
 package com.b07safetyplanapp.reminders;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -36,6 +37,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
 
     private Reminder editingReminder = null;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,8 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         btnAddReminder = findViewById(com.b07safetyplanapp.R.id.btnAddReminder);
         reminderListContainer = findViewById(R.id.reminderListContainer);
         timePicker.setIs24HourView(true);
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
