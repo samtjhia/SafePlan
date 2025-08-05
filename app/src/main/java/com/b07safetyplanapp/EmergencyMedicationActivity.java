@@ -71,7 +71,7 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> showAddMedicationDialog());
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
     private String normalizeName(String address) {

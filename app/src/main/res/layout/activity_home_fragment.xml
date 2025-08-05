@@ -1,98 +1,366 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    android:background="@color/deep_champ">
 
-    <!-- Emergency Exit Fragment -->
-    <fragment
-        android:id="@+id/emergencyExitFragment"
-        android:name="com.b07safetyplanapp.EmergencyExitFragment"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:padding="24dp"
+        tools:context=".HomeFragment">
 
-    <!-- RecyclerView Button -->
-    <Button
-        android:id="@+id/buttonPlan"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Plan"
-        app:layout_constraintTop_toBottomOf="@id/emergencyExitFragment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_safe_plan_logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
+        <TextView
+            android:id="@+id/safePlanText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SafePlan"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif"
+            app:layout_constraintTop_toTopOf="@id/logoImage"
+            app:layout_constraintBottom_toBottomOf="@id/logoImage"
+            app:layout_constraintStart_toEndOf="@id/logoImage"
+            android:layout_marginStart="12dp" />
 
+        <fragment
+            android:id="@+id/emergencyExitFragment"
+            android:name="com.b07safetyplanapp.EmergencyExitFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Start Questionnaire Button -->
-    <Button
-        android:id="@+id/start_questionnaire_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Start Questionnaire"
-        app:layout_constraintTop_toBottomOf="@id/buttonPlan"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+        <!-- Welcome Text -->
+        <TextView
+            android:id="@+id/textUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello, User"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            app:layout_constraintTop_toBottomOf="@id/emergencyExitFragment"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="24dp" />
 
-    <!-- Emergency Documents Button -->
-    <Button
-        android:id="@+id/documents_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Emergency Documents"
-        app:layout_constraintTop_toBottomOf="@+id/start_questionnaire_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+        <!-- Your Safety Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/safetyCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/icon_card"
+            app:layout_constraintTop_toBottomOf="@id/textUserName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Emergency Contacts Button -->
-    <Button
-        android:id="@+id/emergency_contacts_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Emergency Contacts"
-        app:layout_constraintTop_toBottomOf="@+id/documents_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
-    <!-- Emergency Medications Button -->
-    <Button
-        android:id="@+id/emergency_Medications_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Emergency Medications"
-        app:layout_constraintTop_toBottomOf="@+id/emergency_contacts_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="24dp">
 
-    <!-- Emergency Safe Locations Button -->
-    <Button
-        android:id="@+id/emergency_Safe_Locations_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Emergency Safe Locations"
-        app:layout_constraintTop_toBottomOf="@+id/emergency_Medications_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+                <!-- Settings -->
+                <ImageView
+                    android:id="@+id/settings"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/icon_settings"
+                    android:background="@drawable/settings_background"
+                    android:padding="6dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Settings Button -->
-    <Button
-        android:id="@+id/buttonSettings"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Settings"
-        app:layout_constraintTop_toBottomOf="@+id/emergency_Safe_Locations_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+                <TextView
+                    android:id="@+id/safetyTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Safety"
+                    android:textColor="@android:color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/safetySubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Review your settings"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintTop_toBottomOf="@id/safetyTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="8dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Plan Categories Title -->
+        <TextView
+            android:id="@+id/categoriesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plan Categories"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/safetyCard"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="32dp" />
+
+        <!-- Grid Layout for Category Cards -->
+        <LinearLayout
+            android:id="@+id/categoryGrid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/categoriesTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp">
+
+            <!-- First Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- Questionnaire Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/questionnaireCard"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/icon_card">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/questionIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_question_white"
+                            android:background="@drawable/circle_background"
+                            android:padding="6dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/questionnaireLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Questionnaire"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toTopOf="@id/start_questionnaire_button"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginBottom="8dp" />
+
+                        <Button
+                            android:id="@+id/start_questionnaire_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:text="Edit"
+                            android:textSize="12sp"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/button_dark_rounded"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Plan Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/planCard"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/icon_card">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/planIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_book"
+                            android:background="@drawable/circle_background"
+                            android:padding="6dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/planLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Plan"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toTopOf="@id/show_plan_button"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginBottom="8dp" />
+
+                        <Button
+                            android:id="@+id/show_plan_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:text="View"
+                            android:textSize="12sp"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/button_dark_rounded"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- Second Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginTop="16dp">
+
+                <!-- Local Support Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/localSupportCard"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/icon_card">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/supportIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_check"
+                            android:background="@drawable/circle_background"
+                            android:padding="6dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/localSupportLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Local\nSupport"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toTopOf="@id/findButton"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginBottom="8dp" />
+
+                        <Button
+                            android:id="@+id/findButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:text="Find"
+                            android:textSize="12sp"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/button_dark_rounded"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Emergency Info Card -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/emergencyInfoCard"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/icon_card">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/emergencyIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_emer_bell"
+                            android:background="@drawable/circle_background"
+                            android:padding="6dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <TextView
+                            android:id="@+id/emergencyInfoLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Emergency\nInfo"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toTopOf="@id/reviewButton"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginBottom="8dp" />
+
+                        <Button
+                            android:id="@+id/reviewButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:text="Review"
+                            android:textSize="12sp"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/button_dark_rounded"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
