@@ -42,7 +42,7 @@ public class TipsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
 
-        recyclerView = findViewById(R.id.tipsRecyclerView); // Make sure this ID exists in your layout
+        recyclerView = findViewById(R.id.tipsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         tipList = new ArrayList<>();
