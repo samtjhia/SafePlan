@@ -70,7 +70,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> showAddContactDialog());
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
     private String normalizePhoneNumber(String phone) {

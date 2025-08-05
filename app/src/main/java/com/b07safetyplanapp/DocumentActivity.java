@@ -109,7 +109,7 @@ public class DocumentActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> showAddDocumentDialog());
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
     private void setupFilePicker() {

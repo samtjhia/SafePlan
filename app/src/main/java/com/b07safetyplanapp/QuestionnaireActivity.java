@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.b07safetyplanapp.models.questionnaire.Branch;
 import com.b07safetyplanapp.models.questionnaire.Question;
@@ -21,11 +22,13 @@ import com.b07safetyplanapp.models.questionnaire.QuestionnaireRoot;
 import com.b07safetyplanapp.models.questionnaire.UserResponse;
 import com.b07safetyplanapp.utils.QuestionnaireParser;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +54,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private boolean branchQuestionsAdded = false;
     private boolean followUpQuestionsAdded = false;
 
+    private boolean isEditMode = false;
+    private boolean hasCompletedBefore = false;
+
     private FirebaseDatabase database;
     private DatabaseReference questionnaireRef;
+    //    private FirebaseAuth mAuth;
     private String sessionId;
     private String uid;
 
@@ -61,21 +68,46 @@ public class QuestionnaireActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionnaire);
 
+        isEditMode = getIntent().getBooleanExtra("edit_mode", false);
+
         // Initialize Firebase
         initializeFirebase();
 
         initializeViews();
         loadQuestionnaire();
         setupClickListeners();
-        displayCurrentQuestion();
+
+        if (isEditMode) {
+            loadPreviousResponsesFromFirebase();
+        } else {
+            displayCurrentQuestion();
+        }
     }
 
     private void initializeFirebase() {
+
+        // Initialize Firebase Database
+//        mAuth = FirebaseAuth.getInstance();
+
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
+
+//        // Get user ID from intent or current user
+//        userId = getIntent().getStringExtra("user_id");
+//        if (userId == null) {
+//            FirebaseUser currentUser = mAuth.getCurrentUser();
+//            if (currentUser != null) {
+//                userId = currentUser.getUid();
+//            } else {
+//                // User not logged in - shouldn't happen, but handle gracefully
+//                Toast.makeText(this, "Please log in to access questionnaire", Toast.LENGTH_LONG).show();
+//                finish();
+//                return;
+//            }
+//        }
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
             finish(); // Exit activity
             return;
         }
@@ -90,7 +122,6 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 .child(sessionId);
     }
 
-
     private void initializeViews() {
         questionText = findViewById(R.id.question_text);
         optionsGroup = findViewById(R.id.options_group);
@@ -101,295 +132,76 @@ public class QuestionnaireActivity extends AppCompatActivity {
         subQuestionLayout = findViewById(R.id.sub_question_layout);
         subQuestionText = findViewById(R.id.sub_question_text);
         subQuestionInput = findViewById(R.id.sub_question_input);
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
     private void loadQuestionnaire() {
         QuestionnaireRoot root = QuestionnaireParser.loadQuestionnaire(this);
         if (root != null) {
             questionnaireData = root.getQuestionnaire();
+
             allQuestions = new ArrayList<>();
             userResponses = new ArrayList<>();
 
             // Start with warm-up questions
             allQuestions.addAll(questionnaireData.getWarm_up());
-        }
-    }
 
-    private void setupClickListeners() {
-        nextButton.setOnClickListener(v -> {
-            if (saveCurrentAnswer()) {
-                // Save to Firebase
-                saveResponseToFirebase();
-                moveToNextQuestion();
-            }
-        });
-
-        backButton.setOnClickListener(v -> moveToPreviousQuestion());
-
-        // Listen for radio button changes to show/hide sub-questions
-        optionsGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            handleSubQuestionVisibility();
-        });
-    }
-
-    private void displayCurrentQuestion() {
-        if (currentQuestionIndex >= allQuestions.size()) {
-            // Questionnaire complete
-            Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Question currentQuestion = allQuestions.get(currentQuestionIndex);
-
-        // Update question text
-        questionText.setText(currentQuestion.getQuestion());
-
-        // Update progress bar
-        progressBar.setMax(allQuestions.size());
-        progressBar.setProgress(currentQuestionIndex + 1);
-
-        // Clear previous views
-        optionsGroup.removeAllViews();
-        optionsGroup.setVisibility(View.GONE);
-        textInput.setVisibility(View.GONE);
-        subQuestionLayout.setVisibility(View.GONE);
-
-        // Display question based on type
-        if (currentQuestion.hasOptions()) {
-            displayMultipleChoiceQuestion(currentQuestion);
-        } else {
-            displayTextQuestion();
-        }
-
-        // Update button states
-        backButton.setEnabled(currentQuestionIndex > 0);
-
-        // Load previous answer if exists
-        loadPreviousAnswer();
-
-        // Change Next button to "Finish" on last question
-        if (currentQuestionIndex == allQuestions.size() - 1) {
-            nextButton.setText("Finish");
-        } else {
-            nextButton.setText("Next");
-        }
-    }
-
-    private void displayMultipleChoiceQuestion(Question question) {
-        optionsGroup.setVisibility(View.VISIBLE);
-
-        for (String option : question.getOptions()) {
-            RadioButton radioButton = new RadioButton(this);
-            radioButton.setText(option);
-            radioButton.setId(View.generateViewId());
-            optionsGroup.addView(radioButton);
-        }
-    }
-
-    private void displayTextQuestion() {
-        textInput.setVisibility(View.VISIBLE);
-        textInput.setText("");
-        textInput.setHint("Enter your answer here...");
-    }
-
-    private void handleSubQuestionVisibility() {
-        Question currentQuestion = allQuestions.get(currentQuestionIndex);
-
-        if (currentQuestion.hasSubQuestion()) {
-            int selectedId = optionsGroup.getCheckedRadioButtonId();
-            if (selectedId != -1) {
-                RadioButton selectedRadio = findViewById(selectedId);
-                String selectedAnswer = selectedRadio.getText().toString();
-
-                if (selectedAnswer.equals(currentQuestion.getSub_question().getCondition())) {
-                    // Show sub-question
-                    subQuestionLayout.setVisibility(View.VISIBLE);
-                    subQuestionText.setText(currentQuestion.getSub_question().getField().getQuestion());
-                    subQuestionInput.setText("");
-                } else {
-                    // Hide sub-question
-                    subQuestionLayout.setVisibility(View.GONE);
-                }
+            if (isEditMode) {
+                loadAllQuestionsForEdit();
             }
         }
     }
 
-    private boolean saveCurrentAnswer() {
-        Question currentQuestion = allQuestions.get(currentQuestionIndex);
-        String answer = "";
-        String subAnswer = null;
+    private void loadAllQuestionsForEdit() {
+        // Add all warm-up questions (already added)
 
-        // Get main answer
-        if (currentQuestion.hasOptions()) {
-            int selectedId = optionsGroup.getCheckedRadioButtonId();
-            if (selectedId == -1) {
-                Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-            RadioButton selectedRadio = findViewById(selectedId);
-            answer = selectedRadio.getText().toString();
-        } else {
-            answer = textInput.getText().toString().trim();
-            if (answer.isEmpty()) {
-                Toast.makeText(this, "Please enter an answer", Toast.LENGTH_SHORT).show();
-                return false;
-            }
+        // Add all branch-specific questions
+        for (Branch branch : questionnaireData.getBranch_specific()) {
+            allQuestions.addAll(branch.getQuestions());
         }
 
-        // Get sub-answer if visible
-        if (subQuestionLayout.getVisibility() == View.VISIBLE) {
-            subAnswer = subQuestionInput.getText().toString().trim();
-            if (subAnswer.isEmpty()) {
-                Toast.makeText(this, "Please complete the additional field", Toast.LENGTH_SHORT).show();
-                return false;
-            }
+        // Add follow-up questions
+        if (questionnaireData.getFollow_up() != null) {
+            allQuestions.addAll(questionnaireData.getFollow_up());
         }
 
-        // Save or update response
-        UserResponse response = new UserResponse(currentQuestion.getQuestion_id(), answer);
-        if (subAnswer != null) {
-            response.setSubAnswer(subAnswer);
-        }
-
-        // Update or add response
-        boolean found = false;
-        for (int i = 0; i < userResponses.size(); i++) {
-            if (userResponses.get(i).getQuestionId().equals(currentQuestion.getQuestion_id())) {
-                userResponses.set(i, response);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            userResponses.add(response);
-        }
-
-        return true;
+        branchQuestionsAdded = true;
+        followUpQuestionsAdded = true;
     }
 
-    // Save response to Firebase
-    private void saveResponseToFirebase() {
-        if (userResponses.isEmpty()) return;
+    private void loadPreviousResponsesFromFirebase() {
+        questionnaireRef.child(sessionId).child("responses")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        userResponses.clear();
 
-        // Get the most recent response
-        UserResponse latestResponse = userResponses.get(userResponses.size() - 1);
+                        for (DataSnapshot responseSnapshot : dataSnapshot.getChildren()) {
+                            UserResponse response = responseSnapshot.getValue(UserResponse.class);
+                            if (response != null) {
+                                userResponses.add(response);
+                            }
+                        }
 
-        // Save the UserResponse object directly to Firebase
-        questionnaireRef.child(sessionId)
-                .child("responses")
-                .child(latestResponse.getQuestionId())
-                .setValue(latestResponse)
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
+                        // Filter questions based on previous responses if not in edit mode
+                        if (!isEditMode) {
+                            filterQuestionsBasedOnResponses();
+                        }
+
+                        displayCurrentQuestion();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Toast.makeText(QuestionnaireActivity.this,
+                                "Failed to load previous responses", Toast.LENGTH_SHORT).show();
+                        displayCurrentQuestion();
                     }
                 });
     }
 
-    private void loadPreviousAnswer() {
-        Question currentQuestion = allQuestions.get(currentQuestionIndex);
-
-        for (UserResponse response : userResponses) {
-            if (response.getQuestionId().equals(currentQuestion.getQuestion_id())) {
-                if (currentQuestion.hasOptions()) {
-                    for (int i = 0; i < optionsGroup.getChildCount(); i++) {
-                        RadioButton radioButton = (RadioButton) optionsGroup.getChildAt(i);
-                        if (radioButton.getText().toString().equals(response.getAnswer())) {
-                            radioButton.setChecked(true);
-                            break;
-                        }
-                    }
-                } else {
-                    textInput.setText(response.getAnswer());
-                }
-
-                if (response.getSubAnswer() != null) {
-                    subQuestionInput.setText(response.getSubAnswer());
-                }
-                break;
-            }
-        }
-    }
-
-//    private void moveToNextQuestion() {
-//        if (currentQuestionIndex == allQuestions.size() - 1) {
-//            Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
-//            finish();
-//            return;
-//        }
-//
-//        currentQuestionIndex++;
-//
-//        if (!branchQuestionsAdded &&
-//                currentQuestionIndex == questionnaireData.getWarm_up().size()) {
-//            loadBranchSpecificQuestions();
-//            branchQuestionsAdded = true;
-//        }
-//
-//        if (!followUpQuestionsAdded &&
-//                currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
-//            allQuestions.addAll(questionnaireData.getFollow_up());
-//            followUpQuestionsAdded = true;
-//        }
-//
-//        displayCurrentQuestion();
-//    }
-
-    private void moveToNextQuestion() {
-        // First, add questions if needed BEFORE checking if we're at the end
-        // Add branch questions after completing warm-up questions
-        if (!branchQuestionsAdded && currentQuestionIndex == questionnaireData.getWarm_up().size() - 1) {
-            loadBranchSpecificQuestions();
-            branchQuestionsAdded = true;
-        }
-
-        // Add follow-up questions after completing branch questions
-        if (!followUpQuestionsAdded && branchQuestionsAdded) {
-            // Calculate where branch questions end
-            int branchEndIndex = questionnaireData.getWarm_up().size() + getCurrentBranchQuestionsCount() - 1;
-            if (currentQuestionIndex == branchEndIndex) {
-                allQuestions.addAll(questionnaireData.getFollow_up());
-                followUpQuestionsAdded = true;
-            }
-        }
-
-        // Now check if we're at the actual end
-        if (currentQuestionIndex == allQuestions.size() - 1) {
-            //onboarding complete
-            getSharedPreferences("safeplan_prefs", MODE_PRIVATE)
-                    .edit()
-                    .putBoolean("questionnaire_complete", true)
-                    .apply();
-
-            Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-            return;
-        }
-
-        // Move to next question
-        currentQuestionIndex++;
-        displayCurrentQuestion();
-    }
-
-    private int getCurrentBranchQuestionsCount() {
-        // Calculate current branch questions count
-        int totalQuestions = allQuestions.size();
-        int warmUpCount = questionnaireData.getWarm_up().size();
-        int followUpCount = followUpQuestionsAdded ? questionnaireData.getFollow_up().size() : 0;
-
-        return totalQuestions - warmUpCount - followUpCount;
-    }
-
-
-    private void moveToPreviousQuestion() {
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            displayCurrentQuestion();
-        }
-    }
-
-    private void loadBranchSpecificQuestions() {
+    private void filterQuestionsBasedOnResponses() {
+        // Find the situation response to load appropriate branch questions
         for (UserResponse response : userResponses) {
             if (response.getQuestionId().equals("situation")) {
                 String situation = response.getAnswer();
@@ -406,19 +218,481 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 break;
             }
         }
+
+        // Add follow-up questions
+        if (questionnaireData.getFollow_up() != null) {
+            allQuestions.addAll(questionnaireData.getFollow_up());
+        }
+
+        branchQuestionsAdded = true;
+        followUpQuestionsAdded = true;
+    }
+
+    private void setupClickListeners() {
+        nextButton.setOnClickListener(v -> {
+            try {
+                if (saveCurrentAnswer()) {
+                    // Save to Firebase
+                    Question currQuestion = allQuestions.get(currentQuestionIndex);
+                    saveResponseToFirebase(currQuestion.getQuestion_id());
+
+                    if(currQuestion.getSub_question() != null) {
+                        String subQuestionId = currQuestion.getSub_question().getField().getQuestion_id();
+                        saveResponseToFirebase(subQuestionId);
+                    }
+
+                    moveToNextQuestion();
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, "Error processing answer. Please try again.", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        });
+
+        backButton.setOnClickListener(v -> {
+            try {
+                moveToPreviousQuestion();
+            } catch (Exception e) {
+                Toast.makeText(this, "Error navigating back. Please try again.", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        });
+
+        // Listen for radio button changes to show/hide sub-questions
+        optionsGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            try {
+                handleSubQuestionVisibility();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void displayCurrentQuestion() {
+        try {
+            if (currentQuestionIndex >= allQuestions.size()) {
+                // Questionnaire complete
+                if (isEditMode) {
+                    Toast.makeText(this, "Questionnaire Editing Complete!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+                }
+                finish();
+                return;
+            }
+
+            Question currentQuestion = allQuestions.get(currentQuestionIndex);
+            if (currentQuestion == null) {
+                Toast.makeText(this, "Error loading question", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Update question text
+            if (questionText != null) {
+                questionText.setText(currentQuestion.getQuestion());
+            }
+
+            // Update progress bar
+            if (progressBar != null) {
+                progressBar.setMax(allQuestions.size());
+                progressBar.setProgress(currentQuestionIndex + 1);
+            }
+
+            // Clear previous views
+            if (optionsGroup != null) {
+                optionsGroup.removeAllViews();
+                optionsGroup.setVisibility(View.GONE);
+            }
+            if (textInput != null) {
+                textInput.setVisibility(View.GONE);
+                textInput.setText("");
+            }
+            if (subQuestionLayout != null) {
+                subQuestionLayout.setVisibility(View.GONE);
+            }
+
+            // Display question based on type
+            if (currentQuestion.hasOptions()) {
+                displayMultipleChoiceQuestion(currentQuestion);
+            } else {
+                displayTextQuestion();
+            }
+
+            // Update button states - FIXED: Hide back button on first question
+            updateButtonStates();
+
+            // Load previous answer if exists
+            loadPreviousAnswer();
+
+            updateButtonText();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error displaying question", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void updateButtonStates() {
+        if (backButton != null) {
+            if (currentQuestionIndex > 0) {
+                backButton.setVisibility(View.VISIBLE);
+                backButton.setEnabled(true);
+            } else {
+                backButton.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void updateButtonText() {
+        if (nextButton != null) {
+            if (currentQuestionIndex == allQuestions.size() - 1) {
+                if (isEditMode) {
+                    nextButton.setText("Done Editing");
+                } else {
+                    nextButton.setText("Finish");
+                }
+            } else {
+                nextButton.setText("Next");
+            }
+        }
+    }
+
+    private void displayMultipleChoiceQuestion(Question question) {
+        if (optionsGroup != null && question.getOptions() != null) {
+            optionsGroup.setVisibility(View.VISIBLE);
+
+            String[] options = question.getOptions();
+            for (int i = 0; i < options.length; i++) {
+                String option = options[i];
+                RadioButton radioButton = new RadioButton(this);
+                radioButton.setText(option);
+                radioButton.setId(View.generateViewId());
+                radioButton.setTextSize(16);
+                radioButton.setPadding(16, 20, 16, 20); // Add padding for better spacing
+
+                // Set Inter Regular font
+                radioButton.setTypeface(ResourcesCompat.getFont(this, R.font.inter_regular));
+
+                // Add margin between radio buttons
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                if (i > 0) {
+                    params.topMargin = 12; // Add space between options
+                }
+                radioButton.setLayoutParams(params);
+
+                optionsGroup.addView(radioButton);
+            }
+        }
+    }
+
+    private void displayTextQuestion() {
+        if (textInput != null) {
+            textInput.setVisibility(View.VISIBLE);
+            textInput.setText("");
+            textInput.setHint("Enter your answer here...");
+        }
+    }
+
+    private void handleSubQuestionVisibility() {
+        try {
+            if (currentQuestionIndex >= allQuestions.size()) return;
+
+            Question currentQuestion = allQuestions.get(currentQuestionIndex);
+            if (currentQuestion == null || !currentQuestion.hasSubQuestion()) return;
+
+            int selectedId = optionsGroup.getCheckedRadioButtonId();
+            if (selectedId != -1) {
+                RadioButton selectedRadio = findViewById(selectedId);
+                if (selectedRadio != null) {
+                    String selectedAnswer = selectedRadio.getText().toString();
+
+                    if (selectedAnswer.equals(currentQuestion.getSub_question().getCondition())) {
+                        // Show sub-question
+                        if (subQuestionLayout != null) {
+                            subQuestionLayout.setVisibility(View.VISIBLE);
+                        }
+                        if (subQuestionText != null) {
+                            subQuestionText.setText(currentQuestion.getSub_question().getField().getQuestion());
+                        }
+                        if (subQuestionInput != null) {
+                            subQuestionInput.setText("");
+                        }
+                    } else {
+                        // Hide sub-question
+                        if (subQuestionLayout != null) {
+                            subQuestionLayout.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean saveCurrentAnswer() {
+        try {
+            if (currentQuestionIndex >= allQuestions.size()) {
+                return false;
+            }
+
+            Question currentQuestion = allQuestions.get(currentQuestionIndex);
+            if (currentQuestion == null) {
+                Toast.makeText(this, "Error: Question not found", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            String answer = "";
+
+            // Get main answer
+            if (currentQuestion.hasOptions()) {
+                int selectedId = optionsGroup.getCheckedRadioButtonId();
+                if (selectedId == -1) {
+                    Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                RadioButton selectedRadio = findViewById(selectedId);
+                if (selectedRadio == null) {
+                    Toast.makeText(this, "Error: Could not get selected option", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                answer = selectedRadio.getText().toString();
+            } else {
+                if (textInput != null) {
+                    answer = textInput.getText().toString().trim();
+                    if (answer.isEmpty()) {
+                        Toast.makeText(this, "Please enter an answer", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                } else {
+                    Toast.makeText(this, "Error: Input field not found", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+
+            // Save or update response
+            UserResponse response = new UserResponse(currentQuestion.getQuestion_id(), answer);
+
+            // Update or add response
+            boolean found = false;
+            for (int i = 0; i < userResponses.size(); i++) {
+                if (userResponses.get(i).getQuestionId().equals(currentQuestion.getQuestion_id())) {
+                    userResponses.set(i, response);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                userResponses.add(response);
+            }
+
+            // Get sub-answer if visible
+            if (subQuestionLayout != null && subQuestionLayout.getVisibility() == View.VISIBLE) {
+                if (subQuestionInput != null) {
+                    String subAnswer = subQuestionInput.getText().toString().trim();
+                    if (subAnswer.isEmpty()) {
+                        Toast.makeText(this, "Please complete the additional field", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+
+                    String subQuestionId = currentQuestion.getSub_question().getField().getQuestion_id();
+                    UserResponse subResponse = new UserResponse(subQuestionId, subAnswer);
+
+                    boolean foundSub = false;
+                    for (int i = 0; i < userResponses.size(); i++) {
+                        if (userResponses.get(i).getQuestionId().equals(subQuestionId)) {
+                            userResponses.set(i, subResponse);
+                            foundSub = true;
+                            break;
+                        }
+                    }
+                    if (!foundSub) {
+                        userResponses.add(subResponse);
+                    }
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            Toast.makeText(this, "Error saving answer. Please try again.", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Save response to Firebase
+    private void saveResponseToFirebase(String questionId) {
+        try {
+            if (userResponses.isEmpty()) return;
+
+            // Get the response by question id
+            UserResponse response = null;
+            for(UserResponse u : userResponses) {
+                if(u.getQuestionId().equalsIgnoreCase(questionId)) {
+                    response = u;
+                    break;
+                }
+            }
+
+            if(response != null) {
+                // Save the UserResponse object directly to Firebase
+                questionnaireRef.child(sessionId)
+                        .child("responses")
+                        .child(response.getQuestionId())
+                        .setValue(response)
+                        .addOnCompleteListener(task -> {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(this, "Failed to save response", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadPreviousAnswer() {
+        try {
+            if (currentQuestionIndex >= allQuestions.size()) return;
+
+            Question currentQuestion = allQuestions.get(currentQuestionIndex);
+            if (currentQuestion == null) return;
+
+            for (UserResponse response : userResponses) {
+                if (response.getQuestionId().equals(currentQuestion.getQuestion_id())) {
+                    if (currentQuestion.hasOptions() && optionsGroup != null) {
+                        for (int i = 0; i < optionsGroup.getChildCount(); i++) {
+                            RadioButton radioButton = (RadioButton) optionsGroup.getChildAt(i);
+                            if (radioButton != null && radioButton.getText().toString().equals(response.getAnswer())) {
+                                radioButton.setChecked(true);
+                                break;
+                            }
+                        }
+                    } else if (textInput != null) {
+                        textInput.setText(response.getAnswer());
+                    }
+
+                    if (currentQuestion.hasSubQuestion()) {
+                        String subQuestionId = currentQuestion.getSub_question().getField().getQuestion_id();
+                        for (UserResponse u : userResponses) {
+                            if (u.getQuestionId().equals(subQuestionId)) {
+                                if (subQuestionLayout != null) {
+                                    subQuestionLayout.setVisibility(View.VISIBLE);
+                                }
+                                if (subQuestionText != null) {
+                                    subQuestionText.setText(currentQuestion.getSub_question().getField().getQuestion());
+                                }
+                                if (subQuestionInput != null) {
+                                    subQuestionInput.setText(u.getAnswer());
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void moveToNextQuestion() {
+        try {
+            if (currentQuestionIndex == allQuestions.size() - 1) {
+                //onboarding complete
+                getSharedPreferences("safeplan_prefs", MODE_PRIVATE)
+                        .edit()
+                        .putBoolean("questionnaire_complete", true)
+                        .apply();
+
+                if (isEditMode) {
+                    Toast.makeText(this, "Questionnaire Editing Complete!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Questionnaire Complete!", Toast.LENGTH_SHORT).show();
+                }
+
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+                return;
+            }
+
+            currentQuestionIndex++;
+
+            if (!isEditMode) {
+                if (!branchQuestionsAdded &&
+                        currentQuestionIndex == questionnaireData.getWarm_up().size()) {
+                    loadBranchSpecificQuestions();
+                    branchQuestionsAdded = true;
+                }
+
+                if (!followUpQuestionsAdded &&
+                        currentQuestionIndex == questionnaireData.getWarm_up().size() + getBranchQuestionsCount()) {
+                    allQuestions.addAll(questionnaireData.getFollow_up());
+                    followUpQuestionsAdded = true;
+                }
+            }
+
+            displayCurrentQuestion();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error moving to next question", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void moveToPreviousQuestion() {
+        try {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayCurrentQuestion();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error moving to previous question", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void loadBranchSpecificQuestions() {
+        try {
+            for (UserResponse response : userResponses) {
+                if (response.getQuestionId().equals("situation")) {
+                    String situation = response.getAnswer();
+                    List<Question> branchQuestions = null;
+                    for (Branch branch : questionnaireData.getBranch_specific()) {
+                        if (branch.getSituation().equalsIgnoreCase(situation)) {
+                            branchQuestions = branch.getQuestions();
+                            break;
+                        }
+                    }
+                    if (branchQuestions != null) {
+                        allQuestions.addAll(branchQuestions);
+                    }
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private int getBranchQuestionsCount() {
-        int warmUpCount = questionnaireData.getWarm_up().size();
+        try {
+            int warmUpCount = questionnaireData.getWarm_up().size();
 
-        int followUpCount = 0;
-        if (questionnaireData.getFollow_up() != null) {
-            followUpCount = questionnaireData.getFollow_up().size();
+            int followUpCount = 0;
+            if (questionnaireData.getFollow_up() != null) {
+                followUpCount = questionnaireData.getFollow_up().size();
+            }
+
+            int totalSoFar = allQuestions.size();
+            int branchCount = totalSoFar - warmUpCount - followUpCount;
+
+            return branchCount;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
-
-        int totalSoFar = allQuestions.size();
-        int branchCount = totalSoFar - warmUpCount - followUpCount;
-
-        return branchCount;
     }
 }

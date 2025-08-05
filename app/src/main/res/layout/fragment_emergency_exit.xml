@@ -13,5 +13,7 @@
         android:layout_gravity="center_vertical"
         android:contentDescription="@string/power_icon"
         app:backgroundTint="@color/power_red"
+        android:elevation="0dp"
+        android:stateListAnimator="@null"
         app:fabSize="normal" />
 </FrameLayout>

@@ -1,6 +1,11 @@
 package com.b07safetyplanapp.signup;
 
+
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.SharedPreferences;
 import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -26,7 +31,6 @@ public class SignupModel implements SignupContract.Model {
                         if (user != null) {
                             String uid = user.getUid();
 
-                            // ✅ Use full DB URL here
                             DatabaseReference userRef = FirebaseDatabase
                                     .getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/")
                                     .getReference("users")

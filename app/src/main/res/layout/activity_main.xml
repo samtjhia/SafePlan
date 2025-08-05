@@ -5,58 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_peach"
-
     tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Please note that this app is NOT a substitute for emergency services.
-"
-        android:background="@color/power_red"
-        android:textStyle="bold"
-        android:textColor="@color/black_bean"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
-
-    <TextView
-        android:id="@+id/textUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello, User"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/textView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/textUserName"
-        app:layout_constraintBottom_toTopOf="@id/logout_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp" />
-
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log Out"
-        android:textAllCaps="false"
-        android:backgroundTint="@color/button_maroon"
-        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="32dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
