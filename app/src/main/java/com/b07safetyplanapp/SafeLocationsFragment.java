@@ -1,4 +1,4 @@
-package com.b07safetyplanapp;
+/*package com.b07safetyplanapp;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.b07safetyplanapp.models.emergencyinfo.SafeLocation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -86,7 +87,7 @@ public class SafeLocationsFragment extends Fragment {
 
 
         //String id = itemsRef.push().getKey();
-        SafeLocation item = new SafeLocation(name, address, notes);
+        SafeLocation item = new SafeLocation(name, address, notes, "123");
 
         db.child(name).setValue(item).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -179,3 +180,4 @@ public class SafeLocationsFragment extends Fragment {
     }
 
 }
+*/

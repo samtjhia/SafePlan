@@ -1,4 +1,4 @@
-package com.b07safetyplanapp;
+/*package com.b07safetyplanapp;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -81,7 +81,7 @@ public class MedicationsFragment extends Fragment {
 
 
         //String id = itemsRef.push().getKey();
-        Medication item = new Medication(name, dosage);
+        Medication item = new Medication(name, dosage,"123");
 
         db.child(name).setValue(item).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -108,7 +108,7 @@ public class MedicationsFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Medication item = snapshot.getValue(Medication.class);
                     if (item != null && item.getName().equalsIgnoreCase(name) ) {
-                        Medication medication = new Medication(name, dosage);
+                        Medication medication = new Medication(name, dosage,"123");
 
                         db.child(name).setValue(medication).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -175,3 +175,4 @@ public class MedicationsFragment extends Fragment {
 
 
 }
+*/
