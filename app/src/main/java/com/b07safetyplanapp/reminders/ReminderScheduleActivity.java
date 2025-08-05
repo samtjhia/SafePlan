@@ -43,6 +43,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.b07safetyplanapp.R.layout.activity_reminder);
 
+        //Resources id's used for a reminder
         etReminderTitle = findViewById(com.b07safetyplanapp.R.id.etReminderTitle);
         spinnerFrequency = findViewById(com.b07safetyplanapp.R.id.spinnerFrequency);
         timePicker = findViewById(com.b07safetyplanapp.R.id.timePicker);
@@ -50,8 +51,11 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         reminderListContainer = findViewById(R.id.reminderListContainer);
         timePicker.setIs24HourView(true);
 
+        //Back btn
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
+
+        //MVP log-in connection
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(this, "User not signed in", Toast.LENGTH_SHORT).show();
@@ -59,11 +63,13 @@ public class ReminderScheduleActivity extends AppCompatActivity {
             return;
         }
 
+        //Writing to db
         dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid()).child("reminders");
 
         requestPermissionsIfNeeded();
         loadReminders();
 
+        //Creating reminder
         btnAddReminder.setOnClickListener(v -> {
             String title = etReminderTitle.getText().toString().trim();
             String frequency = spinnerFrequency.getSelectedItem().toString();
@@ -74,7 +80,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a title", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            //Editing Reminder
             if (editingReminder == null) {
                 String reminderId = dbRef.push().getKey();
                 if (reminderId != null) {
@@ -101,6 +107,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         });
     }
 
+    //Requesting permissions to send reminders & notifications (new Andoroid versions)
     private void requestPermissionsIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -139,6 +146,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         });
     }
 
+    //Manage Reminders view
     private void addReminderView(Reminder reminder) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -148,11 +156,14 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         text.setText(reminder.getTitle() + " @ " + String.format("%02d:%02d", reminder.getHour(), reminder.getMinute()));
         text.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2));
 
+        //Button to edit Reminders
         Button editBtn = new Button(this);
         editBtn.setText("Edit");
         editBtn.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         editBtn.setOnClickListener(v -> loadReminderForEdit(reminder));
 
+
+        //Button to delete reminders
         Button delBtn = new Button(this);
         delBtn.setText("Delete");
         delBtn.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -164,6 +175,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         reminderListContainer.addView(row);
     }
 
+    //Updating existing reminders view for editing purposes
     private void loadReminderForEdit(Reminder reminder) {
         etReminderTitle.setText(reminder.getTitle());
 
@@ -178,6 +190,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         btnAddReminder.setText("Update Reminder");
     }
 
+    //Deleteing a reminder
     private void deleteReminder(Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderReceiver.class);
@@ -194,6 +207,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
                 });
     }
 
+    //Schedulinng a notification via Reminder Receiver
     private void scheduleNotification(Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderReceiver.class);
@@ -246,6 +260,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         }
     }
 
+    //Notification Permission (new Android versions)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);

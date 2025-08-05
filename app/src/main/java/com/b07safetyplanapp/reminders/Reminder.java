@@ -8,7 +8,7 @@ public class Reminder {
     private int minute;
 
     public Reminder() {
-        // required for Firebase
+        // required for Firebase empty constructor
     }
 
     public Reminder(String id, String title, String frequency, int hour, int minute) {
@@ -19,12 +19,15 @@ public class Reminder {
         this.minute = minute;
     }
 
+    //Getters
     public String getId() { return id; }
     public String getTitle() { return title; }
     public String getFrequency() { return frequency; }
     public int getHour() { return hour; }
     public int getMinute() { return minute; }
 
+
+    //Setters
     public void setId(String id) { this.id = id; }
     public void setTitle(String title) { this.title = title; }
     public void setFrequency(String frequency) { this.frequency = frequency; }

@@ -21,6 +21,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
     private static final String CHANNEL_ID = "reminder_channel";
 
+    //Receiving a Reminder
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("ReminderReceiver", "Broadcast received");
@@ -44,8 +45,9 @@ public class ReminderReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        createNotificationChannel(context);
 
+        //Creating a notification template
+        createNotificationChannel(context);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setContentTitle("Reminder")
@@ -59,6 +61,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         manager.notify((int) System.currentTimeMillis(), builder.build());
     }
 
+    //Create notification based on user's input
     private void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager manager = context.getSystemService(NotificationManager.class);
@@ -70,6 +73,7 @@ public class ReminderReceiver extends BroadcastReceiver {
                 );
                 channel.setDescription("Reminder notifications with sound and alerts");
 
+                //Sound of notification
                 Uri soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
                 AudioAttributes audioAttributes = new AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION)

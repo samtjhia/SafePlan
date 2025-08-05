@@ -25,14 +25,18 @@ public class PrivacyControlActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_control);
 
+        //Delete button creation
         deleteButton = findViewById(R.id.btnDeleteAccount);
-
         deleteButton.setOnClickListener(v -> promptForReauth());
 
+        //Listener for back button from LinearLayout
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
+    //Pop-up window fo re-authorization
     private void promptForReauth() {
+
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "No user signed in.", Toast.LENGTH_SHORT).show();
@@ -77,6 +81,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
         builder.show();
     }
 
+    //Confirmation Dialog
     private void showConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Account & Data")
@@ -86,8 +91,11 @@ public class PrivacyControlActivity extends AppCompatActivity {
                 .show();
     }
 
+    //Deleting user's DATA from DB
     private void deleteUserData() {
+        //Getting user's instance (uid)
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //No user signed-in
         if (user == null) {
             Toast.makeText(this, "No user is signed in.", Toast.LENGTH_SHORT).show();
             return;
@@ -98,13 +106,15 @@ public class PrivacyControlActivity extends AppCompatActivity {
                 .getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/")
                 .getReference("users")
                 .child(uid);
-
+        //remobing user and all user's children
         userRef.removeValue()
                 .addOnSuccessListener(aVoid -> deleteAuthUser())
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "❌ Failed to delete user data from database.", Toast.LENGTH_SHORT).show());
     }
 
+
+    //Flow for delete fro user
     private void deleteAuthUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
