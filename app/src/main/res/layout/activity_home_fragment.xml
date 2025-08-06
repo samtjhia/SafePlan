@@ -9,15 +9,34 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp"
         tools:context=".HomeFragment">
 
+        <!-- Disclaimer at very top -->
+        <TextView
+            android:id="@+id/textDisclaimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disclaimer"
+            android:textColor="@android:color/white"
+            android:background="@color/progress_red"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            android:padding="12dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Logo and Power Button Row -->
         <ImageView
             android:id="@+id/logoImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_safe_plan_logo"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/textDisclaimer"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -38,7 +57,9 @@
             android:name="com.b07safetyplanapp.EmergencyExitFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toTopOf="@id/logoImage"
+            app:layout_constraintBottom_toBottomOf="@id/logoImage"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Welcome Text -->
@@ -51,24 +72,10 @@
             android:textSize="32sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif"
-            app:layout_constraintTop_toBottomOf="@id/emergencyExitFragment"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="24dp" />
-        <!--Disclaimer -->
-        <TextView
-            android:id="@+id/textDisclaimer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/disclaimer"
-            android:textColor="@android:color/black"
-            android:background="@color/progress_red"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif"
-            app:layout_constraintTop_toBottomOf="@id/textUserName"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="20dp" />
-
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/logoImage"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Settings Card -->
         <androidx.cardview.widget.CardView
@@ -76,10 +83,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:cardBackgroundColor="@color/icon_card"
-            app:layout_constraintTop_toBottomOf="@id/textDisclaimer"
+            app:layout_constraintTop_toBottomOf="@id/textUserName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -133,9 +142,10 @@
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@id/safetyCard"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="32dp" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Grid Layout for Category Cards -->
         <LinearLayout
@@ -143,10 +153,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
             app:layout_constraintTop_toBottomOf="@id/categoriesTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp">
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <!-- First Row -->
             <LinearLayout
