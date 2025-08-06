@@ -1,11 +1,15 @@
 package com.b07safetyplanapp.login;
 
-public class LoginPresenter implements LoginContract.Presenter {
+import android.content.Context;
+
+public class LoginPresenter implements LoginContract.Presenter{
 
     private LoginContract.View view;
     private LoginContract.Model model;
+    private final Context context;
 
-    public LoginPresenter(LoginContract.Model model) {
+    public LoginPresenter(Context context, LoginContract.Model model) {
+        this.context = context;
         this.model = model;
     }
 
@@ -51,6 +55,14 @@ public class LoginPresenter implements LoginContract.Presenter {
                 view.showLoginError(errorMessage);
 
             }
+
+            @Override
+            public void onPinMismatchDetected(String email, String password) {
+                if (view != null) {
+                    view.hideLoading();
+                    view.navigateToPinSetupWithMismatch(context, email, password);
+                }
+            }
         });
     }
 
@@ -78,6 +90,14 @@ public class LoginPresenter implements LoginContract.Presenter {
                 view.showLoginError(errorMessage);
 
             }
+
+            @Override
+            public void onPinMismatchDetected(String email, String password) {
+                if (view != null) {
+                    view.hideLoading();
+                    view.navigateToPinSetupWithMismatch(context, email, password);
+                }
+            }
         });
     }
 
@@ -96,4 +116,5 @@ public class LoginPresenter implements LoginContract.Presenter {
         //all digits check
         return pin != null && (pin.length() == 4 || pin.length() == 6) && pin.matches("\\d+");
     }
+
 }

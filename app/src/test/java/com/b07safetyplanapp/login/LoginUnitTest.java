@@ -14,6 +14,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import android.content.Context;
+
 @RunWith(MockitoJUnitRunner.class)
 public class LoginUnitTest {
     @Mock
@@ -21,6 +23,9 @@ public class LoginUnitTest {
     @Mock
     LoginContract.Model model;
     LoginContract.Presenter presenter;
+    @Mock
+    Context context;
+
     @Captor
     ArgumentCaptor<LoginContract.Model.OnLoginFinishedListener> loginCallbackCaptor;
 
@@ -36,7 +41,7 @@ public class LoginUnitTest {
     //behaviour: presenter does nothing when detachView() is called
     @Test
     public void testViewIsNullForEmail() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.detachView();
 
         presenter.onEmailLoginClicked(validEmail, validPassword);
@@ -49,7 +54,7 @@ public class LoginUnitTest {
     // behaviour: presenter shows email error if email is invalid
     @Test
     public void testInvalidEmail() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onEmailLoginClicked(invalidEmail, validPassword);
@@ -61,7 +66,7 @@ public class LoginUnitTest {
     // behaviour: presenter shows password error if password is empty
     @Test
     public void testEmptyPassword() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onEmailLoginClicked(validEmail, emptyPassword);
@@ -74,7 +79,7 @@ public class LoginUnitTest {
     // behaviour: valid inputs should call model
     @Test
     public void testValidInputsForEmail() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onEmailLoginClicked(validEmail, validPassword);
@@ -86,7 +91,7 @@ public class LoginUnitTest {
     // behaviour: model callback should trigger navigation on success
     @Test
     public void testSuccessEmailLogin() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onEmailLoginClicked(validEmail, validPassword);
@@ -103,7 +108,7 @@ public class LoginUnitTest {
     // behaviour: model callback should show error on failure
     @Test
     public void testFailedEmailLogin() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onEmailLoginClicked(validEmail, validPassword);
@@ -120,7 +125,7 @@ public class LoginUnitTest {
     // behaviour: presenter should do nothing if view is null
     @Test
     public void testViewIsNullForPin() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.detachView();
 
         presenter.onPinLoginClicked(validPin);
@@ -133,7 +138,7 @@ public class LoginUnitTest {
     // behaviour: presenter should show error if PIN is invalid
     @Test
     public void testInvalidPin() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onPinLoginClicked(invalidPin);
@@ -142,10 +147,10 @@ public class LoginUnitTest {
     }
 
     // test onPinLoginClicked()
-    // behaviour: valid PIN should call model.loginWithPin
+    // behaviour: valid PIN should call model loginWithPin
     @Test
     public void testValidPin() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onPinLoginClicked(validPin);
@@ -157,7 +162,7 @@ public class LoginUnitTest {
     // behaviour: success callback should navigate
     @Test
     public void testSuccessPinLogin() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onPinLoginClicked(validPin);
@@ -173,7 +178,7 @@ public class LoginUnitTest {
     // behaviour: failure callback should hide loading and show error
     @Test
     public void testFailedPinLogin() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         presenter.attachView(view);
 
         presenter.onPinLoginClicked(validPin);
@@ -189,7 +194,7 @@ public class LoginUnitTest {
     // behaviour: returns false for null email
     @Test
     public void invalidEmail_ReturnsFalse() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         assertFalse(presenter.isEmailValid(null));
     }
 
@@ -197,7 +202,7 @@ public class LoginUnitTest {
     // behaviour: returns false for null password
     @Test
     public void emptyOrNullPassword_ReturnsFalse() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         assertFalse(presenter.isPasswordValid(null));
     }
 
@@ -205,7 +210,7 @@ public class LoginUnitTest {
     // behaviour: returns false for null pin
     @Test
     public void invalidPin_ReturnsFalse() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         assertFalse(presenter.isPinValid(null));
     }
 
@@ -213,7 +218,7 @@ public class LoginUnitTest {
     // behaviour: returns true for 6 digit numeric pin
     @Test
     public void validPin_ReturnsTrue() {
-        presenter = new LoginPresenter(model);
+        presenter = new LoginPresenter(context, model);
         assertTrue(presenter.isPinValid("123456"));
     }
 

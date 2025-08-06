@@ -33,7 +33,40 @@ public class LoginModel implements LoginContract.Model {
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        listener.onSuccess();
+                        try {
+                            SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+                            String encryptedEmail = prefs.getString("encrypted_email", null);
+                            String emailIv = prefs.getString("email_iv", null);
+
+                            if (encryptedEmail != null && emailIv != null) {
+                                // Load secret key
+                                KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
+                                keyStore.load(null);
+                                SecretKey secretKey = ((KeyStore.SecretKeyEntry) keyStore.getEntry(KEY_ALIAS, null)).getSecretKey();
+
+                                // Decrypt email
+                                Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+                                GCMParameterSpec spec = new GCMParameterSpec(128, Base64.decode(emailIv, Base64.DEFAULT));
+                                cipher.init(Cipher.DECRYPT_MODE, secretKey, spec);
+                                byte[] decryptedBytes = cipher.doFinal(Base64.decode(encryptedEmail, Base64.DEFAULT));
+                                String storedDecryptedEmail = new String(decryptedBytes, StandardCharsets.UTF_8);
+
+                                // Compare with signed-in user
+                                String currentEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                                if (!currentEmail.equals(storedDecryptedEmail)) {
+                                    // Trigger view to show PIN mismatch screen
+                                    listener.onPinMismatchDetected(email, password);
+                                    return;
+                                }
+                            }
+
+                            listener.onSuccess();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            listener.onFailure("Login succeeded but failed to check PIN ownership.");
+                        }
+
                     } else {
                         listener.onFailure(task.getException() != null ?
                                 task.getException().getMessage() :

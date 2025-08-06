@@ -1,5 +1,6 @@
 package com.b07safetyplanapp.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import com.b07safetyplanapp.MainActivity;
 import com.b07safetyplanapp.R;
+import com.b07safetyplanapp.pinsetup.PinSetupActivity;
 import com.b07safetyplanapp.signup.SignupActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -32,7 +34,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         loginButton = findViewById(R.id.buttonLogin);
         signupRedirect = findViewById(R.id.textSignupRedirect);
 
-        presenter = new LoginPresenter(new LoginModel(this));
+        presenter = new LoginPresenter(this, new LoginModel(this));
         presenter.attachView(this);
 
         loginButton.setOnClickListener(v -> {
@@ -91,10 +93,19 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         finish();
     }
 
-
     @Override
     protected void onDestroy() {
         presenter.detachView();
         super.onDestroy();
     }
+
+    @Override
+    public void navigateToPinSetupWithMismatch(Context context, String decryptedEmail, String decryptedPassword) {
+        Intent intent = new Intent(context, PinSetupActivity.class);
+        intent.putExtra("update_pin_reason", "This device's saved PIN is tied to another account. Please set a new PIN to continue.");
+        intent.putExtra("user_email", decryptedEmail);
+        intent.putExtra("user_password", decryptedPassword);
+        context.startActivity(intent);
+    }
+
 }

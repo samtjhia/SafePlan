@@ -28,6 +28,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import android.util.Base64;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class PinSetupActivity extends AppCompatActivity {
@@ -50,6 +51,15 @@ public class PinSetupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_setup);
+
+        TextView reasonTextView = findViewById(R.id.reasonTextView);
+        String reason = getIntent().getStringExtra("update_pin_reason");
+
+        if (reason != null && !reason.isEmpty()) {
+            reasonTextView.setText(reason);
+            reasonTextView.setVisibility(View.VISIBLE);
+        }
+
 
         digitSelector = findViewById(R.id.digitSelector);
         dotContainer = findViewById(R.id.dotContainer);
@@ -82,17 +92,20 @@ public class PinSetupActivity extends AppCompatActivity {
                 saveEncryptedPin(currentPin.toString());
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    String email = user.getEmail();
-                    String password = getIntent().getStringExtra("user_password");
+                String email = getIntent().getStringExtra("user_email"); // use this instead of user.getEmail()
+                String password = getIntent().getStringExtra("user_password");
 
+                if (email != null && password != null) {
                     try {
                         saveCredentials(email, password);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(this, "Failed to save login credentials", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(this, "Missing user credentials. Could not link PIN.", Toast.LENGTH_SHORT).show();
                 }
+
 
                 Intent intent = new Intent(PinSetupActivity.this, QuestionnaireActivity.class);
                 startActivity(intent);
