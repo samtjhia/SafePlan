@@ -2,7 +2,9 @@ package com.b07safetyplanapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +46,8 @@ public class TipsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan);
 
+        setupDisclaimerClose();
+
         recyclerView = findViewById(R.id.tipsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -56,6 +60,19 @@ public class TipsActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void setupDisclaimerClose() {
+        ImageButton closeButton = findViewById(R.id.closeDisclaimerButton);
+        View disclaimerContainer = findViewById(R.id.disclaimerContainer);
+
+        if (closeButton != null && disclaimerContainer != null) {
+            closeButton.setOnClickListener(v -> {
+                disclaimerContainer.setVisibility(View.GONE);
+                // Optionally save this preference so it stays hidden
+                // You could use SharedPreferences here to remember the user's choice
+            });
+        }
     }
 
     @Override
