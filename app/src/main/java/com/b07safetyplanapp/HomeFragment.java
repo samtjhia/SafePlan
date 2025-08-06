@@ -121,7 +121,7 @@ public class HomeFragment extends Fragment {
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        // Add Activity-like slide animations
+        // animations
         transaction.setCustomAnimations(
                 R.anim.slide_in_right,
                 R.anim.slide_out_left,

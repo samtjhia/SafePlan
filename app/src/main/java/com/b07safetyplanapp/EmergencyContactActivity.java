@@ -145,7 +145,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-            return false; // Allow saving if there's an error
+            return false;
         }
     }
 
