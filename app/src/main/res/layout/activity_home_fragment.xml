@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/disclaimer"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif"
                 android:textAlignment="center"
@@ -39,8 +39,8 @@
 
             <ImageButton
                 android:id="@+id/closeDisclaimerButton"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/ic_close"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Close disclaimer"
@@ -50,14 +50,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Logo and Power Button Row -->
         <ImageView
             android:id="@+id/logoImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_safe_plan_logo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintTop_toBottomOf="@id/disclaimerContainer"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -84,7 +83,7 @@
             app:layout_constraintBottom_toBottomOf="@id/logoImage"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Welcome Text -->
+        <!-- Welcome -->
         <TextView
             android:id="@+id/textUserName"
             android:layout_width="wrap_content"
@@ -119,7 +118,6 @@
                 android:layout_height="wrap_content"
                 android:padding="24dp">
 
-                <!-- Settings -->
                 <ImageView
                     android:id="@+id/settings"
                     android:layout_width="48dp"
@@ -155,7 +153,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Plan Categories Title -->
+        <!-- Plan categories subtitle -->
         <TextView
             android:id="@+id/categoriesTitle"
             android:layout_width="wrap_content"
@@ -169,7 +167,7 @@
             app:layout_constraintTop_toBottomOf="@id/safetyCard"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Grid Layout for Category Cards -->
+        <!-- Each card in grid format -->
         <LinearLayout
             android:id="@+id/categoryGrid"
             android:layout_width="0dp"
@@ -184,7 +182,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- First Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -297,7 +294,6 @@
 
             </LinearLayout>
 
-            <!-- Second Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
