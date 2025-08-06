@@ -47,17 +47,19 @@ public class SupportResourcesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supportresources);
 
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> finish());
 
         initializeFirebase();
         initializeViews();
         loadResources();
-
     }
 
     @Override
-    public void finish() { // back animation
+    public void finish() {
+        // Back animation
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
@@ -114,11 +116,8 @@ public class SupportResourcesActivity extends AppCompatActivity {
                         }
 
                         initializeUI();
-
                     }
                 });
-
-
     }
 
     private void initializeUI() {
@@ -127,44 +126,42 @@ public class SupportResourcesActivity extends AppCompatActivity {
                 case "Hotline":
                     hotlineSubtext.setText(s.getName());
                     hotlineButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(s.getUrl()));
-                        startActivity(intent);
+                        openResourceWithAnimation(s.getUrl());
                     });
                     break;
                 case "Shelter":
                     shelterSubtext.setText(s.getName());
                     shelterButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(s.getUrl()));
-                        startActivity(intent);
+                        openResourceWithAnimation(s.getUrl());
                     });
                     break;
                 case "Police":
                     policeSubtext.setText(s.getName());
                     policeButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(s.getUrl()));
-                        startActivity(intent);
+                        openResourceWithAnimation(s.getUrl());
                     });
                     break;
                 case "Legal Aid":
                     legalSubtext.setText(s.getName());
                     legalButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(s.getUrl()));
-                        startActivity(intent);
+                        openResourceWithAnimation(s.getUrl());
                     });
                     break;
                 case "Victim Services":
                     victimSubtext.setText(s.getName());
                     victimButton.setOnClickListener(v -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(s.getUrl()));
-                        startActivity(intent);
+                        openResourceWithAnimation(s.getUrl());
                     });
                     break;
             }
         }
+    }
+
+    // Animation
+    private void openResourceWithAnimation(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }
