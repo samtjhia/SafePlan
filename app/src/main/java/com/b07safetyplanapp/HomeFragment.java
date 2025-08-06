@@ -47,10 +47,10 @@ public class HomeFragment extends Fragment {
             getParentFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(
-                            R.anim.slide_in_right,   // new fragment slides in from right
-                            R.anim.slide_out_left,   // current fragment slides out to left
-                            R.anim.slide_in_left,    // back: fragment slides in from left
-                            R.anim.slide_out_right   // back: current fragment slides out to right
+                            R.anim.slide_in_right,
+                            R.anim.slide_out_left,
+                            R.anim.slide_in_left,
+                            R.anim.slide_out_right
                     )
                     .replace(R.id.fragment_container, new SettingsFragment())
                     .addToBackStack(null)
@@ -58,14 +58,13 @@ public class HomeFragment extends Fragment {
         });
 
         reviewButton.setOnClickListener(v -> {
-            // Navigate to Emergency Info Fragment with Activity-like transition
             getParentFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(
-                            R.anim.slide_in_right,   // new fragment slides in from right
-                            R.anim.slide_out_left,   // current fragment slides out to left
-                            R.anim.slide_in_left,    // back: fragment slides in from left
-                            R.anim.slide_out_right   // back: current fragment slides out to right
+                            R.anim.slide_in_right,
+                            R.anim.slide_out_left,
+                            R.anim.slide_in_left,
+                            R.anim.slide_out_right
                     )
                     .replace(R.id.fragment_container, new EmergencyInfoFragment())
                     .addToBackStack(null)
@@ -75,20 +74,19 @@ public class HomeFragment extends Fragment {
         buttonPlan.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), TipsActivity.class);
             startActivity(intent);
-            // Add consistent animation to Activity transition
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
             startActivity(intent);
-            // Add consistent animation to Activity transition
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         helpButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), SupportResourcesActivity.class);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         return view;
