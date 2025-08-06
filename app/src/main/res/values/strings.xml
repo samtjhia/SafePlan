@@ -27,8 +27,8 @@
     <string name="option_post">Post-separation</string>
     <string name="next">Next</string>
     <string name="storage_of_emergency_info">Storage of Emergency Info</string>
-    <string name="disclaimer">Please note that this app is NOT a substitute for emergency services.</string>
-    <string name="PlanDisclaimer">"Please note that safety plans differ from person to person and are NOT guaranteed to protect you from all harm and danger</string>
+    <string name="disclaimer">Please note this app is NOT a substitute for emergency services.</string>
+    <string name="PlanDisclaimer">"Please note safety plans are personal and NOT guaranteed to protect you from harm</string>
 
 
 
