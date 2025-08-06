@@ -121,6 +121,23 @@ public class LoginUnitTest {
         verify(view).showLoginError("Login failed");
     }
 
+    // test onEmailLoginClicked()
+    // behaviour: triggers pin setup screen if pin mismatch is detected
+    @Test
+    public void testPinMismatch_ShowsPinSetupScreen() {
+        presenter = new LoginPresenter(context, model);
+        presenter.attachView(view);
+
+        presenter.onEmailLoginClicked(validEmail, validPassword);
+
+        verify(model).loginWithEmail(eq(validEmail), eq(validPassword), loginCallbackCaptor.capture());
+        loginCallbackCaptor.getValue().onPinMismatchDetected(validEmail, validPassword);
+
+        verify(view).hideLoading();
+        verify(view).navigateToPinSetupWithMismatch(eq(context), eq(validEmail), eq(validPassword));
+    }
+
+
     // test onPinLoginClicked()
     // behaviour: presenter should do nothing if view is null
     @Test
@@ -189,6 +206,23 @@ public class LoginUnitTest {
         verify(view).hideLoading();
         verify(view).showLoginError("PIN login failed");
     }
+
+    // test onPinLoginClicked()
+    // behaviour: triggers pin setup screen if pin mismatch is detected
+    @Test
+    public void testPinMismatch_FromPinLogin_ShowsPinSetupScreen() {
+        presenter = new LoginPresenter(context, model);
+        presenter.attachView(view);
+
+        presenter.onPinLoginClicked(validPin);
+
+        verify(model).loginWithPin(eq(validPin), loginCallbackCaptor.capture());
+        loginCallbackCaptor.getValue().onPinMismatchDetected(validEmail, validPassword);
+
+        verify(view).hideLoading();
+        verify(view).navigateToPinSetupWithMismatch(eq(context), eq(validEmail), eq(validPassword));
+    }
+
 
     // test isEmailValid()
     // behaviour: returns false for null email

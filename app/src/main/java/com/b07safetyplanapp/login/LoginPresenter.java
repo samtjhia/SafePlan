@@ -58,10 +58,9 @@ public class LoginPresenter implements LoginContract.Presenter{
 
             @Override
             public void onPinMismatchDetected(String email, String password) {
-                if (view != null) {
-                    view.hideLoading();
-                    view.navigateToPinSetupWithMismatch(context, email, password);
-                }
+                view.hideLoading();
+                view.navigateToPinSetupWithMismatch(context, email, password);
+
             }
         });
     }
@@ -93,10 +92,9 @@ public class LoginPresenter implements LoginContract.Presenter{
 
             @Override
             public void onPinMismatchDetected(String email, String password) {
-                if (view != null) {
-                    view.hideLoading();
-                    view.navigateToPinSetupWithMismatch(context, email, password);
-                }
+                view.hideLoading();
+                view.navigateToPinSetupWithMismatch(context, email, password);
+
             }
         });
     }
