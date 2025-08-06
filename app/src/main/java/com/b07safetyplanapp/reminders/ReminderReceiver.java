@@ -36,7 +36,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         // Redirect to LoginActivity and request logout via flag
         Intent loginIntent = new Intent(context, LoginActivity.class);
         loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        loginIntent.putExtra("forceLogout", true);  // 👈 flag to trigger logout in LoginActivity
+        loginIntent.putExtra("forceLogout", true);  //Trigger logout in LoginActivity
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,

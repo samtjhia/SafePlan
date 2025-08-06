@@ -74,7 +74,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
             user.reauthenticate(credential)
                     .addOnSuccessListener(aVoid -> showConfirmationDialog())
                     .addOnFailureListener(e ->
-                            Toast.makeText(this, "❌ Re-authentication failed.", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(this, "Re-authentication failed.", Toast.LENGTH_SHORT).show());
         });
 
         builder.setNegativeButton("Cancel", null);
@@ -110,7 +110,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
         userRef.removeValue()
                 .addOnSuccessListener(aVoid -> deleteAuthUser())
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "❌ Failed to delete user data from database.", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Failed to delete user data from database.", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -120,9 +120,9 @@ public class PrivacyControlActivity extends AppCompatActivity {
         if (user != null) {
             user.delete()
                     .addOnSuccessListener(aVoid ->
-                            Toast.makeText(this, "✅ Account and data deleted.", Toast.LENGTH_LONG).show())
+                            Toast.makeText(this, "Account and data deleted.", Toast.LENGTH_LONG).show())
                     .addOnFailureListener(e ->
-                            Toast.makeText(this, "❌ Failed to delete user account.", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(this, "Failed to delete user account.", Toast.LENGTH_SHORT).show());
 
             finishAffinity(); // Close the app or return to Welcome/Login
         }
