@@ -46,15 +46,27 @@ public class HomeFragment extends Fragment {
         safetyCard.setOnClickListener(v -> {
             getParentFragmentManager()
                     .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in_right,   // new fragment slides in from right
+                            R.anim.slide_out_left,   // current fragment slides out to left
+                            R.anim.slide_in_left,    // back: fragment slides in from left
+                            R.anim.slide_out_right   // back: current fragment slides out to right
+                    )
                     .replace(R.id.fragment_container, new SettingsFragment())
                     .addToBackStack(null)
                     .commit();
         });
 
         reviewButton.setOnClickListener(v -> {
-            // Navigate to Emergency Info Fragment using FragmentManager
+            // Navigate to Emergency Info Fragment with Activity-like transition
             getParentFragmentManager()
                     .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in_right,   // new fragment slides in from right
+                            R.anim.slide_out_left,   // current fragment slides out to left
+                            R.anim.slide_in_left,    // back: fragment slides in from left
+                            R.anim.slide_out_right   // back: current fragment slides out to right
+                    )
                     .replace(R.id.fragment_container, new EmergencyInfoFragment())
                     .addToBackStack(null)
                     .commit();
@@ -63,11 +75,15 @@ public class HomeFragment extends Fragment {
         buttonPlan.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), TipsActivity.class);
             startActivity(intent);
+            // Add consistent animation to Activity transition
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
             startActivity(intent);
+            // Add consistent animation to Activity transition
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         helpButton.setOnClickListener(v -> {
@@ -100,6 +116,13 @@ public class HomeFragment extends Fragment {
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        // Add Activity-like slide animations
+        transaction.setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+        );
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();

@@ -5,10 +5,10 @@
     android:id="@+id/settingsScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_peach"
+    android:background="@color/deep_champ"
     android:padding="24dp">
 
-    <!-- Top bar (Reused from questionnaire) -->
+    <!-- Top bar -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="0dp"
