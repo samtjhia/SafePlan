@@ -54,7 +54,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PrivacyControlActivity" />
         <activity android:name=".reminders.ReminderScheduleActivity" />
-        <activity android:name=".MainActivity" android:exported="true" />
+        <activity android:name=".SupportResourcesActivity" />
 
         <!-- Document and Emergency features -->
         <activity android:name=".DocumentActivity" android:exported="false" />

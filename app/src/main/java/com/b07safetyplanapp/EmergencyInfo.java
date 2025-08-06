@@ -35,10 +35,13 @@ public class EmergencyInfo extends Fragment{
             @Override
             public void onClick(View v) { loadFragment(new ContactsFragment());}
         });
+        /*
         buttonSafeLocations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { loadFragment(new SafeLocationsFragment());}
         });
+        */
+
 
         buttonMedications.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EmergencyMedicationActivity.class);

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,12 +32,15 @@ public class HomeFragment extends Fragment {
         // Initialize Firebase
         db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
-        // Initialize UI components
         textUserName = view.findViewById(R.id.textUserName);
         CardView safetyCard = view.findViewById(R.id.safetyCard);
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
         Button buttonPlan = view.findViewById(R.id.show_plan_button);
         Button reviewButton = view.findViewById(R.id.reviewButton);
+        Button helpButton = view.findViewById(R.id.findButton);
+
+        ImageButton closeButton = view.findViewById(R.id.closeDisclaimerButton);
+        View disclaimerContainer = view.findViewById(R.id.disclaimerContainer);
 
         // Set up user name display
         setupUserName();
@@ -46,10 +50,10 @@ public class HomeFragment extends Fragment {
             getParentFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(
-                            R.anim.slide_in_right,   // new fragment slides in from right
-                            R.anim.slide_out_left,   // current fragment slides out to left
-                            R.anim.slide_in_left,    // back: fragment slides in from left
-                            R.anim.slide_out_right   // back: current fragment slides out to right
+                            R.anim.slide_in_right,
+                            R.anim.slide_out_left,
+                            R.anim.slide_in_left,
+                            R.anim.slide_out_right
                     )
                     .replace(R.id.fragment_container, new SettingsFragment())
                     .addToBackStack(null)
@@ -57,14 +61,13 @@ public class HomeFragment extends Fragment {
         });
 
         reviewButton.setOnClickListener(v -> {
-            // Navigate to Emergency Info Fragment with Activity-like transition
             getParentFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(
-                            R.anim.slide_in_right,   // new fragment slides in from right
-                            R.anim.slide_out_left,   // current fragment slides out to left
-                            R.anim.slide_in_left,    // back: fragment slides in from left
-                            R.anim.slide_out_right   // back: current fragment slides out to right
+                            R.anim.slide_in_right,
+                            R.anim.slide_out_left,
+                            R.anim.slide_in_left,
+                            R.anim.slide_out_right
                     )
                     .replace(R.id.fragment_container, new EmergencyInfoFragment())
                     .addToBackStack(null)
@@ -74,15 +77,23 @@ public class HomeFragment extends Fragment {
         buttonPlan.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), TipsActivity.class);
             startActivity(intent);
-            // Add consistent animation to Activity transition
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
             startActivity(intent);
-            // Add consistent animation to Activity transition
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        });
+
+        helpButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SupportResourcesActivity.class);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        });
+
+        closeButton.setOnClickListener(v -> {
+            disclaimerContainer.setVisibility(View.GONE);
         });
 
         return view;
@@ -110,7 +121,7 @@ public class HomeFragment extends Fragment {
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        // Add Activity-like slide animations
+        // animations
         transaction.setCustomAnimations(
                 R.anim.slide_in_right,
                 R.anim.slide_out_left,

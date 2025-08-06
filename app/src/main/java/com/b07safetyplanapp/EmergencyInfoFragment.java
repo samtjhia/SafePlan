@@ -37,6 +37,7 @@ public class EmergencyInfoFragment extends Fragment {
             // Start DocumentActivity
             Intent intent = new Intent(getActivity(), DocumentActivity.class);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         // Emergency Contacts button
@@ -45,6 +46,7 @@ public class EmergencyInfoFragment extends Fragment {
             // Start EmergencyContactActivity
             Intent intent = new Intent(getActivity(), EmergencyContactActivity.class);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         // Safe Locations button
@@ -53,14 +55,16 @@ public class EmergencyInfoFragment extends Fragment {
             // Start EmergencySafeLocationsActivity
             Intent intent = new Intent(getActivity(), EmergencySafeLocationsActivity.class);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
         // Medications button
         Button medicationsButton = view.findViewById(R.id.medicationsViewButton);
         medicationsButton.setOnClickListener(v -> {
-            // Start EmergencyMedicationsActivity
+            // Start EmergencyMedicationActivity
             Intent intent = new Intent(getActivity(), EmergencyMedicationActivity.class);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
     }
 }

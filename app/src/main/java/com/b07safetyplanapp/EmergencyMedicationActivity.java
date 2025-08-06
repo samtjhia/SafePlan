@@ -45,6 +45,12 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         loadMedications();
     }
 
+    @Override
+    public void finish() { // back animation
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
