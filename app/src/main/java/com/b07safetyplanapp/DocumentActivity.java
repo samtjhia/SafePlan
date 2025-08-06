@@ -294,20 +294,14 @@ public class DocumentActivity extends AppCompatActivity {
                 return;
             }
 
-            // Create URI for file
             Uri fileUri = androidx.core.content.FileProvider.getUriForFile(
                     this, getPackageName() + ".fileprovider", file);
 
-            // Open with appropriate app
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(fileUri, getFileType(file.getName()));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(Intent.createChooser(intent, "Open with"));
-            } else {
-                Toast.makeText(this, "No app found to open this file", Toast.LENGTH_SHORT).show();
-            }
+            startActivity(Intent.createChooser(intent, "Open with"));
 
         } catch (Exception e) {
             Toast.makeText(this, "Cannot open document", Toast.LENGTH_SHORT).show();
