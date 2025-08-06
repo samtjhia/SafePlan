@@ -4,7 +4,7 @@
     android:id="@+id/pinSetupLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_peach"
+    android:background="@color/deep_champ"
     android:orientation="vertical"
     android:paddingTop="24dp"
     android:paddingStart="24dp"
