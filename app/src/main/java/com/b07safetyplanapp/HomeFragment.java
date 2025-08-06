@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,13 +32,15 @@ public class HomeFragment extends Fragment {
         // Initialize Firebase
         db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
-        // Initialize UI components
         textUserName = view.findViewById(R.id.textUserName);
         CardView safetyCard = view.findViewById(R.id.safetyCard);
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
         Button buttonPlan = view.findViewById(R.id.show_plan_button);
         Button reviewButton = view.findViewById(R.id.reviewButton);
         Button helpButton = view.findViewById(R.id.findButton);
+
+        ImageButton closeButton = view.findViewById(R.id.closeDisclaimerButton);
+        View disclaimerContainer = view.findViewById(R.id.disclaimerContainer);
 
         // Set up user name display
         setupUserName();
@@ -87,6 +90,10 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), SupportResourcesActivity.class);
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        });
+
+        closeButton.setOnClickListener(v -> {
+            disclaimerContainer.setVisibility(View.GONE);
         });
 
         return view;
