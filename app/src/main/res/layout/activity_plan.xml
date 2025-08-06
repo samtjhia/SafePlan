@@ -34,8 +34,8 @@
 
         <ImageButton
             android:id="@+id/closeDisclaimerButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:src="@drawable/ic_close"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="Close disclaimer"
