@@ -70,7 +70,7 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> showAddSafeLocationDialog());
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
 

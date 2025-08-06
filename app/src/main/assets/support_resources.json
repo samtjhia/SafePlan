@@ -1,0 +1,139 @@
+{
+  "resourceMap": {
+    "Toronto": [
+      {
+        "name": "Toronto Hotline Resources",
+        "type": "Hotline",
+        "url": "https://www.camh.ca/en/health-info/crisis-resources"
+      },
+      {
+        "name": "Toronto Emergency Shelters",
+        "type": "Shelter",
+        "url": "https://www.toronto.ca/community-people/housing-shelter/homeless-help/shelters/#location=&lat=&lng=&zoom="
+      },
+      {
+        "name": "Toronto Police",
+        "type": "Police",
+        "url": "https://www.torontopolice.on.ca/"
+      },
+      {
+        "name": "Legal Aid Ontario",
+        "type": "Legal Aid",
+        "url": "https://www.legalaid.on.ca/"
+      },
+      {
+        "name": "Victim Services Toronto",
+        "type": "Victim Services",
+        "url": "https://www.victimservicestoronto.com/"
+      }
+    ],
+    "Vancouver": [
+      {
+        "name": "BC Hotline Resources",
+        "type": "Hotline",
+        "url": "https://www.crisiscentre.bc.ca/get-support/crisis-lines/"
+      },
+      {
+        "name": "BC Emergency Shelters",
+        "type": "Shelter",
+        "url": "https://www.bchousing.org/housing-assistance/homelessness-services/emergency-shelter-program"
+      },
+      {
+        "name": "Vancouver Police",
+        "type": "Police",
+        "url": "https://vpd.ca/"
+      },
+      {
+        "name": "Legal Aid BC",
+        "type": "Legal Aid",
+        "url": "https://legalaid.bc.ca/"
+      },
+      {
+        "name": "Victim Services Vancouver",
+        "type": "Victim Services",
+        "url": "https://fsgv.ca/programs/victim-services/"
+      }
+    ],
+    "Edmonton": [
+      {
+        "name": "Edmonton Hotline Resources",
+        "type": "Hotline",
+        "url": "https://edmonton.cmha.ca/#:~:text=780%2D482%2DHELP%20(4357,feeling%20overwhelmed%2C%20or%20experiencing%20abuse."
+      },
+      {
+        "name": "Edmonton Emergency Shelters",
+        "type": "Shelter",
+        "url": "https://homewardtrust.ca/sheltersandemergencyresponse/"
+      },
+      {
+        "name": "Edmonton Police",
+        "type": "Police",
+        "url": "https://www.edmontonpolice.ca/"
+      },
+      {
+        "name": "Legal Aid Alberta",
+        "type": "Legal Aid",
+        "url": "https://www.legalaid.ab.ca/"
+      },
+      {
+        "name": "Victim Services Alberta",
+        "type": "Victim Services",
+        "url": "https://www.victimservicesalberta.com/"
+      }
+    ],
+    "Montreal": [
+      {
+        "name": "Quebec Hotline Resources",
+        "type": "Hotline",
+        "url": "https://amiquebec.org/crisis/"
+      },
+      {
+        "name": "211 Montreal Emergency Shelters",
+        "type": "Shelter",
+        "url": "https://www.211qc.ca/en/homelessness/shelters-housing-homeless-people"
+      },
+      {
+        "name": "Montreal Police",
+        "type": "Police",
+        "url": "https://spvm.qc.ca/en"
+      },
+      {
+        "name": "Legal Aid Montreal",
+        "type": "Legal Aid",
+        "url": "https://www.aidejuridiquedemontreal.ca/en/"
+      },
+      {
+        "name": "Crime Victims Assistance Centres (CAVACs)",
+        "type": "Victim Services",
+        "url": "https://cavac.qc.ca/en/"
+      }
+    ],
+    "Winnipeg": [
+      {
+        "name": "Manitoba Hotline Resources",
+        "type": "Hotline",
+        "url": "https://sharedhealthmb.ca/services/mental-health/crisis-services-help-lines/"
+      },
+      {
+        "name": "Winnipeg Emergency Shelters",
+        "type": "Shelter",
+        "url": "https://endhomelessnesswinnipeg.ca/services-supports/"
+      },
+      {
+        "name": "Winnipeg Police",
+        "type": "Police",
+        "url": "https://www.winnipeg.ca/police"
+      },
+      {
+        "name": "Legal Aid Manitoba",
+        "type": "Legal Aid",
+        "url": "https://www.legalaid.mb.ca/"
+      },
+      {
+        "name": "Victim Services Winnipeg",
+        "type": "Victim Services",
+        "url": "https://www.winnipeg.ca/police/services/victim-services"
+      }
+    ]
+  }
+}
