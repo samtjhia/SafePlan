@@ -39,9 +39,13 @@ dependencies {
     testImplementation("org.mockito:mockito-core:4.11.0")
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("com.google.code.gson:gson:2.10.1")
+
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    implementation("com.google.firebase:firebase-database")  // No version needed
-    implementation("com.google.firebase:firebase-auth")     // No version needed
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-storage")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }

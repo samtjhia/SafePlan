@@ -16,14 +16,9 @@
                 "options": [
                     "Toronto",
                     "Vancouver",
-                    "Ottawa",
                     "Edmonton",
-                    "Calgary",
                     "Montreal",
-                    "Winnipeg",
-                    "Hamilton",
-                    "Quebec City",
-                    "Halifax"
+                    "Winnipeg"
                 ]
             },
             {
@@ -179,50 +174,99 @@
     },
     "tips": {
         "situation": {
-            "Still in a relationship": "Keep this plan updated, and remember you can always reach out if things escalate.",
-            "Planning to leave": "Start packing small items now so you're ready when you decide to leave.",
-            "Post-separation": "It's normal to feel unsettled, refer back to this plan whenever you need a safety reminder."
+            "tip_type": "option",
+            "option_tips": {
+                "Still in a relationship": "Keep this plan updated, and remember you can always reach out if things escalate.",
+                "Planning to leave": "Start packing small items now so you're ready when you decide to leave.",
+                "Post-separation": "It's normal to feel unsettled, refer back to this plan whenever you need a safety reminder."
+            }
         },
-        "city": "Save the local support numbers for {city} in your phone's speed-dial so you can call immediately if you need help.",
-        "safe_room": "Keep your essentials (phone, keys, and a small flashlight) in {safe_room} so you can grab them instantly when you need to leave.",
+        "city": {
+            "tip_type": "general",
+            "general_tip": "Save the local support numbers for {city} in your phone's speed-dial so you can call immediately if you need help."
+        },
+        "safe_room": {
+            "tip_type": "general",
+            "general_tip": "Keep your essentials (phone, keys, and a small flashlight) in {safe_room} so you can grab them instantly when you need to leave."
+        },
         "living_situation": {
-            "Family": "Let those you live with: {living_situation} know your safe room and cue-word so they can support you in an emergency.",
-            "Roommates": "Let those you live with: {living_situation} know your safe room and cue-word so they can support you in an emergency.",
-            "Alone": "Since you live alone, identify a trusted neighbor or friend and share your safe room location with them.",
-            "Partner": "Because you live with your partner, keep your safety plan hidden (in {safe_room}), and consider storing a digital copy in a password-protected note they won't see."
+            "tip_type": "option",
+            "option_tips": {
+                "Family": "Let those you live with: {living_situation} know your safe room and cue-word so they can support you in an emergency.",
+                "Roommates": "Let those you live with: {living_situation} know your safe room and cue-word so they can support you in an emergency.",
+                "Alone": "Since you live alone, identify a trusted neighbor or friend and share your safe room location with them.",
+                "Partner": "Because you live with your partner, keep your safety plan hidden (in {safe_room}), and consider storing a digital copy in a password-protected note they won't see."
+            }
         },
         "children": {
-            "Yes": "Practice your safety plan with your children so that when they hear {code_word}, they know exactly what to do.",
-            "No": "Even without children, it helps to identify a second safe space in your home."
+            "tip_type": "option",
+            "option_tips": {
+                "Yes": "Practice your safety plan with your children so that when they hear {code_word}, they know exactly what to do.",
+                "No": "Even without children, it helps to identify a second safe space in your home."
+            }
         },
-        "abuse_types": "If you face {abuse_types} abuse, remember you don't have to face it alone. Reach out to your emergency contact right away.",
+        "abuse_types": {
+            "tip_type": "general",
+            "general_tip": "If you face {abuse_types} abuse, remember you don't have to face it alone. Reach out to your emergency contact right away."
+        },
         "recording_incidents": {
-            "Yes": "Log each incident (date, time, and a brief note) so you have clear records if needed later.",
-            "No": "Even brief notes on your phone can be helpful. Start logging today."
+            "tip_type": "option",
+            "option_tips": {
+                "Yes": "Log each incident (date, time, and a brief note) so you have clear records if needed later.",
+                "No": "Even brief notes on your phone can be helpful. Start logging today."
+            }
         },
-        "emergency_contact": "Save {emergency_contact} in your phone under a code-word so you can quietly call them when you need help.",
-        "leave_timing": "Set a real target {leave_timing} and pack one essential item each day until you're ready.",
+        "emergency_contact": {
+            "tip_type": "general",
+            "general_tip": "Save {emergency_contact} in your phone under a code-word so you can quietly call them when you need help."
+        },
+
+        "leave_timing": {
+            "tip_type": "general",
+            "general_tip": "Set a real target {leave_timing} and pack one essential item each day until you're ready."
+        },
         "go_bag": {
-            "Yes": "Great! Keep your go-bag in a hidden spot so you can grab it quickly.",
-            "No": "Pack a simple go-bag today with essentials like your ID, some cash, and a charger."
+            "tip_type": "option",
+            "option_tips": {
+                "Yes": "Great! Keep your go-bag in a hidden spot so you can grab it quickly.",
+                "No": "Pack a simple go-bag today with essentials like your ID, some cash, and a charger."
+            }
         },
-        "money_location": "Stash some cash and a spare card in {money_location}, a spot your partner won't suspect.",
+        "money_location": {
+            "tip_type": "general",
+            "general_tip": "Stash some cash and a spare card in {money_location}, a spot your partner won't suspect."
+        },
         "safe_place": {
-            "Yes": "Make sure {temp_shelter} knows you may arrive unexpectedly and how to contact you.",
-            "No": "Reach out to Victim Services Toronto or a trusted friend now to secure a shelter option before you leave."
+            "tip_type": "option",
+            "option_tips": {
+                "Yes": "Make sure {temp_shelter} knows you may arrive unexpectedly and how to contact you.",
+                "No": "Reach out to Victim Services Toronto or a trusted friend now to secure a shelter option before you leave."
+            }
         },
         "continued_contact": {
-            "Yes": "Since you've heard from them, stay vigilant and keep your protection order handy if you have one.",
-            "No": "Even without contact, keep your doors locked and your phone on in case you need to call 911."
+            "tip_type": "option",
+            "option_tips": {
+                "Yes": "Since you've heard from them, stay vigilant and keep your protection order handy if you have one.",
+                "No": "Even without contact, keep your doors locked and your phone on in case you need to call 911."
+            }
         },
         "protection_order": {
-            "Yes": "Carry your {legal_order} at all times and share copies with anyone who needs to know.",
-            "No": "Consider applying for a protection order; it can help deter unwanted contact."
+            "tip_type": "option",
+            "option_tips": {
+                "Yes": "Carry your {legal_order} at all times and share copies with anyone who needs to know.",
+                "No": "Consider applying for a protection order; it can help deter unwanted contact."
+            }
         },
         "safety_tools": {
-            "Yes": "Make sure your {equipment} is in working order and placed where you'll notice it.",
-            "No": "Consider installing a simple door alarm or camera to alert you to unexpected entry."
+            "tip_type": "option",
+            "option_tips": {
+                "Yes": "Make sure your {equipment} is in working order and placed where you'll notice it.",
+                "No": "Consider installing a simple door alarm or camera to alert you to unexpected entry."
+            }
         },
-        "support_choice": "Reach out to {support_choice} - they can offer the specialized help you need right now."
+        "support_choice": {
+            "tip_type": "general",
+            "general_tip": "Reach out to {support_choice} - they can offer the specialized help you need right now."
+        }
     }
 }
