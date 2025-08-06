@@ -7,28 +7,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.b07safetyplanapp.reminders.ReminderScheduleActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingsFragment extends Fragment {
-    private Button privacyButton, logoutButton, reminderButton;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_settings_fragment, container, false);
 
         // Bind buttons
-        privacyButton = view.findViewById(R.id.btnSetting4);
-        logoutButton = view.findViewById(R.id.btnLogout);
-        reminderButton = view.findViewById(R.id.btnReminder);
-        ImageView backButton = view.findViewById(R.id.backButton);
+        Button privacyButton = view.findViewById(R.id.btnSetting4);
+        Button logoutButton = view.findViewById(R.id.btnLogout);
+        Button reminderButton = view.findViewById(R.id.btnReminder);
 
         // Back button
         view.findViewById(R.id.backButton).setOnClickListener(v -> {

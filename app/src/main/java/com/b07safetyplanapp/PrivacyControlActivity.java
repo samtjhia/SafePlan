@@ -18,7 +18,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class PrivacyControlActivity extends AppCompatActivity {
 
-    private Button deleteButton;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -27,11 +26,9 @@ public class PrivacyControlActivity extends AppCompatActivity {
         setContentView(R.layout.activity_privacy_control);
 
         //Delete button creation
-        deleteButton = findViewById(R.id.btnDeleteAccount);
+        Button deleteButton = findViewById(R.id.btnDeleteAccount);
         deleteButton.setOnClickListener(v -> promptForReauth());
 
-
-        ImageView backButton = findViewById(R.id.backButton);
         //Listener for back button from LinearLayout
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
         //findViewById(R.id.btnBack).setOnClickListener(v -> finish());

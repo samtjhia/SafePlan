@@ -51,7 +51,6 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         reminderListContainer = findViewById(R.id.reminderListContainer);
         timePicker.setIs24HourView(true);
 
-        ImageView backButton = findViewById(R.id.backButton);
         //Listener for back button from LinearLayout
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
         //findViewById(R.id.btnBack).setOnClickListener(v -> finish());
