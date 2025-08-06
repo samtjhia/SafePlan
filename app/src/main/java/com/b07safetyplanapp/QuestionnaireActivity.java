@@ -55,12 +55,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private boolean followUpQuestionsAdded = false;
 
     private boolean isEditMode = false;
-    private boolean hasCompletedBefore = false;
 
     private FirebaseDatabase database;
     private DatabaseReference questionnaireRef;
-    //    private FirebaseAuth mAuth;
-    private String sessionId;
     private String uid;
 
     @Override
@@ -84,27 +81,16 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeFirebase() {
+    @Override
+    public void finish() { // back animation
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
 
-        // Initialize Firebase Database
-//        mAuth = FirebaseAuth.getInstance();
+    private void initializeFirebase() {
 
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
-
-//        // Get user ID from intent or current user
-//        userId = getIntent().getStringExtra("user_id");
-//        if (userId == null) {
-//            FirebaseUser currentUser = mAuth.getCurrentUser();
-//            if (currentUser != null) {
-//                userId = currentUser.getUid();
-//            } else {
-//                // User not logged in - shouldn't happen, but handle gracefully
-//                Toast.makeText(this, "Please log in to access questionnaire", Toast.LENGTH_LONG).show();
-//                finish();
-//                return;
-//            }
-//        }
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(this, "Please log in", Toast.LENGTH_SHORT).show();
@@ -114,12 +100,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
         uid = currentUser.getUid();
 
-        // Path: users/{uid}/questionnaire_sessions/{sessionId}
-        sessionId = "session_" + System.currentTimeMillis();
+        // Path: users/{uid}/questionnaire
         questionnaireRef = database.getReference("users")
-                .child(uid)
-                .child("questionnaire_sessions")
-                .child(sessionId);
+                .child(uid);
     }
 
     private void initializeViews() {
@@ -153,14 +136,13 @@ public class QuestionnaireActivity extends AppCompatActivity {
     }
 
     private void loadAllQuestionsForEdit() {
-        // Add all warm-up questions (already added)
 
-        // Add all branch-specific questions
+        // Branch-specific questions
         for (Branch branch : questionnaireData.getBranch_specific()) {
             allQuestions.addAll(branch.getQuestions());
         }
 
-        // Add follow-up questions
+        // Follow-up questions
         if (questionnaireData.getFollow_up() != null) {
             allQuestions.addAll(questionnaireData.getFollow_up());
         }
@@ -170,7 +152,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
     }
 
     private void loadPreviousResponsesFromFirebase() {
-        questionnaireRef.child(sessionId).child("responses")
+        questionnaireRef.child("questionnaire").child("responses")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -183,9 +165,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
                             }
                         }
 
-                        // Filter questions based on previous responses if not in edit mode
+                        // If not in edit mode
                         if (!isEditMode) {
-                            filterQuestionsBasedOnResponses();
+                            filterQuestionsBasedOnResponses(); // proceed
                         }
 
                         displayCurrentQuestion();
@@ -201,7 +183,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
     }
 
     private void filterQuestionsBasedOnResponses() {
-        // Find the situation response to load appropriate branch questions
+        // Use situation response to load branch questions
         for (UserResponse response : userResponses) {
             if (response.getQuestionId().equals("situation")) {
                 String situation = response.getAnswer();
@@ -258,7 +240,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
             }
         });
 
-        // Listen for radio button changes to show/hide sub-questions
+        // Sub-questions
         optionsGroup.setOnCheckedChangeListener((group, checkedId) -> {
             try {
                 handleSubQuestionVisibility();
@@ -311,19 +293,15 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 subQuestionLayout.setVisibility(View.GONE);
             }
 
-            // Display question based on type
+            // Display question based on if it has options or if it is text based
             if (currentQuestion.hasOptions()) {
                 displayMultipleChoiceQuestion(currentQuestion);
             } else {
                 displayTextQuestion();
             }
 
-            // Update button states - FIXED: Hide back button on first question
             updateButtonStates();
-
-            // Load previous answer if exists
             loadPreviousAnswer();
-
             updateButtonText();
         } catch (Exception e) {
             Toast.makeText(this, "Error displaying question", Toast.LENGTH_SHORT).show();
@@ -367,12 +345,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 radioButton.setText(option);
                 radioButton.setId(View.generateViewId());
                 radioButton.setTextSize(16);
-                radioButton.setPadding(16, 20, 16, 20); // Add padding for better spacing
+                radioButton.setPadding(16, 20, 16, 20); // Add padding
 
-                // Set Inter Regular font
-                radioButton.setTypeface(ResourcesCompat.getFont(this, R.font.inter_regular));
+                radioButton.setTypeface(ResourcesCompat.getFont(this, R.font.inter_regular)); // Inter font
 
-                // Add margin between radio buttons
+                // Add margin between buttons
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -488,7 +465,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 userResponses.add(response);
             }
 
-            // Get sub-answer if visible
+            // Get sub-answer
             if (subQuestionLayout != null && subQuestionLayout.getVisibility() == View.VISIBLE) {
                 if (subQuestionInput != null) {
                     String subAnswer = subQuestionInput.getText().toString().trim();
@@ -522,12 +499,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    // Save response to Firebase
     private void saveResponseToFirebase(String questionId) {
         try {
             if (userResponses.isEmpty()) return;
 
-            // Get the response by question id
+            // Get response by question id
             UserResponse response = null;
             for(UserResponse u : userResponses) {
                 if(u.getQuestionId().equalsIgnoreCase(questionId)) {
@@ -537,8 +513,8 @@ public class QuestionnaireActivity extends AppCompatActivity {
             }
 
             if(response != null) {
-                // Save the UserResponse object directly to Firebase
-                questionnaireRef.child(sessionId)
+                // Save UserResponse object to Firebase
+                questionnaireRef.child("questionnaire")
                         .child("responses")
                         .child(response.getQuestionId())
                         .setValue(response)
