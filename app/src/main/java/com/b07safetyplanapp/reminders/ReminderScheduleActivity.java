@@ -51,8 +51,10 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         reminderListContainer = findViewById(R.id.reminderListContainer);
         timePicker.setIs24HourView(true);
 
-        //Back btn
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        ImageView backButton = findViewById(R.id.backButton);
+        //Listener for back button from LinearLayout
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        //findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
 
         //MVP log-in connection

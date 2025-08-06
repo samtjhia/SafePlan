@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,8 +30,11 @@ public class PrivacyControlActivity extends AppCompatActivity {
         deleteButton = findViewById(R.id.btnDeleteAccount);
         deleteButton.setOnClickListener(v -> promptForReauth());
 
+
+        ImageView backButton = findViewById(R.id.backButton);
         //Listener for back button from LinearLayout
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        //findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
     //Pop-up window fo re-authorization
