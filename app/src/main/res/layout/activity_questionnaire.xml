@@ -4,7 +4,7 @@
     android:id="@+id/questionnaireScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_peach"
+    android:background="@color/deep_champ"
     android:padding="24dp">
 
     <!-- Top bar -->
@@ -18,22 +18,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:id="@+id/logoIcon"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:src="@drawable/ic_safe_plan_logo"
-            android:contentDescription="@string/safe_plan_logo_desc" />
-
-        <TextView
-            android:id="@+id/logoText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/safe_plan"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/black_bean" />
+        <!-- Back Button -->
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/back_button_background"
+            android:src="@drawable/ic_arrow_back_2"
+            android:contentDescription="Back"
+            android:scaleType="centerInside"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <View
             android:layout_width="0dp"
@@ -72,6 +67,7 @@
         android:text="@string/progress_text"
         android:textSize="12sp"
         android:textColor="@color/black_bean"
+        android:fontFamily="@font/inter_regular"
         app:layout_constraintTop_toBottomOf="@id/progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="4dp" />
@@ -82,13 +78,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Question appears here"
-        android:textSize="22sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/black_bean"
+        android:lineSpacingExtra="4dp"
+        android:fontFamily="@font/inter_bold"
         app:layout_constraintTop_toBottomOf="@id/progressText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp" />
+        android:layout_marginTop="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <!-- Question Prompt (subtitle) -->
     <TextView
@@ -98,6 +98,7 @@
         android:text=""
         android:textSize="30sp"
         android:textColor="@color/black_bean"
+        android:fontFamily="@font/inter_regular"
         app:layout_constraintTop_toBottomOf="@id/question_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +114,10 @@
         app:layout_constraintTop_toBottomOf="@id/questionPrompt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/inter_regular"/>
 
     <!-- Open-ended Input -->
     <EditText
@@ -123,6 +127,7 @@
         android:hint="Enter your answer here..."
         android:minHeight="48dp"
         android:visibility="gone"
+        android:fontFamily="@font/inter_regular"
         app:layout_constraintTop_toBottomOf="@id/options_group"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -139,7 +144,8 @@
         app:layout_constraintTop_toBottomOf="@id/text_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/inter_regular">
 
         <TextView
             android:id="@+id/sub_question_text"
@@ -147,14 +153,16 @@
             android:layout_height="wrap_content"
             android:text="Sub-question appears here"
             android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/inter_regular" />
 
         <EditText
             android:id="@+id/sub_question_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter your answer..."
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:fontFamily="@font/inter_regular" />
     </LinearLayout>
 
     <!-- Navigation Buttons -->
@@ -162,32 +170,43 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="end"
         app:layout_constraintTop_toBottomOf="@id/sub_question_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <Button
             android:id="@+id/back_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
             android:text="Back"
+            android:textSize="16sp"
+            android:textColor="@color/black_bean"
+            android:background="@drawable/rounded_light_button"
+            android:paddingStart="36dp"
+            android:paddingEnd="36dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/inter_regular"
             android:enabled="false"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/rounded_dark_button"
-            android:textColor="@android:color/white" />
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/next_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
             android:text="Next"
-            android:layout_marginStart="8dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
             android:background="@drawable/rounded_dark_button"
-            android:textColor="@android:color/white" />
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:fontFamily="@font/inter_regular" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
