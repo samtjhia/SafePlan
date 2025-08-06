@@ -37,6 +37,7 @@ public class HomeFragment extends Fragment {
         Button startQuestionnaireButton = view.findViewById(R.id.start_questionnaire_button);
         Button buttonPlan = view.findViewById(R.id.show_plan_button);
         Button reviewButton = view.findViewById(R.id.reviewButton);
+        Button helpButton = view.findViewById(R.id.findButton);
 
         // Set up user name display
         setupUserName();
@@ -83,6 +84,11 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
             // Add consistent animation to Activity transition
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        });
+
+        helpButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SupportResourcesActivity.class);
+            startActivity(intent);
         });
 
         return view;

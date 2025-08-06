@@ -54,6 +54,21 @@
             app:layout_constraintTop_toBottomOf="@id/emergencyExitFragment"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="24dp" />
+        <!--Disclaimer -->
+        <TextView
+            android:id="@+id/textDisclaimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disclaimer"
+            android:textColor="@android:color/black"
+            android:background="@color/progress_red"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            app:layout_constraintTop_toBottomOf="@id/textUserName"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp" />
+
 
         <!-- Settings Card -->
         <androidx.cardview.widget.CardView
@@ -64,7 +79,7 @@
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
             app:cardBackgroundColor="@color/icon_card"
-            app:layout_constraintTop_toBottomOf="@id/textUserName"
+            app:layout_constraintTop_toBottomOf="@id/textDisclaimer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
