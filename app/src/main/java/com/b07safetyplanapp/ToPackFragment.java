@@ -17,6 +17,11 @@ import com.google.firebase.database.FirebaseDatabase;
 //import com.google.firebase.database.StorageReference;
 import com.google.firebase.storage.StorageReference;
 
+/**
+ * ToPackFragment allows users to manage file paths for documents they want to pack.
+ * The UI provides fields to add, edit, or delete document paths stored in Firebase or referenced for Firebase Storage.
+ * This fragment currently initializes Firebase Database and UI elements.
+ */
 public class ToPackFragment extends Fragment {
     private EditText addTextFilePath, editTextOldFilePath, editTextNewFilePath, editTextRemoveFilePath;
     private Button buttonAdd;
@@ -26,6 +31,15 @@ public class ToPackFragment extends Fragment {
     private FirebaseDatabase db;
     private DatabaseReference itemsRef;
     //private StorageReference storageRef;
+
+    /**
+     * Inflates the layout and initializes Firebase and button listeners.
+     *
+     * @param inflater           LayoutInflater object to inflate views.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The root View of the fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

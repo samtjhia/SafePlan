@@ -20,16 +20,34 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * HomeFragment is the main dashboard fragment that provides navigation
+ * to various features of the Safety Plan app, such as settings, emergency info,
+ * support resources, questionnaire, and planning tips.
+ * <p>
+ * It also retrieves and displays the current user's name from Firebase.
+ */
 public class HomeFragment extends Fragment {
+
     private TextView textUserName;
     private FirebaseDatabase db;
 
+    /**
+     * Inflates the fragment layout and sets up UI interactions and Firebase initialization.
+     *
+     * @param inflater           LayoutInflater to inflate the layout.
+     * @param container          Optional parent view for the fragment UI.
+     * @param savedInstanceState Previously saved instance state.
+     * @return The root view of the fragment.
+     */
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.activity_home_fragment, container, false);
 
-        // Initialize Firebase
         db = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
         textUserName = view.findViewById(R.id.textUserName);
@@ -42,10 +60,9 @@ public class HomeFragment extends Fragment {
         ImageButton closeButton = view.findViewById(R.id.closeDisclaimerButton);
         View disclaimerContainer = view.findViewById(R.id.disclaimerContainer);
 
-        // Set up user name display
-        setupUserName();
+        setupUserName(); // Load user's name from Firebase
 
-        // Set up click listeners
+        // Navigate to SettingsFragment
         safetyCard.setOnClickListener(v -> {
             getParentFragmentManager()
                     .beginTransaction()
@@ -60,6 +77,7 @@ public class HomeFragment extends Fragment {
                     .commit();
         });
 
+        // Navigate to EmergencyInfoFragment
         reviewButton.setOnClickListener(v -> {
             getParentFragmentManager()
                     .beginTransaction()
@@ -74,24 +92,28 @@ public class HomeFragment extends Fragment {
                     .commit();
         });
 
+        // Start TipsActivity
         buttonPlan.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), TipsActivity.class);
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
+        // Start QuestionnaireActivity
         startQuestionnaireButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), QuestionnaireActivity.class);
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
+        // Start SupportResourcesActivity
         helpButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), SupportResourcesActivity.class);
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         });
 
+        // Hide disclaimer view
         closeButton.setOnClickListener(v -> {
             disclaimerContainer.setVisibility(View.GONE);
         });
@@ -99,6 +121,10 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Retrieves and displays the current user's name from Firebase.
+     * If fullName is not found, displays the user's email instead.
+     */
     private void setupUserName() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -119,9 +145,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * Replaces the current fragment with the given fragment and sets custom animations.
+     *
+     * @param fragment The fragment to load.
+     */
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        // animations
         transaction.setCustomAnimations(
                 R.anim.slide_in_right,
                 R.anim.slide_out_left,

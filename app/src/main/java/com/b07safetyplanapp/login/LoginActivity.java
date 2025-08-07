@@ -16,34 +16,43 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Handles the login UI and user authentication using either PIN or email/password.
+ * Supports forced logout from external triggers (e.g., reminder expiration).
+ */
 public class LoginActivity extends AppCompatActivity implements LoginContract.View {
 
     private TextInputEditText emailInput, passwordInput, pinInput;
     private Button loginButton;
     private TextView signupRedirect;
-
     private LoginContract.Presenter presenter;
 
+    /**
+     * Called when the activity is starting. Sets up the UI and listeners.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // 👇 Force logout if launched from ReminderReceiver
+        // Handle forced logout (e.g., from a triggered reminder)
         if (getIntent().getBooleanExtra("forceLogout", false)) {
             FirebaseAuth.getInstance().signOut();
             Toast.makeText(this, "Session expired. Please sign in again.", Toast.LENGTH_SHORT).show();
         }
 
+        // Initialize UI components
         emailInput = findViewById(R.id.editTextEmail);
         passwordInput = findViewById(R.id.editTextPassword);
         pinInput = findViewById(R.id.editTextPin);
         loginButton = findViewById(R.id.buttonLogin);
         signupRedirect = findViewById(R.id.textSignupRedirect);
 
+        // Set up Presenter
         presenter = new LoginPresenter(this, new LoginModel(this));
         presenter.attachView(this);
 
+        // Login button behavior: handle PIN login or email/password login
         loginButton.setOnClickListener(v -> {
             String email = emailInput.getText().toString().trim();
             String password = passwordInput.getText().toString();
@@ -56,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             }
         });
 
+        // Redirect to sign-up page
         signupRedirect.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
             startActivity(intent);
@@ -92,6 +102,9 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Navigates to the main dashboard after successful login.
+     */
     @Override
     public void navigateToDashboard() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -99,12 +112,22 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         finish();
     }
 
+    /**
+     * Clean up when the activity is destroyed.
+     */
     @Override
     protected void onDestroy() {
         presenter.detachView();
         super.onDestroy();
     }
 
+    /**
+     * Navigates the user to PIN setup if there's a mismatch between saved PIN and account.
+     *
+     * @param context          The context from which the navigation was triggered.
+     * @param decryptedEmail   The decrypted email from local storage.
+     * @param decryptedPassword The decrypted password from local storage.
+     */
     @Override
     public void navigateToPinSetupWithMismatch(Context context, String decryptedEmail, String decryptedPassword) {
         Intent intent = new Intent(context, PinSetupActivity.class);
@@ -113,5 +136,4 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         intent.putExtra("user_password", decryptedPassword);
         context.startActivity(intent);
     }
-
 }

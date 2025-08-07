@@ -13,24 +13,47 @@ import com.b07safetyplanapp.models.emergencyinfo.SafeLocation;
 
 import java.util.List;
 
+/**
+ * Adapter class for displaying a list of emergency safe locations in a RecyclerView.
+ * <p>
+ * Supports editing and deleting each item via callback listeners.
+ */
 public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<EmergencySafeLocationsAdapter.ViewHolder> {
 
     private List<SafeLocation> safe_locations;
     private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
+    /**
+     * Interface for handling item click events such as edit or delete.
+     */
     public interface OnItemClickListener {
+        /**
+         * Callback when an item is clicked.
+         *
+         * @param safe_location The SafeLocation item clicked.
+         */
         void onClick(SafeLocation safe_location);
     }
 
+    /**
+     * Constructor for the adapter.
+     *
+     * @param safe_locations List of SafeLocation items to display.
+     * @param editListener   Listener for handling edit clicks.
+     * @param deleteListener Listener for handling delete clicks.
+     */
     public EmergencySafeLocationsAdapter(List<SafeLocation> safe_locations,
-                                   OnItemClickListener editListener,
-                                   OnItemClickListener deleteListener) {
+                                         OnItemClickListener editListener,
+                                         OnItemClickListener deleteListener) {
         this.safe_locations = safe_locations;
         this.editListener = editListener;
         this.deleteListener = deleteListener;
     }
 
+    /**
+     * ViewHolder class representing each item view in the list.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameText;
         private final TextView addressText;
@@ -38,6 +61,11 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         private final ImageButton editButton;
         private final ImageButton deleteButton;
 
+        /**
+         * ViewHolder constructor.
+         *
+         * @param itemView The view of the list item.
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameText = itemView.findViewById(R.id.tvLocationName);
@@ -47,27 +75,39 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
             deleteButton = itemView.findViewById(R.id.btnDeleteSafeLocation);
         }
 
+        /** @return TextView for the name. */
         public TextView getNameText() {
             return nameText;
         }
 
+        /** @return TextView for the address. */
         public TextView getAddressText() {
             return addressText;
         }
 
+        /** @return TextView for the notes. */
         public TextView getNotesText() {
             return notesText;
         }
 
+        /** @return ImageButton for edit action. */
         public ImageButton getEditButton() {
             return editButton;
         }
 
+        /** @return ImageButton for delete action. */
         public ImageButton getDeleteButton() {
             return deleteButton;
         }
     }
 
+    /**
+     * Inflates the view for each list item.
+     *
+     * @param parent   The parent view group.
+     * @param viewType The type of the view (unused).
+     * @return A new ViewHolder instance.
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -76,6 +116,12 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds data to the item view at the given position.
+     *
+     * @param holder   The ViewHolder for the current item.
+     * @param position The position in the dataset.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SafeLocation contact = safe_locations.get(position);
@@ -83,8 +129,6 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         holder.getNameText().setText(contact.getName());
         holder.getAddressText().setText(contact.getAddress());
         holder.getNotesText().setText(contact.getNotes());
-
-
 
         holder.getEditButton().setOnClickListener(v -> {
             if (editListener != null) {
@@ -99,6 +143,11 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         });
     }
 
+    /**
+     * Returns the total number of items in the dataset.
+     *
+     * @return The item count.
+     */
     @Override
     public int getItemCount() {
         return safe_locations.size();

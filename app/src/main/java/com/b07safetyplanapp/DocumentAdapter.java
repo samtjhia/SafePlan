@@ -14,6 +14,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * RecyclerView Adapter for displaying a list of user-uploaded documents.
+ * <p>
+ * Supports click, edit, and delete actions via listener interfaces.
+ */
 public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHolder> {
 
     private List<Document> documents;
@@ -21,10 +26,26 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
     private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
+    /**
+     * Interface for handling click actions on a document item.
+     */
     public interface OnItemClickListener {
+        /**
+         * Called when a document is clicked.
+         *
+         * @param document the clicked document
+         */
         void onClick(Document document);
     }
 
+    /**
+     * Constructs a new DocumentAdapter.
+     *
+     * @param documents      the list of documents to display
+     * @param clickListener  the listener for opening documents
+     * @param editListener   the listener for editing documents
+     * @param deleteListener the listener for deleting documents
+     */
     public DocumentAdapter(List<Document> documents,
                            OnItemClickListener clickListener,
                            OnItemClickListener editListener,
@@ -35,6 +56,9 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
         this.deleteListener = deleteListener;
     }
 
+    /**
+     * ViewHolder that holds references to views in a document item layout.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView titleText;
         private final TextView descriptionText;
@@ -42,6 +66,11 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
         private final ImageButton editButton;
         private final ImageButton deleteButton;
 
+        /**
+         * Constructs the ViewHolder and initializes view references.
+         *
+         * @param itemView the item view
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             titleText = itemView.findViewById(R.id.tvDocumentTitle);
@@ -51,27 +80,40 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
             deleteButton = itemView.findViewById(R.id.btnDeleteDocument);
         }
 
+        /** @return the title TextView */
         public TextView getTitleText() {
             return titleText;
         }
 
+        /** @return the description TextView */
         public TextView getDescriptionText() {
             return descriptionText;
         }
 
+        /** @return the date TextView */
         public TextView getDateText() {
             return dateText;
         }
 
+        /** @return the edit ImageButton */
         public ImageButton getEditButton() {
             return editButton;
         }
 
+        /** @return the delete ImageButton */
         public ImageButton getDeleteButton() {
             return deleteButton;
         }
     }
 
+
+    /**
+     * Inflates the item layout and returns a ViewHolder.
+     *
+     * @param parent   the parent ViewGroup
+     * @param viewType the type of the new view
+     * @return the new ViewHolder
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -80,6 +122,13 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
         return new ViewHolder(view);
     }
 
+
+    /**
+     * Binds data to the ViewHolder's views for the given position.
+     *
+     * @param holder   the ViewHolder to bind data to
+     * @param position the item position in the dataset
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Document document = documents.get(position);
@@ -110,6 +159,12 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
         });
     }
 
+
+    /**
+     * Returns the number of documents in the list.
+     *
+     * @return the item count
+     */
     @Override
     public int getItemCount() {
         return documents.size();

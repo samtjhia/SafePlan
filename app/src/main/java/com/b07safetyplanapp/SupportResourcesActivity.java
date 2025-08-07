@@ -23,6 +23,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * SupportResourcesActivity displays local support resources (hotlines, shelters, police, legal aid, victim services)
+ * based on the user's city provided in the questionnaire. The resources are loaded from a local asset file,
+ * and their URLs are opened with animated transitions.
+ */
 public class SupportResourcesActivity extends AppCompatActivity {
 
     private ImageButton backButton;
@@ -42,6 +48,13 @@ public class SupportResourcesActivity extends AppCompatActivity {
     private ResourceDirectory resourceDirectory;
     private List<SupportResource> resourceList;
 
+
+    /**
+     * Initializes the activity, UI components, Firebase reference, and loads support resources
+     * based on the user's questionnaire response.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +77,10 @@ public class SupportResourcesActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+
+    /**
+     * Initializes Firebase instance and retrieves the current user UID for referencing questionnaire data.
+     */
     private void initializeFirebase() {
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
 
@@ -81,6 +98,10 @@ public class SupportResourcesActivity extends AppCompatActivity {
                 .child(uid);
     }
 
+
+    /**
+     * Binds UI components (buttons and subtexts) to their corresponding layout views.
+     */
     private void initializeViews() {
         hotlineButton = findViewById(R.id.HotlinesButton);
         shelterButton = findViewById(R.id.SheltersButton);
@@ -94,6 +115,11 @@ public class SupportResourcesActivity extends AppCompatActivity {
         victimSubtext = findViewById(R.id.VictimSubtitle);
     }
 
+
+    /**
+     * Loads the support resources based on the user's city (from questionnaire response).
+     * Resources are parsed from local JSON and matched by city.
+     */
     private void loadResources() {
         questionnaireRef.child("questionnaire")
                 .child("responses")
@@ -120,6 +146,11 @@ public class SupportResourcesActivity extends AppCompatActivity {
                 });
     }
 
+
+    /**
+     * Dynamically populates the UI with resource data and sets onClick listeners
+     * to open URLs in a browser with slide animations.
+     */
     private void initializeUI() {
         for(SupportResource s : resourceList) {
             switch(s.getType()) {
@@ -158,6 +189,12 @@ public class SupportResourcesActivity extends AppCompatActivity {
     }
 
     // Animation
+
+    /**
+     * Opens the provided URL using an Intent and applies slide-out animation.
+     *
+     * @param url The URL to open in the browser.
+     */
     private void openResourceWithAnimation(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));

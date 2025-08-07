@@ -33,7 +33,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Activity to present a dynamic questionnaire to the user.
+ * Questions include multiple choice, text input, and conditional sub-questions.
+ * Responses are stored in Firebase Realtime Database under each user's node.
+ */
 public class QuestionnaireActivity extends AppCompatActivity {
 
     private TextView questionText;
@@ -60,6 +64,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private DatabaseReference questionnaireRef;
     private String uid;
 
+    /**
+     * Initializes the activity, determines mode (new or edit),
+     * sets up Firebase, loads questionnaire data and responses.
+     *
+     * @param savedInstanceState Previous state (unused).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +97,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+    /**
+     * Initializes Firebase and retrieves current user UID.
+     * Aborts activity if no user is logged in.
+     */
     private void initializeFirebase() {
 
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
@@ -105,6 +119,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 .child(uid);
     }
 
+    /**
+     * Initializes all UI elements used in the questionnaire layout.
+     */
     private void initializeViews() {
         questionText = findViewById(R.id.question_text);
         optionsGroup = findViewById(R.id.options_group);
@@ -118,6 +135,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
+    /**
+     * Loads the questionnaire structure from local assets using {@link QuestionnaireParser}.
+     * Populates warm-up questions initially.
+     * If in edit mode, loads all questions at once.
+     */
     private void loadQuestionnaire() {
         QuestionnaireRoot root = QuestionnaireParser.loadQuestionnaire(this);
         if (root != null) {
@@ -135,6 +157,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads all branches and follow-up questions for edit mode.
+     * This bypasses logic-driven question filtering and shows the full form.
+     */
     private void loadAllQuestionsForEdit() {
 
         // Branch-specific questions
@@ -151,6 +177,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         followUpQuestionsAdded = true;
     }
 
+    /**
+     * Loads previously saved user responses from Firebase Realtime Database.
+     * If not in edit mode, uses the response to determine which branch-specific
+     * questions should be shown.
+     */
     private void loadPreviousResponsesFromFirebase() {
         questionnaireRef.child("questionnaire").child("responses")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -182,6 +213,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Based on the user's "situation" response, this method loads the appropriate
+     * branch-specific questions and follow-up questions.
+     * This ensures that only relevant parts of the questionnaire are shown.
+     */
     private void filterQuestionsBasedOnResponses() {
         // Use situation response to load branch questions
         for (UserResponse response : userResponses) {
@@ -210,6 +246,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
         followUpQuestionsAdded = true;
     }
 
+    /**
+     * Sets up click listeners for navigation and answer selection:
+     * - Handles "Next" and "Back" button actions.
+     * - Saves the current answer to Firebase and advances questions.
+     * - Detects changes in multiple-choice options to trigger sub-question visibility.
+     */
     private void setupClickListeners() {
         nextButton.setOnClickListener(v -> {
             try {
@@ -250,6 +292,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Displays the current question in the UI.
+     * Handles question type rendering (text vs. multiple-choice),
+     * updates progress bar, and restores previous answers if available.
+     */
     private void displayCurrentQuestion() {
         try {
             if (currentQuestionIndex >= allQuestions.size()) {
@@ -309,6 +356,9 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Updates visibility of the back button depending on the current question index.
+     */
     private void updateButtonStates() {
         if (backButton != null) {
             if (currentQuestionIndex > 0) {
@@ -320,6 +370,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Changes the label of the "Next" button depending on whether
+     * the current question is the last in the list and if in edit mode.
+     */
     private void updateButtonText() {
         if (nextButton != null) {
             if (currentQuestionIndex == allQuestions.size() - 1) {
@@ -334,6 +388,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays a multiple-choice question using a group of dynamically created radio buttons.
+     * Each option is displayed as a selectable RadioButton with custom font and spacing.
+     *
+     * @param question the question object containing the options to display
+     */
     private void displayMultipleChoiceQuestion(Question question) {
         if (optionsGroup != null && question.getOptions() != null) {
             optionsGroup.setVisibility(View.VISIBLE);
@@ -364,6 +424,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays a text input field for a question that expects a free-text answer.
+     * Clears any previous input and shows a hint to guide the user.
+     */
     private void displayTextQuestion() {
         if (textInput != null) {
             textInput.setVisibility(View.VISIBLE);
@@ -372,6 +436,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handles the visibility of a sub-question based on the currently selected answer.
+     * If the selected option matches the sub-question condition, the sub-question UI is shown.
+     * Otherwise, it is hidden.
+     */
     private void handleSubQuestionVisibility() {
         try {
             if (currentQuestionIndex >= allQuestions.size()) return;
@@ -409,6 +478,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Saves the current answer (and sub-answer if applicable) entered by the user.
+     * Validates input and updates or adds the user's response to the internal list.
+     *
+     * @return true if the answer was successfully saved; false otherwise
+     */
     private boolean saveCurrentAnswer() {
         try {
             if (currentQuestionIndex >= allQuestions.size()) {
@@ -499,6 +574,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Saves a single user response to Firebase based on the provided question ID.
+     *
+     * @param questionId the ID of the question for which the response should be saved
+     */
     private void saveResponseToFirebase(String questionId) {
         try {
             if (userResponses.isEmpty()) return;
@@ -529,6 +609,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads and displays any previously saved answer for the current question (and sub-question if applicable).
+     * Automatically checks the corresponding radio button or fills in the text field if data is found.
+     */
     private void loadPreviousAnswer() {
         try {
             if (currentQuestionIndex >= allQuestions.size()) return;
@@ -575,6 +659,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Advances to the next question in the questionnaire.
+     * If the current question is the last one, the questionnaire is marked as complete and the user is redirected to the MainActivity.
+     * Also handles dynamic branching logic: loads branch-specific and follow-up questions based on user responses.
+     */
     private void moveToNextQuestion() {
         try {
             if (currentQuestionIndex == allQuestions.size() - 1) {
@@ -618,6 +707,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Moves to the previous question in the questionnaire, if available.
+     * Reloads the previous question state.
+     */
     private void moveToPreviousQuestion() {
         try {
             if (currentQuestionIndex > 0) {
@@ -630,6 +723,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads branch-specific questions into the questionnaire based on the user's selected "situation".
+     * This allows the questionnaire to adapt dynamically to user context.
+     */
     private void loadBranchSpecificQuestions() {
         try {
             for (UserResponse response : userResponses) {
@@ -653,6 +750,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Calculates and returns the number of branch-specific questions currently in the questionnaire.
+     * This is done by subtracting the number of warm-up and follow-up questions from the total question list.
+     *
+     * @return the number of branch-specific questions
+     */
     private int getBranchQuestionsCount() {
         try {
             int warmUpCount = questionnaireData.getWarm_up().size();

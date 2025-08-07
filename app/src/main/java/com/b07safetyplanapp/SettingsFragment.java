@@ -14,8 +14,27 @@ import androidx.fragment.app.Fragment;
 import com.b07safetyplanapp.reminders.ReminderScheduleActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
+
+/**
+ * SettingsFragment provides a UI for users to manage application settings such as:
+ * - Navigating to privacy controls
+ * - Accessing reminder scheduling
+ * - Logging out of the app
+ *
+ * This fragment replaces the activity-based settings implementation for modularity.
+ */
 public class SettingsFragment extends Fragment {
 
+
+    /**
+     * Inflates the settings fragment layout and initializes all button listeners:
+     * Privacy Control, Reminders, Logout, and Back navigation.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views.
+     * @param container          If non-null, this is the parent view that the fragment's UI should attach to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous state.
+     * @return The View object for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

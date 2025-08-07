@@ -12,9 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+/**
+ * Fragment that provides an emergency exit button.
+ * <p>
+ * When clicked, the user is redirected to a safe external URL and the app is closed and directed to another website (Chrome).
+ */
 public class EmergencyExitFragment extends Fragment {
 
+    /**
+     * Inflates the emergency exit layout and sets up the exit button listener.
+     *
+     * @param inflater the LayoutInflater object used to inflate views
+     * @param container the parent ViewGroup for the fragment UI
+     * @param savedInstanceState the saved instance state, if any
+     * @return the root view of the fragment
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,

@@ -24,6 +24,10 @@ import com.b07safetyplanapp.models.emergencyinfo.SafeLocation;
 
 import java.util.UUID;
 
+/**
+ * Fragment for managing safe locations within the Safety Plan App.
+ * Allows the user to add, edit, and delete entries to the Firebase Realtime Database.
+ */
 public class SafeLocationsFragment extends Fragment {
     private EditText editTextName, editTextAddress, editTextNotes;
 
@@ -35,6 +39,15 @@ public class SafeLocationsFragment extends Fragment {
 
     //private FirebaseDatabase db;
     private DatabaseReference db;
+
+    /**
+     * Initializes the SafeLocationsFragment view with UI components and sets up click listeners for add, edit, and delete actions.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,6 +96,12 @@ public class SafeLocationsFragment extends Fragment {
         return view;
 
     }
+
+    /**
+     * Adds a new SafeLocation to the Firebase Realtime Database using input from the user.
+     * Fields required: name, address, notes.
+     * Displays a success or failure Toast based on the outcome.
+     */
     private void addItem() {
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
@@ -107,6 +126,10 @@ public class SafeLocationsFragment extends Fragment {
         });
     }
 
+    /**
+     * Edits an existing SafeLocation in the Firebase database.
+     * Requires that a safe location with the same name exists.
+     */
     private void editItem(){
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
@@ -148,6 +171,10 @@ public class SafeLocationsFragment extends Fragment {
         });
 
     }
+
+    /**
+     * Deletes a SafeLocation from the Firebase database based on the name and address.
+     */
     private void deleteItem() {
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();

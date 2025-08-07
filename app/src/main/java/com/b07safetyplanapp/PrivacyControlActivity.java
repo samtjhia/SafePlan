@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,28 +15,39 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Activity for managing user privacy settings, specifically account deletion.
+ * <p>
+ * Allows a user to:
+ * - Re-authenticate for security
+ * - Delete their account data from Firebase Realtime Database
+ * - Delete their Firebase Authentication account
+ */
 public class PrivacyControlActivity extends AppCompatActivity {
 
-
+    /**
+     * Called when the activity is created.
+     * Sets up the layout and click listeners for the delete and back buttons.
+     *
+     * @param savedInstanceState saved instance state bundle
+     */
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_control);
 
-        //Delete button creation
         Button deleteButton = findViewById(R.id.btnDeleteAccount);
         deleteButton.setOnClickListener(v -> promptForReauth());
 
-        //Listener for back button from LinearLayout
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
-        //findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
-    //Pop-up window fo re-authorization
+    /**
+     * Prompts the user to re-authenticate with email and password
+     * before account deletion for security purposes.
+     */
     private void promptForReauth() {
-
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "No user signed in.", Toast.LENGTH_SHORT).show();
@@ -52,7 +62,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
 
         final android.widget.EditText emailInput = new android.widget.EditText(this);
         emailInput.setHint("Email");
-        emailInput.setText(user.getEmail()); // Autofill
+        emailInput.setText(user.getEmail());
         layout.addView(emailInput);
 
         final android.widget.EditText passwordInput = new android.widget.EditText(this);
@@ -82,7 +92,9 @@ public class PrivacyControlActivity extends AppCompatActivity {
         builder.show();
     }
 
-    //Confirmation Dialog
+    /**
+     * Shows a confirmation dialog before permanently deleting the account and associated data.
+     */
     private void showConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Account & Data")
@@ -92,11 +104,12 @@ public class PrivacyControlActivity extends AppCompatActivity {
                 .show();
     }
 
-    //Deleting user's DATA from DB
+    /**
+     * Deletes the user's data from the Firebase Realtime Database.
+     * Proceeds to delete the user's authentication record upon success.
+     */
     private void deleteUserData() {
-        //Getting user's instance (uid)
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        //No user signed-in
         if (user == null) {
             Toast.makeText(this, "No user is signed in.", Toast.LENGTH_SHORT).show();
             return;
@@ -107,15 +120,17 @@ public class PrivacyControlActivity extends AppCompatActivity {
                 .getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/")
                 .getReference("users")
                 .child(uid);
-        //remobing user and all user's children
+
         userRef.removeValue()
                 .addOnSuccessListener(aVoid -> deleteAuthUser())
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Failed to delete user data from database.", Toast.LENGTH_SHORT).show());
     }
 
-
-    //Flow for delete fro user
+    /**
+     * Deletes the user's Firebase Authentication account.
+     * Finishes the app session afterward using `finishAffinity()`.
+     */
     private void deleteAuthUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -125,7 +140,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Failed to delete user account.", Toast.LENGTH_SHORT).show());
 
-            finishAffinity(); // Close the app or return to Welcome/Login
+            finishAffinity(); // Close the app completely
         }
     }
 }

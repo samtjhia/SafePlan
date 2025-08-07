@@ -21,6 +21,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
+/**
+ * Fragment that allows users to delete an item from Firebase by specifying the title
+ * and selecting a category.
+ */
+
 public class DeleteItemFragment extends Fragment {
     private EditText editTextTitle;
     private Spinner spinnerCategory;
@@ -29,6 +35,17 @@ public class DeleteItemFragment extends Fragment {
     private FirebaseDatabase db;
     private DatabaseReference itemsRef;
 
+
+
+    /**
+     * Inflates the delete item layout and initializes input fields, spinner,
+     * and delete button listener.
+     *
+     * @param inflater the LayoutInflater object used to inflate views
+     * @param container the parent ViewGroup that holds the fragment UI
+     * @param savedInstanceState the saved state bundle, if any
+     * @return the root view of the fragment
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,6 +73,13 @@ public class DeleteItemFragment extends Fragment {
         return view;
     }
 
+
+    /**
+     * Deletes an item from the Firebase database by matching the entered title
+     * under the selected category.
+     *
+     * @throws IllegalStateException if the title field is empty
+     */
     private void deleteItemByTitle() {
         String title = editTextTitle.getText().toString().trim();
         String category = spinnerCategory.getSelectedItem().toString().toLowerCase();

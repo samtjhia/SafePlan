@@ -19,6 +19,10 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
+/**
+ * Model class that handles login logic including both email/password and PIN-based authentication.
+ * Supports secure storage and decryption using Android Keystore with AES/GCM/NoPadding.
+ */
 public class LoginModel implements LoginContract.Model {
 
     private static final String PREF_NAME = "safeplan_prefs";
@@ -34,6 +38,10 @@ public class LoginModel implements LoginContract.Model {
         this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Authenticates the user using Firebase with email and password.
+     * Also checks whether the current user matches the stored PIN credentials.
+     */
     @Override
     public void loginWithEmail(String email, String password, OnLoginFinishedListener listener) {
         firebaseAuth.signInWithEmailAndPassword(email, password)
@@ -83,6 +91,10 @@ public class LoginModel implements LoginContract.Model {
                 });
     }
 
+    /**
+     * Authenticates the user by comparing the entered PIN against the stored encrypted PIN.
+     * If successful, it retrieves and decrypts the saved email and password and logs into Firebase.
+     */
     @Override
     public void loginWithPin(String inputPin, OnLoginFinishedListener listener) {
         try {
@@ -152,6 +164,10 @@ public class LoginModel implements LoginContract.Model {
         }
     }
 
+    /**
+     * Stores basic user data (email and timestamp) to Firebase Realtime Database
+     * under /users/{uid}/.
+     */
     private void storeUserDataToRealtimeDB() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {

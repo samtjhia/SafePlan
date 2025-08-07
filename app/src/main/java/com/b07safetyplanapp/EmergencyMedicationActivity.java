@@ -25,7 +25,12 @@ import com.b07safetyplanapp.models.emergencyinfo.Medication;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Activity for managing emergency medications.
+ * <p>
+ * Allows users to add, edit, and delete medications stored in Firebase. Includes
+ * validation for duplicate names and real-time updates to a RecyclerView.
+ */
 public class EmergencyMedicationActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -36,6 +41,11 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DatabaseReference database;
 
+    /**
+     * Initializes the activity, Firebase reference, UI, and loads existing medications.
+     *
+     * @param savedInstanceState the previously saved instance state, if any
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +55,17 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         loadMedications();
     }
 
+
     @Override
     public void finish() { // back animation
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+    /**
+     * Sets up the Firebase database reference for the current user's medications.
+     * Shows a toast and exits if the user is not logged in.
+     */
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -67,6 +82,9 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
                 .child("users").child(userId).child("medications");
     }
 
+    /**
+     * Initializes UI components including RecyclerView  for adding medications.
+     */
     private void setupUI() {
         recyclerView = findViewById(R.id.recyclerViewMedications);
         fabAdd = findViewById(R.id.fabAddMedication);
@@ -80,9 +98,23 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
+    /**
+     * Normalizes a medication name by trimming and converting to lowercase.
+     *
+     * @param address the original name
+     * @return the normalized name
+     */
     private String normalizeName(String address) {
         return address.trim().replaceAll("\\s+", " ").toLowerCase();
     }
+
+    /**
+     * Checks whether a medication with the same name already exists in the list.
+     *
+     * @param name the medication name to check
+     * @param excludeMedicationId ID to exclude from the check (used when editing)
+     * @return true if a duplicate exists, false otherwise
+     */
     private boolean isDuplicateName(String name, String excludeMedicationId) {
         try {
             if (name == null || name.trim().isEmpty()) {
@@ -122,6 +154,9 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays a dialog to add a new medication. Validates input before saving.
+     */
     private void showAddMedicationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_medication, null);
@@ -157,6 +192,12 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    /**
+     * Saves a new medication to Firebase.
+     *
+     * @param name the medication name
+     * @param dosage the medication dosage
+     */
     private void saveMedication(String name, String dosage) {
         String medicationId = database.push().getKey();
 
@@ -175,6 +216,9 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Loads all medications from Firebase and updates the RecyclerView.
+     */
     private void loadMedications() {
         database.addValueEventListener(new ValueEventListener() {
             @Override
@@ -198,6 +242,12 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Displays a dialog to edit an existing medication.
+     * Updates the Firebase entry upon saving.
+     *
+     * @param medication the medication to edit
+     */
     private void editMedication(Medication medication) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_medication, null);
@@ -244,6 +294,11 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Displays a confirmation dialog and deletes the specified medication from Firebase.
+     *
+     * @param medication the medication to delete
+     */
     private void deleteMedication(Medication medication) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Medication")
@@ -261,6 +316,10 @@ public class EmergencyMedicationActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Ensures the user is still logged in when the activity starts.
+     * Finishes the activity if not authenticated.
+     */
     @Override
     protected void onStart() {
         super.onStart();

@@ -23,22 +23,35 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.UUID;
 
+/**
+ * Fragment for managing user medications.
+ * <p>
+ * Users can add, edit, or delete medications that are stored in Firebase Realtime Database
+ * under their unique user ID.
+ */
 public class MedicationsFragment extends Fragment {
 
     private EditText editTextName, editTextDosage;
-
-    private Button buttonAdd;
-    private Button buttonEdit;
-    private Button buttonDelete;
+    private Button buttonAdd, buttonEdit, buttonDelete;
 
     private FirebaseUser currentUser;
-
-    //private FirebaseDatabase db;
     private DatabaseReference db;
+
+    /**
+     * Called to create the fragment's UI view.
+     *
+     * @param inflater           the LayoutInflater used to inflate views
+     * @param container          the parent view this fragment's UI should be attached to
+     * @param savedInstanceState saved state for restoration, if applicable
+     * @return the view hierarchy associated with this fragment
+     */
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_medication, container, false);
+
         editTextName = view.findViewById(R.id.editTextName);
         editTextDosage = view.findViewById(R.id.editTextDosage);
 
@@ -47,49 +60,35 @@ public class MedicationsFragment extends Fragment {
         buttonDelete = view.findViewById(R.id.buttonDelete);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String userId = currentUser.getUid();
 
-        db = FirebaseDatabase.getInstance().getReference()
-                .child("users").child(userId).child("medications");
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            db = FirebaseDatabase.getInstance().getReference()
+                    .child("users").child(userId).child("medications");
+        }
 
+        buttonAdd.setOnClickListener(v -> addItem());
+        buttonEdit.setOnClickListener(v -> editItem());
+        buttonDelete.setOnClickListener(v -> deleteItem());
 
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addItem();
-            }
-        });
-
-        buttonEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editItem();
-            }
-        });
-
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteItem();
-            }
-        });
         return view;
     }
 
+    /**
+     * Adds a new medication entry to Firebase.
+     * Validates that name and dosage fields are not empty.
+     */
     private void addItem() {
         String name = editTextName.getText().toString().trim();
         String dosage = editTextDosage.getText().toString().trim();
         String id = UUID.randomUUID().toString();
 
-        if (name.isEmpty() || dosage.isEmpty() ) {
+        if (name.isEmpty() || dosage.isEmpty()) {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
-        //String id = itemsRef.push().getKey();
         Medication item = new Medication(name, dosage, id);
-
         db.child(name).setValue(item).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(getContext(), "Item added", Toast.LENGTH_SHORT).show();
@@ -99,25 +98,27 @@ public class MedicationsFragment extends Fragment {
         });
     }
 
-
-    private void editItem(){
+    /**
+     * Edits an existing medication in Firebase based on its name.
+     * Searches for a matching medication name and updates the dosage.
+     */
+    private void editItem() {
         String name = editTextName.getText().toString().trim();
         String dosage = editTextDosage.getText().toString().trim();
         String id = UUID.randomUUID().toString();
 
-        if (name.isEmpty() || dosage.isEmpty() ) {
+        if (name.isEmpty() || dosage.isEmpty()) {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
+
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 boolean itemFound = false;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Medication item = snapshot.getValue(Medication.class);
-                    if (item != null && item.getName().equalsIgnoreCase(name) ) {
+                    if (item != null && item.getName().equalsIgnoreCase(name)) {
                         Medication medication = new Medication(name, dosage, id);
-
                         db.child(name).setValue(medication).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getContext(), "Medication Edited", Toast.LENGTH_SHORT).show();
@@ -133,29 +134,35 @@ public class MedicationsFragment extends Fragment {
                     Toast.makeText(getContext(), "Medication not found. Please enter the name of an existing medication.", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(getContext(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
+    /**
+     * Deletes a medication entry from Firebase based on name and dosage.
+     */
     private void deleteItem() {
         String name = editTextName.getText().toString().trim();
         String dosage = editTextDosage.getText().toString().trim();
-
 
         if (name.isEmpty() || dosage.isEmpty()) {
             Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
+
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean itemFound = false;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Medication item = snapshot.getValue(Medication.class);
-                    if (item != null && item.getName().equalsIgnoreCase(name) && item.getDosage().equalsIgnoreCase(dosage)) {
+                    if (item != null &&
+                            item.getName().equalsIgnoreCase(name) &&
+                            item.getDosage().equalsIgnoreCase(dosage)) {
+
                         snapshot.getRef().removeValue().addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getContext(), "Item deleted", Toast.LENGTH_SHORT).show();
@@ -167,6 +174,7 @@ public class MedicationsFragment extends Fragment {
                         break;
                     }
                 }
+
                 if (!itemFound) {
                     Toast.makeText(getContext(), "Item not found", Toast.LENGTH_SHORT).show();
                 }
@@ -177,9 +185,5 @@ public class MedicationsFragment extends Fragment {
                 Toast.makeText(getContext(), "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
-
-
 }

@@ -18,6 +18,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
+/**
+ * Fragment that allows users to add, edit, or delete emergency contacts
+ * stored in the Firebase Realtime Database.
+ */
+
 public class ContactsFragment extends Fragment {
     private EditText editTextName, editTextRelationship, editTextPhone;
 
@@ -26,7 +32,23 @@ public class ContactsFragment extends Fragment {
     private Button buttonDelete;
 
     //private FirebaseDatabase db;
+
+
+
+
     private DatabaseReference db;
+
+
+
+    /**
+     * Inflates the contact management view and sets up the database reference
+     * and button click listeners for add, edit, and delete actions.
+     *
+     * @param inflater the LayoutInflater object used to inflate views
+     * @param container the parent ViewGroup for the fragment's UI
+     * @param savedInstanceState the previously saved state, if any
+     * @return the inflated root view
+     */
 
     @Nullable
     @Override
@@ -70,6 +92,12 @@ public class ContactsFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * Adds a new contact to the Firebase Realtime Database after checking for duplicates.
+     *
+     * @throws IllegalStateException if any of the input fields are empty
+     */
     private void addItem() {
         String name = editTextName.getText().toString().trim();
         String relationship = editTextRelationship.getText().toString().trim();
@@ -114,6 +142,12 @@ public class ContactsFragment extends Fragment {
         });
 
     }
+
+    /**
+     * Edits an existing contact in the Firebase Realtime Database based on the provided name.
+     *
+     * @throws IllegalStateException if any of the input fields are empty
+     */
     private void editItem(){
         String name = editTextName.getText().toString().trim();
         String relationship = editTextRelationship.getText().toString().trim();
@@ -155,7 +189,11 @@ public class ContactsFragment extends Fragment {
 
     }
 
-
+    /**
+     * Deletes a contact from the Firebase Realtime Database if all fields match.
+     *
+     * @throws IllegalStateException if any of the input fields are empty
+     */
     private void deleteItem() {
         String name = editTextName.getText().toString().trim();
         String relationship = editTextRelationship.getText().toString().trim();

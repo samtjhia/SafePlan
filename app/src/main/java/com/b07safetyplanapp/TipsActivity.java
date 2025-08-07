@@ -27,6 +27,11 @@ import java.util.Map;
 
 import com.b07safetyplanapp.models.questionnaire.Tip;
 
+/**
+ * TipsActivity generates and displays personalized safety tips based on the user's
+ * responses to a questionnaire. It retrieves user responses from Firebase and
+ * matches them with pre-defined tips using a local JSON file.
+ */
 public class TipsActivity extends AppCompatActivity {
 
     private Map<String, TipData> tipMap;
@@ -41,6 +46,13 @@ public class TipsActivity extends AppCompatActivity {
     private String uid;
 
     private Button backButton;
+
+    /**
+     * Called when the activity is starting. Sets up UI and begins loading tips.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +69,20 @@ public class TipsActivity extends AppCompatActivity {
         loadUserResponses();
 
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
-
-
-
     }
 
+    /**
+     * Handles animation when user exits the activity.
+     */
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    /**
+     * Sets up the disclaimer section with a close button. When clicked, the disclaimer is hidden.
+     */
     private void setupDisclaimerClose() {
         ImageButton closeButton = findViewById(R.id.closeDisclaimerButton);
         View disclaimerContainer = findViewById(R.id.disclaimerContainer);
@@ -69,45 +90,38 @@ public class TipsActivity extends AppCompatActivity {
         if (closeButton != null && disclaimerContainer != null) {
             closeButton.setOnClickListener(v -> {
                 disclaimerContainer.setVisibility(View.GONE);
-                // Optionally save this preference so it stays hidden
-                // You could use SharedPreferences here to remember the user's choice
+                // Optionally save this preference
             });
         }
     }
 
-    @Override
-    public void finish() { // back animation
-        super.finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-    }
-
+    /**
+     * Initializes Firebase Database and retrieves the current user UID.
+     * If the user is not logged in, a Toast is shown and the activity is closed.
+     */
     private void initializeFirebase() {
-        // Initialize Firebase Database
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
         if (currentUser == null) {
             Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
-            finish(); // Exit activity
+            finish();
             return;
         }
 
         uid = currentUser.getUid();
-
-        // Path: users/{uid}/questionnaire
-        questionnaireRef = database.getReference("users")
-                .child(uid);
-
+        questionnaireRef = database.getReference("users").child(uid);
     }
 
+    /**
+     * Loads user responses from Firebase and initializes tip generation if successful.
+     */
     private void loadUserResponses() {
-        questionnaireRef.child("questionnaire")
-                .child("responses")
+        questionnaireRef.child("questionnaire").child("responses")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         userResponses = new ArrayList<>();
-
                         DataSnapshot snapshot = task.getResult();
                         for (DataSnapshot child : snapshot.getChildren()) {
                             UserResponse response = child.getValue(UserResponse.class);
@@ -120,7 +134,9 @@ public class TipsActivity extends AppCompatActivity {
                 });
     }
 
-
+    /**
+     * Loads the local JSON tip mapping using QuestionnaireParser.
+     */
     private void loadTipMap() {
         QuestionnaireRoot root = QuestionnaireParser.loadQuestionnaire(this);
         if (root != null) {
@@ -128,6 +144,10 @@ public class TipsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Generates a list of Tip objects based on user responses and corresponding TipData.
+     * Applies placeholder substitution where needed.
+     */
     private void generateTips() {
         if (userResponses == null || tipMap == null) return;
 
@@ -163,22 +183,24 @@ public class TipsActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Replaces placeholders in the tip text with the corresponding user answer.
+     * Format expected: "Some text {questionId} more text"
+     *
+     * @param s The raw tip string with placeholders.
+     * @return The formatted string with actual user answer.
+     */
     private String replacePlaceholders(String s) {
-        if(!s.contains("{")) {
-            return s;
-        }
+        if (!s.contains("{")) return s;
 
         String questionId = s.substring(s.indexOf("{") + 1, s.indexOf("}"));
 
-        for(UserResponse u : userResponses) {
-            if(u.getQuestionId().equalsIgnoreCase(questionId)) {
+        for (UserResponse u : userResponses) {
+            if (u.getQuestionId().equalsIgnoreCase(questionId)) {
                 return s.substring(0, s.indexOf("{")) + u.getAnswer() + s.substring(s.indexOf("}") + 1);
             }
         }
+
         return s;
     }
-
-
-
 }

@@ -17,11 +17,21 @@ import androidx.core.app.NotificationCompat;
 
 import com.b07safetyplanapp.login.LoginActivity;
 
+/**
+ * BroadcastReceiver responsible for handling scheduled reminder alarms and displaying notifications.
+ * When triggered, this receiver builds and shows a high-priority notification with a reminder message.
+ */
 public class ReminderReceiver extends BroadcastReceiver {
 
     private static final String CHANNEL_ID = "reminder_channel";
 
-    //Receiving a Reminder
+    /**
+     * Called when the BroadcastReceiver receives the alarm broadcast.
+     * Triggers a notification with the reminder message and a forced logout redirection.
+     *
+     * @param context The context in which the receiver is running.
+     * @param intent  The intent being received, expected to contain the reminder title.
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("ReminderReceiver", "Broadcast received");
@@ -33,10 +43,10 @@ public class ReminderReceiver extends BroadcastReceiver {
             reminderTitle = "Unnamed Reminder";
         }
 
-        // Redirect to LoginActivity and request logout via flag
+        // Prepare intent to redirect to LoginActivity and request logout
         Intent loginIntent = new Intent(context, LoginActivity.class);
         loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        loginIntent.putExtra("forceLogout", true);  //Trigger logout in LoginActivity
+        loginIntent.putExtra("forceLogout", true);  // Signal to trigger logout in LoginActivity
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
@@ -45,9 +55,9 @@ public class ReminderReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-
-        //Creating a notification template
+        // Build and display the notification
         createNotificationChannel(context);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setContentTitle("Reminder")
@@ -61,7 +71,12 @@ public class ReminderReceiver extends BroadcastReceiver {
         manager.notify((int) System.currentTimeMillis(), builder.build());
     }
 
-    //Create notification based on user's input
+    /**
+     * Creates a notification channel if it does not exist.
+     * Required for API 26+ to display high-priority notifications.
+     *
+     * @param context The application context used to access system services.
+     */
     private void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager manager = context.getSystemService(NotificationManager.class);
@@ -73,7 +88,7 @@ public class ReminderReceiver extends BroadcastReceiver {
                 );
                 channel.setDescription("Reminder notifications with sound and alerts");
 
-                //Sound of notification
+                // Set default system sound for the channel
                 Uri soundUri = Settings.System.DEFAULT_NOTIFICATION_URI;
                 AudioAttributes audioAttributes = new AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION)

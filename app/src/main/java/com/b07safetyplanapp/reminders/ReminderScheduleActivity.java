@@ -23,6 +23,10 @@ import com.google.firebase.database.*;
 
 import java.util.Calendar;
 
+/**
+ * Activity to manage the scheduling, editing, and deletion of reminders.
+ * Reminders are saved to Firebase Realtime Database and trigger Android notifications via AlarmManager.
+ */
 public class ReminderScheduleActivity extends AppCompatActivity {
 
     private EditText etReminderTitle;
@@ -37,26 +41,27 @@ public class ReminderScheduleActivity extends AppCompatActivity {
 
     private Reminder editingReminder = null;
 
+    /**
+     * Initializes the UI and Firebase setup.
+     * Loads existing reminders and sets up listeners for adding/editing.
+     *
+     * @param savedInstanceState The saved instance state for the activity.
+     */
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.b07safetyplanapp.R.layout.activity_reminder);
+        setContentView(R.layout.activity_reminder);
 
-        //Resources id's used for a reminder
-        etReminderTitle = findViewById(com.b07safetyplanapp.R.id.etReminderTitle);
-        spinnerFrequency = findViewById(com.b07safetyplanapp.R.id.spinnerFrequency);
-        timePicker = findViewById(com.b07safetyplanapp.R.id.timePicker);
-        btnAddReminder = findViewById(com.b07safetyplanapp.R.id.btnAddReminder);
+        etReminderTitle = findViewById(R.id.etReminderTitle);
+        spinnerFrequency = findViewById(R.id.spinnerFrequency);
+        timePicker = findViewById(R.id.timePicker);
+        btnAddReminder = findViewById(R.id.btnAddReminder);
         reminderListContainer = findViewById(R.id.reminderListContainer);
         timePicker.setIs24HourView(true);
 
-        //Listener for back button from LinearLayout
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
-        //findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-
-        //MVP log-in connection
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             Toast.makeText(this, "User not signed in", Toast.LENGTH_SHORT).show();
@@ -64,13 +69,14 @@ public class ReminderScheduleActivity extends AppCompatActivity {
             return;
         }
 
-        //Writing to db
-        dbRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid()).child("reminders");
+        dbRef = FirebaseDatabase.getInstance()
+                .getReference("users")
+                .child(currentUser.getUid())
+                .child("reminders");
 
         requestPermissionsIfNeeded();
         loadReminders();
 
-        //Creating reminder
         btnAddReminder.setOnClickListener(v -> {
             String title = etReminderTitle.getText().toString().trim();
             String frequency = spinnerFrequency.getSelectedItem().toString();
@@ -81,7 +87,7 @@ public class ReminderScheduleActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a title", Toast.LENGTH_SHORT).show();
                 return;
             }
-            //Editing Reminder
+
             if (editingReminder == null) {
                 String reminderId = dbRef.push().getKey();
                 if (reminderId != null) {
@@ -108,7 +114,9 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         });
     }
 
-    //Requesting permissions to send reminders & notifications (new Andoroid versions)
+    /**
+     * Requests notification and exact alarm permissions for Android 12+ and 13+.
+     */
     private void requestPermissionsIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -127,6 +135,9 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads reminders from Firebase and displays them in the UI.
+     */
     private void loadReminders() {
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -147,7 +158,11 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         });
     }
 
-    //Manage Reminders view
+    /**
+     * Dynamically adds a reminder row to the UI with edit and delete options.
+     *
+     * @param reminder The reminder to be displayed.
+     */
     private void addReminderView(Reminder reminder) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -157,14 +172,11 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         text.setText(reminder.getTitle() + " @ " + String.format("%02d:%02d", reminder.getHour(), reminder.getMinute()));
         text.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2));
 
-        //Button to edit Reminders
         Button editBtn = new Button(this);
         editBtn.setText("Edit");
         editBtn.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         editBtn.setOnClickListener(v -> loadReminderForEdit(reminder));
 
-
-        //Button to delete reminders
         Button delBtn = new Button(this);
         delBtn.setText("Delete");
         delBtn.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -176,7 +188,11 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         reminderListContainer.addView(row);
     }
 
-    //Updating existing reminders view for editing purposes
+    /**
+     * Loads the selected reminder into the UI for editing.
+     *
+     * @param reminder The reminder to be edited.
+     */
     private void loadReminderForEdit(Reminder reminder) {
         etReminderTitle.setText(reminder.getTitle());
 
@@ -191,7 +207,11 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         btnAddReminder.setText("Update Reminder");
     }
 
-    //Deleteing a reminder
+    /**
+     * Deletes a reminder from Firebase and cancels its scheduled alarm.
+     *
+     * @param reminder The reminder to delete.
+     */
     private void deleteReminder(Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderReceiver.class);
@@ -208,7 +228,11 @@ public class ReminderScheduleActivity extends AppCompatActivity {
                 });
     }
 
-    //Schedulinng a notification via Reminder Receiver
+    /**
+     * Schedules a local notification for the given reminder based on its frequency and time.
+     *
+     * @param reminder The reminder to schedule.
+     */
     private void scheduleNotification(Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderReceiver.class);
@@ -261,7 +285,13 @@ public class ReminderScheduleActivity extends AppCompatActivity {
         }
     }
 
-    //Notification Permission (new Android versions)
+    /**
+     * Callback after requesting runtime permissions.
+     *
+     * @param requestCode  The request code passed in requestPermissions().
+     * @param permissions  The requested permissions.
+     * @param results      The results for the corresponding permissions.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);

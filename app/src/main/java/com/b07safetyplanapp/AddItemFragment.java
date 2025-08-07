@@ -18,6 +18,12 @@ import com.b07safetyplanapp.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Fragment for adding a new item to Firebase under a selected category.
+ * <p>
+ * Validates data, and stores the item in the database.
+ */
+
 public class AddItemFragment extends Fragment {
     private EditText editTextTitle, editTextAuthor, editTextGenre, editTextDescription;
     private Spinner spinnerCategory;
@@ -26,6 +32,16 @@ public class AddItemFragment extends Fragment {
     private FirebaseDatabase db;
     private DatabaseReference itemsRef;
 
+
+    /**
+     * Inflates the layout for the fragment and initializes all input fields,
+     * button, and spinner with category options.
+     *
+     * @param inflater the LayoutInflater used to inflate views
+     * @param container the parent ViewGroup into which the fragment's UI is inserted
+     * @param savedInstanceState the saved instance state, if any
+     * @return the root view of the fragment's layout
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +71,13 @@ public class AddItemFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * Collects user input, validates required fields, and adds a new item
+     * to the Firebase database under the selected category.
+     *
+     * @throws IllegalStateException if any required field is empty
+     */
 
     private void addItem() {
         String title = editTextTitle.getText().toString().trim();

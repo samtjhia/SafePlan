@@ -2,27 +2,54 @@ package com.b07safetyplanapp.login;
 
 import android.content.Context;
 
+/**
+ * Presenter class for handling login operations in MVP architecture.
+ * Coordinates between the View and Model, handling logic for email/password and PIN authentication.
+ */
 public class LoginPresenter implements LoginContract.Presenter{
 
     private LoginContract.View view;
     private LoginContract.Model model;
     private final Context context;
 
+    /**
+     * Constructor for LoginPresenter.
+     *
+     * @param context the context used for operations like navigation and accessing system services
+     * @param model   the model that handles authentication logic
+     */
     public LoginPresenter(Context context, LoginContract.Model model) {
         this.context = context;
         this.model = model;
     }
 
+
+    /**
+     * Attaches the view to this presenter.
+     *
+     * @param view the view interface to be attached
+     */
     @Override
     public void attachView(LoginContract.View view) {
         this.view = view;
     }
 
+
+    /**
+     * Detaches the view from this presenter to prevent memory leaks.
+     */
     @Override
     public void detachView() {
         this.view = null;
     }
 
+
+    /**
+     * Handles logic when the user attempts to log in with email and password.
+     *
+     * @param email    the user's email address
+     * @param password the user's password
+     */
     @Override
     public void onEmailLoginClicked(String email, String password) {
         if (view == null) return;
@@ -65,6 +92,12 @@ public class LoginPresenter implements LoginContract.Presenter{
         });
     }
 
+
+    /**
+     * Handles logic when the user attempts to log in using a PIN.
+     *
+     * @param pin the PIN entered by the user
+     */
     @Override
     public void onPinLoginClicked(String pin) {
         if (view == null) return;
@@ -99,16 +132,37 @@ public class LoginPresenter implements LoginContract.Presenter{
         });
     }
 
+
+    /**
+     * Validates whether the given email has a valid format.
+     *
+     * @param email the email address to validate
+     * @return true if valid, false otherwise
+     */
     @Override
     public boolean isEmailValid(String email) {
         return email != null && email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
 
+
+    /**
+     * Validates whether the given password is not empty.
+     *
+     * @param password the password string to validate
+     * @return true if valid, false otherwise
+     */
     @Override
     public boolean isPasswordValid(String password) {
         return password != null && !password.isEmpty();
     }
 
+
+    /**
+     * Validates whether the given PIN is 4 or 6 digits.
+     *
+     * @param pin the PIN to validate
+     * @return true if valid, false otherwise
+     */
     @Override
     public boolean isPinValid(String pin) {
         //all digits check

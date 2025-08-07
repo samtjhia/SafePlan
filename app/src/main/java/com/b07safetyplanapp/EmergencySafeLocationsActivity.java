@@ -25,16 +25,26 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for managing emergency safe locations.
+ * <p>
+ * This screen allows users to add, edit, and delete safe locations associated with their profile.
+ * Data is persisted in Firebase Realtime Database under the authenticated user's node.
+ */
 public class EmergencySafeLocationsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private EmergencySafeLocationsAdapter adapter;
     private List<SafeLocation> safeLocationList;
     private FloatingActionButton fabAdd;
-
     private FirebaseUser currentUser;
     private DatabaseReference database;
 
+    /**
+     * Initializes the activity and sets up Firebase and UI components.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +54,18 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         loadSafeLocations();
     }
 
+    /**
+     * Applies custom transition animation on activity finish.
+     */
     @Override
-    public void finish() { // back animation
+    public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+    /**
+     * Sets up Firebase authentication and database reference.
+     */
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -60,12 +76,13 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         }
 
         String userId = currentUser.getUid();
-//        String userId = "userId123"; // hardcoded for testing
-
         database = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(userId).child("safe_locations");
     }
 
+    /**
+     * Sets up the RecyclerView, adapter, and button click listeners.
+     */
     private void setupUI() {
         recyclerView = findViewById(R.id.recyclerViewSafeLocations);
         fabAdd = findViewById(R.id.fabAddSafeLocation);
@@ -79,51 +96,48 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
-
-
+    /**
+     * Normalizes address strings for comparison.
+     *
+     * @param address the address string
+     * @return the normalized (lowercase, trimmed) address
+     */
     private String normalizeAddress(String address) {
         return address.trim().replaceAll("\\s+", " ").toLowerCase();
     }
 
-
+    /**
+     * Checks if the provided address already exists in the list, excluding a specific ID if needed.
+     *
+     * @param address              the address to check
+     * @param excludeSafeLocationId the ID to exclude from comparison (for updates)
+     * @return true if duplicate exists, false otherwise
+     */
     private boolean isDuplicateAddress(String address, String excludeSafeLocationId) {
         try {
-            if (address == null || address.trim().isEmpty()) {
+            if (address == null || address.trim().isEmpty() || safeLocationList == null || safeLocationList.isEmpty()) {
                 return false;
             }
 
+            for (SafeLocation location : safeLocationList) {
+                if (location == null || location.getAddress() == null) continue;
+                if (excludeSafeLocationId != null && excludeSafeLocationId.equals(location.getId())) continue;
 
-
-            if (safeLocationList == null || safeLocationList.isEmpty()) {
-                return false;
-            }
-
-            for (SafeLocation safe_location : safeLocationList) {
-                if (safe_location == null || safe_location.getAddress() == null) {
-                    continue;
-                }
-
-                String safe_locationId = safe_location.getId();
-                if (excludeSafeLocationId != null && safe_locationId != null && safe_locationId.equals(excludeSafeLocationId)) {
-                    continue;
-                }
-
-                String existingAddress = normalizeAddress(safe_location.getAddress());
-                String currentAddress = normalizeAddress(address);
-                if (existingAddress.equals(currentAddress)) {
+                if (normalizeAddress(location.getAddress()).equals(normalizeAddress(address))) {
                     Toast.makeText(this, "This address is already being used!", Toast.LENGTH_SHORT).show();
                     return true;
                 }
             }
-
             return false;
-
         } catch (Exception e) {
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-            return false; // Allow saving if there's an error
+            return false;
         }
     }
 
+    /**
+     * Displays a dialog to add a new safe location.
+     */
     private void showAddSafeLocationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_safe_location, null);
@@ -144,51 +158,43 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
                 return;
             }
 
-            if (isDuplicateAddress(address, null)) {
-                return;
-            }
-
+            if (isDuplicateAddress(address, null)) return;
 
             saveSafeLocation(name, address, notes);
         });
 
         builder.setNegativeButton("Cancel", null);
-
         builder.create().show();
     }
 
+    /**
+     * Saves a new safe location to Firebase.
+     *
+     * @param name    the name of the location
+     * @param address the address of the location
+     * @param notes   any notes for the location
+     */
     private void saveSafeLocation(String name, String address, String notes) {
-        String safeLocationId = database.push().getKey();
+        String id = database.push().getKey();
+        SafeLocation location = new SafeLocation(name, address, notes, id);
 
-        SafeLocation safe_location = new SafeLocation(
-                name,
-                address,
-                notes,
-                safeLocationId
-        );
-
-        database.child(safeLocationId).setValue(safe_location)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Safe Location saved!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
-                });
+        database.child(id).setValue(location)
+                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Safe Location saved!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Loads all safe locations from Firebase for the current user.
+     */
     private void loadSafeLocations() {
         database.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot snapshot) {
                 safeLocationList.clear();
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    SafeLocation safe_location = snapshot.getValue(SafeLocation.class);
-                    if (safe_location != null) {
-                        safeLocationList.add(safe_location);
-                    }
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    SafeLocation location = child.getValue(SafeLocation.class);
+                    if (location != null) safeLocationList.add(location);
                 }
-
                 adapter.notifyDataSetChanged();
             }
 
@@ -199,71 +205,70 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         });
     }
 
-    private void editSafeLocation(SafeLocation safe_location) {
+    /**
+     * Opens an edit dialog for an existing safe location.
+     *
+     * @param location the location to edit
+     */
+    private void editSafeLocation(SafeLocation location) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_safe_location, null);
 
         EditText nameInput = dialogView.findViewById(R.id.etSafeLocationName);
         EditText addressInput = dialogView.findViewById(R.id.SafeLocationAddress);
-        EditText noteInput = dialogView.findViewById(R.id.etSafeLocationNotes);
+        EditText notesInput = dialogView.findViewById(R.id.etSafeLocationNotes);
 
-        nameInput.setText(safe_location.getName());
-        addressInput.setText(safe_location.getAddress());
-        noteInput.setText(safe_location.getNotes());
+        nameInput.setText(location.getName());
+        addressInput.setText(location.getAddress());
+        notesInput.setText(location.getNotes());
 
         builder.setView(dialogView)
                 .setTitle("Edit Emergency Safe Location")
                 .setPositiveButton("Save", (dialog, which) -> {
                     String newName = nameInput.getText().toString().trim();
                     String newAddress = addressInput.getText().toString().trim();
-                    String newNote = noteInput.getText().toString().trim();
+                    String newNotes = notesInput.getText().toString().trim();
 
                     if (newName.isEmpty() || newAddress.isEmpty()) {
                         Toast.makeText(this, "Name and address are required", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
+                    if (isDuplicateAddress(newAddress, location.getId())) return;
 
+                    location.setName(newName);
+                    location.setAddress(newAddress);
+                    location.setNotes(newNotes);
 
-                    if (isDuplicateAddress(newAddress, safe_location.getId())) {
-                        return;
-                    }
-
-
-                    safe_location.setName(newName);
-                    safe_location.setAddress(newAddress);
-                    safe_location.setNotes(newNote);
-
-                    database.child(safe_location.getId()).setValue(safe_location)
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Safe Location updated!", Toast.LENGTH_SHORT).show();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
-
+                    database.child(location.getId()).setValue(location)
+                            .addOnSuccessListener(aVoid -> Toast.makeText(this, "Safe Location updated!", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void deleteSafeLocation(SafeLocation safe_location) {
+    /**
+     * Deletes the selected safe location from Firebase.
+     *
+     * @param location the location to delete
+     */
+    private void deleteSafeLocation(SafeLocation location) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Safe Location")
-                .setMessage("Delete " + safe_location.getName() + "?")
+                .setMessage("Delete " + location.getName() + "?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    database.child(safe_location.getId()).removeValue()
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Safe Location deleted", Toast.LENGTH_SHORT).show();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show();
-                            });
+                    database.child(location.getId()).removeValue()
+                            .addOnSuccessListener(aVoid -> Toast.makeText(this, "Safe Location deleted", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
+    /**
+     * Verifies the user is authenticated before the activity becomes visible.
+     */
     @Override
     protected void onStart() {
         super.onStart();

@@ -1,6 +1,5 @@
 package com.b07safetyplanapp.signup;
 
-
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
@@ -13,15 +12,32 @@ import com.google.firebase.database.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * SignupModel handles the actual sign-up logic using Firebase Authentication and Database.
+ * It implements the {@link SignupContract.Model} interface and is responsible for user creation,
+ * database initialization, and error handling.
+ */
 public class SignupModel implements SignupContract.Model {
 
     private final FirebaseAuth firebaseAuth;
     private static final String TAG = "SignupModel";
 
+    /**
+     * Constructor initializes the FirebaseAuth instance.
+     */
     public SignupModel() {
         this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Attempts to create a new user with the provided information using Firebase Authentication.
+     * On success, writes user details to the Realtime Database under /users/{uid}.
+     *
+     * @param fullName User's full name
+     * @param email    User's email address
+     * @param password User's chosen password
+     * @param listener Callback to notify the presenter of success or failure
+     */
     @Override
     public void signup(String fullName, String email, String password, OnSignupFinishedListener listener) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -36,6 +52,7 @@ public class SignupModel implements SignupContract.Model {
                                     .getReference("users")
                                     .child(uid);
 
+                            // Prepare user data to store in the Realtime Database
                             Map<String, Object> userData = new HashMap<>();
                             userData.put("email", email);
                             userData.put("fullName", fullName);

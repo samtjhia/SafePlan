@@ -25,6 +25,13 @@ import com.b07safetyplanapp.models.emergencyinfo.EmergencyContact;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Activity for managing emergency contacts.
+ * <p>
+ * Allows users to add, edit, and delete contacts stored in Firebase.
+ * Includes phone number validation, duplicate checking, and Firebase integration.
+ */
 public class EmergencyContactActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -35,6 +42,13 @@ public class EmergencyContactActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DatabaseReference database;
 
+
+    /**
+     * Initializes the activity, Firebase connection, UI components,
+     * and loads the emergency contact list.
+     *
+     * @param savedInstanceState the saved instance state bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +58,21 @@ public class EmergencyContactActivity extends AppCompatActivity {
         loadContacts();
     }
 
+    /**
+     * Handles the custom animation when exiting the activity.
+     */
     @Override
     public void finish() { // back animation
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+
+    /**
+     * Initializes the Firebase database reference for the current user's contacts.
+     *
+     * @throws IllegalStateException if the user is not logged in
+     */
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -66,6 +89,10 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 .child("users").child(userId).child("emergency_contacts");
     }
 
+
+    /**
+     * Initializes the RecyclerView, FloatingActionButton, and UI listeners.
+     */
     private void setupUI() {
         recyclerView = findViewById(R.id.recyclerViewContacts);
         fabAdd = findViewById(R.id.fabAddContact);
@@ -79,6 +106,13 @@ public class EmergencyContactActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
+
+    /**
+     * Removes spaces and dashes from a phone number string.
+     *
+     * @param phone the original phone number
+     * @return the normalized phone number
+     */
     private String normalizePhoneNumber(String phone) {
         if (phone == null) {
             return "";
@@ -90,6 +124,14 @@ public class EmergencyContactActivity extends AppCompatActivity {
         return cleaned;
     }
 
+
+    /**
+     * Validates the phone number to ensure it's exactly 10 digits
+     * and contains only numeric characters.
+     *
+     * @param phone the phone number to validate
+     * @return true if valid, false otherwise
+     */
     private boolean isValidPhoneNumber(String phone) {
         if (phone == null || phone.trim().isEmpty()) {
             Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_SHORT).show();
@@ -111,6 +153,14 @@ public class EmergencyContactActivity extends AppCompatActivity {
         return true;
     }
 
+
+    /**
+     * Checks whether the given phone number is a duplicate in the contact list.
+     *
+     * @param phone the phone number to check
+     * @param excludeContactId the ID to exclude from comparison (for editing)
+     * @return true if duplicate, false otherwise
+     */
     private boolean isDuplicatePhone(String phone, String excludeContactId) {
         try {
             if (phone == null || phone.trim().isEmpty()) {
@@ -149,6 +199,11 @@ public class EmergencyContactActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Displays a dialog for adding a new emergency contact.
+     * Validates input fields and saves the contact to Firebase.
+     */
     private void showAddContactDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_emergency_contact, null);
@@ -186,6 +241,14 @@ public class EmergencyContactActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+
+    /**
+     * Saves a new emergency contact to Firebase.
+     *
+     * @param name the contact's name
+     * @param relationship the relationship to the user
+     * @param phone the normalized phone number
+     */
     private void saveContact(String name, String relationship, String phone) {
         String contactId = database.push().getKey();
 
@@ -205,6 +268,9 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Loads the user's emergency contacts from Firebase and updates the RecyclerView.
+     */
     private void loadContacts() {
         database.addValueEventListener(new ValueEventListener() {
             @Override
@@ -228,6 +294,13 @@ public class EmergencyContactActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Displays a dialog to edit an existing emergency contact.
+     * Validates changes and updates the contact in Firebase.
+     *
+     * @param contact the contact to edit
+     */
     private void editContact(EmergencyContact contact) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_emergency_contact, null);
@@ -278,6 +351,12 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 .show();
     }
 
+
+    /**
+     * Displays a confirmation dialog and deletes a contact from Firebase.
+     *
+     * @param contact the contact to delete
+     */
     private void deleteContact(EmergencyContact contact) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Contact")
@@ -295,6 +374,11 @@ public class EmergencyContactActivity extends AppCompatActivity {
                 .show();
     }
 
+
+    /**
+     * Ensures the user is logged in when the activity becomes visible.
+     * If not, finishes the activity.
+     */
     @Override
     protected void onStart() {
         super.onStart();

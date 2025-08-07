@@ -12,6 +12,8 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,10 +29,13 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import android.util.Base64;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import android.util.Base64;
+
+/**
+ * Handles PIN setup screen for the user. Supports 4 or 6-digit PINs.
+ * Encrypts and stores the PIN and login credentials securely in Android Keystore and SharedPreferences.
+ */
 public class PinSetupActivity extends AppCompatActivity {
 
     private RadioGroup digitSelector;
@@ -38,7 +43,7 @@ public class PinSetupActivity extends AppCompatActivity {
     private GridLayout keypad;
     private Button savePinButton;
 
-    private int pinLength = 4; // default
+    private int pinLength = 4; // Default to 4 digits
     private StringBuilder currentPin = new StringBuilder();
 
     private static final String PREF_NAME = "safeplan_prefs";
@@ -46,7 +51,14 @@ public class PinSetupActivity extends AppCompatActivity {
     private static final String PIN_IV_KEY = "pin_iv";
     private static final String KEY_ALIAS = "safeplan_key";
 
+    private static final String EMAIL_KEY = "encrypted_email";
+    private static final String PASSWORD_KEY = "encrypted_password";
 
+    /**
+     * Initializes the view and handles PIN selection, encryption, and transition to the next screen.
+     *
+     * @param savedInstanceState Bundle containing activity state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,29 +72,23 @@ public class PinSetupActivity extends AppCompatActivity {
             reasonTextView.setVisibility(View.VISIBLE);
         }
 
-
         digitSelector = findViewById(R.id.digitSelector);
         dotContainer = findViewById(R.id.dotContainer);
         keypad = findViewById(R.id.keypad);
         savePinButton = findViewById(R.id.buttonSavePin);
 
         digitSelector.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.radio4Digits) {
-                pinLength = 4;
-            } else if (checkedId == R.id.radio6Digits) {
-                pinLength = 6;
-            }
-            currentPin.setLength(0); // clear pin input
+            pinLength = (checkedId == R.id.radio6Digits) ? 6 : 4;
+            currentPin.setLength(0); // Reset PIN input
             updateDotIndicators();
         });
 
-        //set onboarding flags to false
+        // Reset onboarding progress
         SharedPreferences prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         prefs.edit()
                 .putBoolean("pin_setup_complete", false)
                 .putBoolean("questionnaire_complete", false)
                 .apply();
-
 
         setupKeypad();
         updateDotIndicators();
@@ -91,8 +97,7 @@ public class PinSetupActivity extends AppCompatActivity {
             if (currentPin.length() == pinLength) {
                 saveEncryptedPin(currentPin.toString());
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String email = getIntent().getStringExtra("user_email"); // use this instead of user.getEmail()
+                String email = getIntent().getStringExtra("user_email");
                 String password = getIntent().getStringExtra("user_password");
 
                 if (email != null && password != null) {
@@ -106,18 +111,17 @@ public class PinSetupActivity extends AppCompatActivity {
                     Toast.makeText(this, "Missing user credentials. Could not link PIN.", Toast.LENGTH_SHORT).show();
                 }
 
-
-                Intent intent = new Intent(PinSetupActivity.this, QuestionnaireActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(PinSetupActivity.this, QuestionnaireActivity.class));
                 finish();
-
             } else {
                 Toast.makeText(this, "Please enter a complete PIN", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
+    /**
+     * Updates the visual indicators (dots) that reflect current PIN length and progress.
+     */
     private void updateDotIndicators() {
         dotContainer.removeAllViews();
         for (int i = 0; i < pinLength; i++) {
@@ -131,6 +135,9 @@ public class PinSetupActivity extends AppCompatActivity {
         savePinButton.setVisibility(currentPin.length() == pinLength ? View.VISIBLE : View.INVISIBLE);
     }
 
+    /**
+     * Sets up keypad interaction logic for digits and delete button.
+     */
     private void setupKeypad() {
         for (int i = 0; i < keypad.getChildCount(); i++) {
             View view = keypad.getChildAt(i);
@@ -157,6 +164,11 @@ public class PinSetupActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Encrypts and stores the user PIN securely in Android Keystore and SharedPreferences.
+     *
+     * @param pin The PIN entered by the user.
+     */
     private void saveEncryptedPin(String pin) {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -195,9 +207,13 @@ public class PinSetupActivity extends AppCompatActivity {
         }
     }
 
-    private static final String EMAIL_KEY = "encrypted_email";
-    private static final String PASSWORD_KEY = "encrypted_password";
-
+    /**
+     * Encrypts and stores user email and password using Android Keystore.
+     *
+     * @param email    User email.
+     * @param password User password.
+     * @throws Exception If encryption or storage fails.
+     */
     private void saveCredentials(String email, String password) throws Exception {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
@@ -215,22 +231,12 @@ public class PinSetupActivity extends AppCompatActivity {
         byte[] passwordIv = passwordCipher.getIV();
         byte[] encryptedPassword = passwordCipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
 
-        // Base64 encode everything
-        String emailEncoded = Base64.encodeToString(encryptedEmail, Base64.DEFAULT);
-        String emailIvEncoded = Base64.encodeToString(emailIv, Base64.DEFAULT);
-
-        String passwordEncoded = Base64.encodeToString(encryptedPassword, Base64.DEFAULT);
-        String passwordIvEncoded = Base64.encodeToString(passwordIv, Base64.DEFAULT);
-
-        // Save to SharedPreferences
         SharedPreferences prefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit()
-                .putString("encrypted_email", emailEncoded)
-                .putString("email_iv", emailIvEncoded)
-                .putString("encrypted_password", passwordEncoded)
-                .putString("password_iv", passwordIvEncoded)
+                .putString(EMAIL_KEY, Base64.encodeToString(encryptedEmail, Base64.DEFAULT))
+                .putString("email_iv", Base64.encodeToString(emailIv, Base64.DEFAULT))
+                .putString(PASSWORD_KEY, Base64.encodeToString(encryptedPassword, Base64.DEFAULT))
+                .putString("password_iv", Base64.encodeToString(passwordIv, Base64.DEFAULT))
                 .apply();
     }
-
-
 }

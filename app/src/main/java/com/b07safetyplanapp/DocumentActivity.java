@@ -36,6 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Activity for managing user-uploaded documents.
+ * Allows users to upload, view, edit, and delete documents, which are stored locally and referenced in Firebase.
+ */
 public class DocumentActivity extends AppCompatActivity {
 
     private static final String TAG = "DocumentActivity";
@@ -62,6 +66,12 @@ public class DocumentActivity extends AppCompatActivity {
     private TextView selectedFileText;
     private Button uploadButton;
 
+
+    /**
+     * Initializes the activity, Firebase connection, file handling, and UI components.
+     *
+     * @param savedInstanceState the saved state of the activity..
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,12 +98,19 @@ public class DocumentActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
+
+    /**
+     * Sets up the Firebase Realtime Database reference for storing document metadata.
+     */
     private void setupFirebase() {
         String userId = currentUser.getUid();
         database = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(userId).child("documents");
     }
 
+    /**
+     * Creates a local directory for storing uploaded files if it doesn't exist.
+     */
     private void setupFileStorage() {
         documentsDir = new File(getFilesDir(), "documents");
         if (!documentsDir.exists()) {
@@ -101,6 +118,9 @@ public class DocumentActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initializes the UI components, sets up the RecyclerView and FAB listeners.
+     */
     private void setupUI() {
         recyclerView = findViewById(R.id.recyclerViewDocuments);
         fabAdd = findViewById(R.id.fabAddDocument);
@@ -118,6 +138,9 @@ public class DocumentActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
+    /**
+     * Registers a file picker and handles result when the user selects a document.
+     */
     private void setupFilePicker() {
         filePicker = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -135,6 +158,10 @@ public class DocumentActivity extends AppCompatActivity {
         );
     }
 
+
+    /**
+     * Displays a dialog for the user to input document details and select a file to upload.
+     */
     private void showAddDocumentDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_document, null);
@@ -163,6 +190,9 @@ public class DocumentActivity extends AppCompatActivity {
         addDocumentDialog.show();
     }
 
+    /**
+     * Launches a file picker for the user to select a file.
+     */
     private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
@@ -170,6 +200,11 @@ public class DocumentActivity extends AppCompatActivity {
         filePicker.launch(Intent.createChooser(intent, "Select Document"));
     }
 
+    /**
+     * Validates input fields and begins uploading a document.
+     *
+     * @throws IllegalStateException if title is empty or no file is selected
+     */
     private void uploadDocument() {
         String title = titleInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
@@ -194,6 +229,13 @@ public class DocumentActivity extends AppCompatActivity {
         saveDocument(title, description);
     }
 
+
+    /**
+     * Saves the selected document locally and uploads its metadata to Firebase.
+     *
+     * @param title the document title
+     * @param description the document description
+     */
     private void saveDocument(String title, String description) {
         new Thread(() -> {
             try {
@@ -226,6 +268,14 @@ public class DocumentActivity extends AppCompatActivity {
         }).start();
     }
 
+
+    /**
+     * Copies the content of the selected file to a local file on the device.
+     *
+     * @param sourceUri the source URI of the selected file
+     * @param destinationFile the file to which the content will be saved
+     * @throws Exception if an I/O error occurs during copy
+     */
     private void copyFile(Uri sourceUri, File destinationFile) throws Exception {
         try (InputStream input = getContentResolver().openInputStream(sourceUri);
              FileOutputStream output = new FileOutputStream(destinationFile)) {
@@ -238,6 +288,13 @@ public class DocumentActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Saves the document metadata to Firebase.
+     *
+     * @param document the document metadata
+     * @param originalFileName the original name of the uploaded file
+     */
     private void saveToFirebase(Document document, String originalFileName) {
         database.child(document.getId()).setValue(document)
                 .addOnSuccessListener(aVoid -> {
@@ -254,11 +311,18 @@ public class DocumentActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Restores the upload button's enabled state and label.
+     */
     private void resetUploadButton() {
         uploadButton.setEnabled(true);
         uploadButton.setText("Upload Document");
     }
 
+
+    /**
+     * Loads document data from Firebase and updates the document list.
+     */
     private void loadDocuments() {
         database.addValueEventListener(new ValueEventListener() {
             @Override
@@ -285,6 +349,12 @@ public class DocumentActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens a document using the appropriate external app.
+     *
+     * @param document the document to open
+     * @throws Exception if the file cannot be opened
+     */
     private void openDocument(Document document) {
         try {
             File file = new File(document.getDownloadUrl());
@@ -314,6 +384,12 @@ public class DocumentActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Displays a dialog allowing the user to update a document's title or description.
+     *
+     * @param document the document to edit
+     */
     private void editDocument(Document document) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_document, null);
@@ -356,6 +432,11 @@ public class DocumentActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Deletes a document both locally and from Firebase after user confirmation.
+     *
+     * @param document the document to delete
+     */
     private void deleteDocument(Document document) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Document")
@@ -378,6 +459,12 @@ public class DocumentActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Retrieves the file name from a URI.
+     *
+     * @param uri the file URI
+     * @return the file name or "unknown_file" if unavailable
+     */
     private String getFileName(Uri uri) {
         DocumentFile documentFile = DocumentFile.fromSingleUri(this, uri);
         if (documentFile != null && documentFile.getName() != null) {
@@ -386,6 +473,12 @@ public class DocumentActivity extends AppCompatActivity {
         return "unknown_file";
     }
 
+    /**
+     * Extracts the file extension from the file name.
+     *
+     * @param fileName the file name
+     * @return the file extension or "txt" if unknown
+     */
     private String getFileExtension(String fileName) {
         if (fileName != null && fileName.contains(".")) {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
@@ -393,6 +486,12 @@ public class DocumentActivity extends AppCompatActivity {
         return "txt";
     }
 
+    /**
+     * Maps a file extension to an appropriate type for Android file opening.
+     *
+     * @param fileName the file name
+     * @return the corresponding type
+     */
     private String getFileType(String fileName) {
         String extension = getFileExtension(fileName).toLowerCase();
 

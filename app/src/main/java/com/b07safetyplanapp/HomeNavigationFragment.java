@@ -11,8 +11,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * HomeNavigationFragment is a reusable UI fragment that displays the logo
+ * and allows users to navigate back to the main activity (which hosts HomeFragment).
+ * <p>
+ * This fragment is typically embedded in the top bar or toolbar area of other screens.
+ */
 public class HomeNavigationFragment extends Fragment {
 
+    /**
+     * Inflates the fragment layout and sets up click listener for the logo.
+     *
+     * @param inflater           The LayoutInflater used to inflate the view.
+     * @param container          The optional parent view to attach to.
+     * @param savedInstanceState The saved state from a previous instance (if any).
+     * @return The root view of this fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
