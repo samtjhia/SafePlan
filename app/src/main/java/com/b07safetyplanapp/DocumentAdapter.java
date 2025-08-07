@@ -26,15 +26,8 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
     private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
-    /**
-     * Interface for handling click actions on a document item.
-     */
+
     public interface OnItemClickListener {
-        /**
-         * Called when a document is clicked.
-         *
-         * @param document the clicked document
-         */
         void onClick(Document document);
     }
 
@@ -56,9 +49,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
         this.deleteListener = deleteListener;
     }
 
-    /**
-     * ViewHolder that holds references to views in a document item layout.
-     */
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView titleText;
         private final TextView descriptionText;
@@ -80,27 +71,23 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
             deleteButton = itemView.findViewById(R.id.btnDeleteDocument);
         }
 
-        /** @return the title TextView */
+
         public TextView getTitleText() {
             return titleText;
         }
 
-        /** @return the description TextView */
         public TextView getDescriptionText() {
             return descriptionText;
         }
 
-        /** @return the date TextView */
         public TextView getDateText() {
             return dateText;
         }
 
-        /** @return the edit ImageButton */
         public ImageButton getEditButton() {
             return editButton;
         }
 
-        /** @return the delete ImageButton */
         public ImageButton getDeleteButton() {
             return deleteButton;
         }
@@ -160,11 +147,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
     }
 
 
-    /**
-     * Returns the number of documents in the list.
-     *
-     * @return the item count
-     */
+
     @Override
     public int getItemCount() {
         return documents.size();

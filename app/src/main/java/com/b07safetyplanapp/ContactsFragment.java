@@ -33,9 +33,6 @@ public class ContactsFragment extends Fragment {
 
     //private FirebaseDatabase db;
 
-
-
-
     private DatabaseReference db;
 
 
@@ -93,11 +90,7 @@ public class ContactsFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Adds a new contact to the Firebase Realtime Database after checking for duplicates.
-     *
-     * @throws IllegalStateException if any of the input fields are empty
-     */
+
     private void addItem() {
         String name = editTextName.getText().toString().trim();
         String relationship = editTextRelationship.getText().toString().trim();
@@ -143,11 +136,7 @@ public class ContactsFragment extends Fragment {
 
     }
 
-    /**
-     * Edits an existing contact in the Firebase Realtime Database based on the provided name.
-     *
-     * @throws IllegalStateException if any of the input fields are empty
-     */
+
     private void editItem(){
         String name = editTextName.getText().toString().trim();
         String relationship = editTextRelationship.getText().toString().trim();
@@ -189,11 +178,6 @@ public class ContactsFragment extends Fragment {
 
     }
 
-    /**
-     * Deletes a contact from the Firebase Realtime Database if all fields match.
-     *
-     * @throws IllegalStateException if any of the input fields are empty
-     */
     private void deleteItem() {
         String name = editTextName.getText().toString().trim();
         String relationship = editTextRelationship.getText().toString().trim();

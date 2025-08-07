@@ -23,15 +23,8 @@ public class EmergencyMedicationsAdapter extends RecyclerView.Adapter<EmergencyM
     private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
-    /**
-     * Interface for handling click events on medication items.
-     */
+
     public interface OnItemClickListener {
-        /**
-         * Called when a medication item is clicked.
-         *
-         * @param contact the selected medication item
-         */
         void onClick(Medication contact);
     }
 
@@ -50,9 +43,7 @@ public class EmergencyMedicationsAdapter extends RecyclerView.Adapter<EmergencyM
         this.deleteListener = deleteListener;
     }
 
-    /**
-     * ViewHolder for a medication item layout.
-     */
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameText;
         private final TextView dosageText;
@@ -72,22 +63,19 @@ public class EmergencyMedicationsAdapter extends RecyclerView.Adapter<EmergencyM
             deleteButton = itemView.findViewById(R.id.btnDeleteMedication);
         }
 
-        /** @return the TextView displaying the medication name */
+
         public TextView getNameText() {
             return nameText;
         }
 
-        /** @return the TextView displaying the medication dosage */
         public TextView getDosageText() {
             return dosageText;
         }
 
-        /** @return the ImageButton for editing the medication */
         public ImageButton getEditButton() {
             return editButton;
         }
 
-        /** @return the ImageButton for deleting the medication */
         public ImageButton getDeleteButton() {
             return deleteButton;
         }
@@ -134,11 +122,6 @@ public class EmergencyMedicationsAdapter extends RecyclerView.Adapter<EmergencyM
         });
     }
 
-    /**
-     * Returns the total number of medication items.
-     *
-     * @return the item count
-     */
     @Override
     public int getItemCount() {
         return medications.size();

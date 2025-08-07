@@ -92,9 +92,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
         builder.show();
     }
 
-    /**
-     * Shows a confirmation dialog before permanently deleting the account and associated data.
-     */
+
     private void showConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Account & Data")
@@ -104,10 +102,7 @@ public class PrivacyControlActivity extends AppCompatActivity {
                 .show();
     }
 
-    /**
-     * Deletes the user's data from the Firebase Realtime Database.
-     * Proceeds to delete the user's authentication record upon success.
-     */
+
     private void deleteUserData() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {

@@ -11,9 +11,6 @@ public class QuestionnaireRoot {
     private QuestionnaireData questionnaire;
     private Map<String, Object> tips;
 
-    /**
-     * Default constructor required for deserialization.
-     */
     public QuestionnaireRoot() {}
 
     /**
@@ -44,11 +41,6 @@ public class QuestionnaireRoot {
         return tips;
     }
 
-    /**
-     * Sets the safety tips.
-     *
-     * @param tips A {@link Map} of tips to be associated with the questionnaire.
-     */
     public void setTips(Map<String, Object> tips) {
         this.tips = tips;
     }

@@ -10,9 +10,6 @@ public class Question {
     private String[] options;
     private SubQuestion sub_question;
 
-    /**
-     * Default constructor required for Firebase deserialization.
-     */
     public Question() {}
 
     /**
@@ -30,56 +27,30 @@ public class Question {
         this.sub_question = sub_question;
     }
 
-    /**
-     * Gets the unique identifier of the question.
-     *
-     * @return the question ID
-     */
     public String getQuestion_id() {
         return question_id;
     }
 
-    /**
-     * Sets the unique identifier of the question.
-     *
-     * @param question_id the new question ID to set
-     */
     public void setQuestion_id(String question_id) {
         this.question_id = question_id;
     }
 
-    /**
-     * Gets the question text.
-     *
-     * @return the question text
-     */
+
     public String getQuestion() {
         return question;
     }
 
-    /**
-     * Sets the question text.
-     *
-     * @param question the new question text to set
-     */
+
     public void setQuestion(String question) {
         this.question = question;
     }
 
-    /**
-     * Gets the available options for the question.
-     *
-     * @return an array of options, or null if none
-     */
+
     public String[] getOptions() {
         return options;
     }
 
-    /**
-     * Sets the available options for the question.
-     *
-     * @param options the array of options to set
-     */
+
     public void setOptions(String[] options) {
         this.options = options;
     }
@@ -102,20 +73,12 @@ public class Question {
         this.sub_question = sub_question;
     }
 
-    /**
-     * Checks if the question has any selectable options.
-     *
-     * @return true if options exist, false otherwise
-     */
+
     public boolean hasOptions() {
         return options != null && options.length > 0;
     }
 
-    /**
-     * Checks if the question has a sub-question.
-     *
-     * @return true if a sub-question is present, false otherwise
-     */
+
     public boolean hasSubQuestion() {
         return sub_question != null;
     }

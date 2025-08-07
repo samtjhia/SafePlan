@@ -8,40 +8,22 @@ import java.util.List;
  */
 public class QuestionnaireData {
 
-    /**
-     * A list of general warm-up questions asked to all users at the beginning of the questionnaire.
-     */
+
     private List<Question> warm_up;
 
-    /**
-     * A list of branch-specific questions that depend on the user's selected situation or context.
-     */
     private List<Branch> branch_specific;
 
-    /**
-     * A list of follow-up questions presented after the branch-specific section is completed.
-     */
+
     private List<Question> follow_up;
 
-    /**
-     * Default constructor required for data binding or deserialization.
-     */
+
     public QuestionnaireData() {}
 
-    /**
-     * Gets the list of warm-up questions.
-     *
-     * @return a list of {@link Question} objects for the warm-up section.
-     */
     public List<Question> getWarm_up() {
         return warm_up;
     }
 
-    /**
-     * Sets the list of warm-up questions.
-     *
-     * @param warm_up the list of {@link Question} objects to be assigned.
-     */
+
     public void setWarm_up(List<Question> warm_up) {
         this.warm_up = warm_up;
     }

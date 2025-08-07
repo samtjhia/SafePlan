@@ -22,15 +22,8 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
     private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
-    /**
-     * Interface for handling click events on contact items.
-     */
     public interface OnItemClickListener {
-        /**
-         * Called when a contact item is clicked.
-         *
-         * @param contact the clicked emergency contact
-         */
+
         void onClick(EmergencyContact contact);
     }
 
@@ -49,9 +42,7 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
         this.deleteListener = deleteListener;
     }
 
-    /**
-     * ViewHolder for emergency contact item layout.
-     */
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameText;
         private final TextView relationshipText;
@@ -74,27 +65,24 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
             deleteButton = itemView.findViewById(R.id.btnDeleteContact);
         }
 
-        /** @return the TextView displaying the contact's name */
+
         public TextView getNameText() {
             return nameText;
         }
 
-        /** @return the TextView displaying the contact's relationship */
+
         public TextView getRelationshipText() {
             return relationshipText;
         }
 
-        /** @return the TextView displaying the contact's phone number */
         public TextView getPhoneText() {
             return phoneText;
         }
 
-        /** @return the ImageButton for editing the contact */
         public ImageButton getEditButton() {
             return editButton;
         }
 
-        /** @return the ImageButton for deleting the contact */
         public ImageButton getDeleteButton() {
             return deleteButton;
         }
@@ -151,11 +139,6 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
         });
     }
 
-    /**
-     * Returns the total number of contacts in the list.
-     *
-     * @return the item count
-     */
     @Override
     public int getItemCount() {
         return contacts.size();

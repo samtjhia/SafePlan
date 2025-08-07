@@ -9,9 +9,6 @@ public class Contact {
     private String relationship;
     private String phone;
 
-    /**
-     * Constructs an empty Contact.
-     */
     public Contact(){
 
     }
@@ -29,30 +26,17 @@ public class Contact {
         this.phone = phone;
     }
 
-    /**
-     * Returns the contact's name.
-     *
-     * @return the name
-     */
+
     public String getName() {
         return name;
     }
 
-    /**
-     * Returns the contact's relationship to the user.
-     *
-     * @return the relationship
-     */
+
     public String getRelationship() {
         return relationship;
     }
 
 
-    /**
-     * Returns the contact's phone number.
-     *
-     * @return the phone number
-     */
     public String getPhone() {
         return phone;
     }

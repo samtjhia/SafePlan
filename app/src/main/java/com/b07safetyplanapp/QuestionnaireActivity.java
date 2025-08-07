@@ -97,10 +97,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    /**
-     * Initializes Firebase and retrieves current user UID.
-     * Aborts activity if no user is logged in.
-     */
+
     private void initializeFirebase() {
 
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
@@ -157,10 +154,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Loads all branches and follow-up questions for edit mode.
-     * This bypasses logic-driven question filtering and shows the full form.
-     */
+
     private void loadAllQuestionsForEdit() {
 
         // Branch-specific questions
@@ -388,12 +382,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Displays a multiple-choice question using a group of dynamically created radio buttons.
-     * Each option is displayed as a selectable RadioButton with custom font and spacing.
-     *
-     * @param question the question object containing the options to display
-     */
+
     private void displayMultipleChoiceQuestion(Question question) {
         if (optionsGroup != null && question.getOptions() != null) {
             optionsGroup.setVisibility(View.VISIBLE);
@@ -424,10 +413,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Displays a text input field for a question that expects a free-text answer.
-     * Clears any previous input and shows a hint to guide the user.
-     */
+
     private void displayTextQuestion() {
         if (textInput != null) {
             textInput.setVisibility(View.VISIBLE);
@@ -609,10 +595,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Loads and displays any previously saved answer for the current question (and sub-question if applicable).
-     * Automatically checks the corresponding radio button or fills in the text field if data is found.
-     */
+
     private void loadPreviousAnswer() {
         try {
             if (currentQuestionIndex >= allQuestions.size()) return;
@@ -659,11 +642,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Advances to the next question in the questionnaire.
-     * If the current question is the last one, the questionnaire is marked as complete and the user is redirected to the MainActivity.
-     * Also handles dynamic branching logic: loads branch-specific and follow-up questions based on user responses.
-     */
+
     private void moveToNextQuestion() {
         try {
             if (currentQuestionIndex == allQuestions.size() - 1) {
@@ -707,10 +686,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Moves to the previous question in the questionnaire, if available.
-     * Reloads the previous question state.
-     */
+
     private void moveToPreviousQuestion() {
         try {
             if (currentQuestionIndex > 0) {
@@ -750,12 +726,6 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Calculates and returns the number of branch-specific questions currently in the questionnaire.
-     * This is done by subtracting the number of warm-up and follow-up questions from the total question list.
-     *
-     * @return the number of branch-specific questions
-     */
     private int getBranchQuestionsCount() {
         try {
             int warmUpCount = questionnaireData.getWarm_up().size();

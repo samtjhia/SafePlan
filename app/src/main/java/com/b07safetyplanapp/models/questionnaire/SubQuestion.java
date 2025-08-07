@@ -7,19 +7,10 @@ package com.b07safetyplanapp.models.questionnaire;
  */
 public class SubQuestion {
 
-    /**
-     * The condition value (usually an option string) that triggers the display of the sub-question.
-     */
     private String condition;
 
-    /**
-     * The question field to be shown when the condition is satisfied.
-     */
     private QuestionField field;
 
-    /**
-     * Default constructor required for data binding or deserialization.
-     */
     public SubQuestion() {}
 
     /**
@@ -33,38 +24,19 @@ public class SubQuestion {
         this.field = field;
     }
 
-    /**
-     * Gets the condition that triggers this sub-question.
-     *
-     * @return the condition string
-     */
     public String getCondition() {
         return condition;
     }
 
-    /**
-     * Sets the condition that triggers this sub-question.
-     *
-     * @param condition the condition string
-     */
     public void setCondition(String condition) {
         this.condition = condition;
     }
 
-    /**
-     * Gets the question field to display when the condition is met.
-     *
-     * @return the QuestionField object
-     */
+
     public QuestionField getField() {
         return field;
     }
 
-    /**
-     * Sets the question field to display when the condition is met.
-     *
-     * @param field the QuestionField object
-     */
     public void setField(QuestionField field) {
         this.field = field;
     }

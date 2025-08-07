@@ -71,9 +71,7 @@ public class TipsActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
-    /**
-     * Handles animation when user exits the activity.
-     */
+
     @Override
     public void finish() {
         super.finish();
@@ -95,10 +93,7 @@ public class TipsActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Initializes Firebase Database and retrieves the current user UID.
-     * If the user is not logged in, a Toast is shown and the activity is closed.
-     */
+
     private void initializeFirebase() {
         database = FirebaseDatabase.getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/");
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -113,9 +108,7 @@ public class TipsActivity extends AppCompatActivity {
         questionnaireRef = database.getReference("users").child(uid);
     }
 
-    /**
-     * Loads user responses from Firebase and initializes tip generation if successful.
-     */
+
     private void loadUserResponses() {
         questionnaireRef.child("questionnaire").child("responses")
                 .get()
@@ -134,9 +127,7 @@ public class TipsActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Loads the local JSON tip mapping using QuestionnaireParser.
-     */
+
     private void loadTipMap() {
         QuestionnaireRoot root = QuestionnaireParser.loadQuestionnaire(this);
         if (root != null) {

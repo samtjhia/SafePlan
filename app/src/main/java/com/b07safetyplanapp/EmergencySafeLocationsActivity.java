@@ -54,18 +54,14 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         loadSafeLocations();
     }
 
-    /**
-     * Applies custom transition animation on activity finish.
-     */
+
     @Override
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    /**
-     * Sets up Firebase authentication and database reference.
-     */
+
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -80,9 +76,7 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
                 .child("users").child(userId).child("safe_locations");
     }
 
-    /**
-     * Sets up the RecyclerView, adapter, and button click listeners.
-     */
+
     private void setupUI() {
         recyclerView = findViewById(R.id.recyclerViewSafeLocations);
         fabAdd = findViewById(R.id.fabAddSafeLocation);
@@ -135,9 +129,7 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Displays a dialog to add a new safe location.
-     */
+
     private void showAddSafeLocationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_safe_location, null);
@@ -183,9 +175,7 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show());
     }
 
-    /**
-     * Loads all safe locations from Firebase for the current user.
-     */
+
     private void loadSafeLocations() {
         database.addValueEventListener(new ValueEventListener() {
             @Override
@@ -205,11 +195,7 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Opens an edit dialog for an existing safe location.
-     *
-     * @param location the location to edit
-     */
+
     private void editSafeLocation(SafeLocation location) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_safe_location, null);
@@ -248,11 +234,7 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
                 .show();
     }
 
-    /**
-     * Deletes the selected safe location from Firebase.
-     *
-     * @param location the location to delete
-     */
+
     private void deleteSafeLocation(SafeLocation location) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Safe Location")
@@ -266,9 +248,7 @@ public class EmergencySafeLocationsActivity extends AppCompatActivity {
                 .show();
     }
 
-    /**
-     * Verifies the user is authenticated before the activity becomes visible.
-     */
+
     @Override
     protected void onStart() {
         super.onStart();

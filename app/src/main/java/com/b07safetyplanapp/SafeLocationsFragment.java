@@ -97,11 +97,7 @@ public class SafeLocationsFragment extends Fragment {
 
     }
 
-    /**
-     * Adds a new SafeLocation to the Firebase Realtime Database using input from the user.
-     * Fields required: name, address, notes.
-     * Displays a success or failure Toast based on the outcome.
-     */
+
     private void addItem() {
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
@@ -126,10 +122,7 @@ public class SafeLocationsFragment extends Fragment {
         });
     }
 
-    /**
-     * Edits an existing SafeLocation in the Firebase database.
-     * Requires that a safe location with the same name exists.
-     */
+
     private void editItem(){
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
@@ -172,9 +165,7 @@ public class SafeLocationsFragment extends Fragment {
 
     }
 
-    /**
-     * Deletes a SafeLocation from the Firebase database based on the name and address.
-     */
+
     private void deleteItem() {
         String name = editTextName.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();

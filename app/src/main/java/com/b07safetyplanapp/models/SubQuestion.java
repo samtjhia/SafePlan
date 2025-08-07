@@ -25,38 +25,20 @@ public class SubQuestion {
         this.field = field;
     }
 
-    /**
-     * Gets the condition that triggers this sub-question.
-     *
-     * @return The condition value (e.g., answer to a parent question).
-     */
     public String getCondition() {
         return condition;
     }
 
-    /**
-     * Sets the condition that triggers this sub-question.
-     *
-     * @param condition The condition value.
-     */
     public void setCondition(String condition) {
         this.condition = condition;
     }
 
-    /**
-     * Gets the question field associated with this sub-question.
-     *
-     * @return The {@link QuestionField} object.
-     */
+
     public QuestionField getField() {
         return field;
     }
 
-    /**
-     * Sets the question field for this sub-question.
-     *
-     * @param field The {@link QuestionField} object.
-     */
+
     public void setField(QuestionField field) {
         this.field = field;
     }

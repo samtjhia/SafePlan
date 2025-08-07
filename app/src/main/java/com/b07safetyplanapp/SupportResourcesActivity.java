@@ -53,7 +53,7 @@ public class SupportResourcesActivity extends AppCompatActivity {
      * Initializes the activity, UI components, Firebase reference, and loads support resources
      * based on the user's questionnaire response.
      *
-     * @param savedInstanceState The saved instance state bundle.
+     * @pram savedInstanceState The saved instance state bundle.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +99,7 @@ public class SupportResourcesActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Binds UI components (buttons and subtexts) to their corresponding layout views.
-     */
+
     private void initializeViews() {
         hotlineButton = findViewById(R.id.HotlinesButton);
         shelterButton = findViewById(R.id.SheltersButton);
@@ -116,10 +114,7 @@ public class SupportResourcesActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Loads the support resources based on the user's city (from questionnaire response).
-     * Resources are parsed from local JSON and matched by city.
-     */
+
     private void loadResources() {
         questionnaireRef.child("questionnaire")
                 .child("responses")
@@ -147,10 +142,7 @@ public class SupportResourcesActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Dynamically populates the UI with resource data and sets onClick listeners
-     * to open URLs in a browser with slide animations.
-     */
+
     private void initializeUI() {
         for(SupportResource s : resourceList) {
             switch(s.getType()) {
@@ -190,11 +182,6 @@ public class SupportResourcesActivity extends AppCompatActivity {
 
     // Animation
 
-    /**
-     * Opens the provided URL using an Intent and applies slide-out animation.
-     *
-     * @param url The URL to open in the browser.
-     */
     private void openResourceWithAnimation(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));

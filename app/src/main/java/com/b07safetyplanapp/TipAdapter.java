@@ -57,11 +57,6 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.TipViewHolder> {
         holder.tipBody.setText(tip.getBody());
     }
 
-    /**
-     * Returns the total number of items in the tip list.
-     *
-     * @return Size of the tip list.
-     */
     @Override
     public int getItemCount() {
         return tipList.size();

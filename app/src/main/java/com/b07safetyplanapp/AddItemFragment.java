@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Fragment for adding a new item to Firebase under a selected category.
- * <p>
+ *
  * Validates data, and stores the item in the database.
  */
 
@@ -72,12 +72,6 @@ public class AddItemFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Collects user input, validates required fields, and adds a new item
-     * to the Firebase database under the selected category.
-     *
-     * @throws IllegalStateException if any required field is empty
-     */
 
     private void addItem() {
         String title = editTextTitle.getText().toString().trim();

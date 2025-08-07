@@ -12,9 +12,7 @@ public class QuestionnaireData {
     private List<Branch> branch_specific;
     private List<Question> follow_up;
 
-    /**
-     * Default constructor required for deserialization.
-     */
+
     public QuestionnaireData() {}
 
     /**

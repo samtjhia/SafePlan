@@ -15,9 +15,6 @@ public class ResourceDirectory {
      */
     private Map<String, List<SupportResource>> resourceMap;
 
-    /**
-     * Default constructor required for deserialization.
-     */
     public ResourceDirectory() {}
 
     /**

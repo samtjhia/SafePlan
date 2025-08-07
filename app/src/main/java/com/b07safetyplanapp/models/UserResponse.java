@@ -10,9 +10,7 @@ public class UserResponse {
     private String answer;
     private String subAnswer;
 
-    /**
-     * Default constructor required for Firebase serialization.
-     */
+
     public UserResponse() {}
 
     /**
@@ -26,56 +24,31 @@ public class UserResponse {
         this.answer = answer;
     }
 
-    /**
-     * Gets the ID of the question.
-     *
-     * @return The question ID.
-     */
+
     public String getQuestionId() {
         return questionId;
     }
 
-    /**
-     * Sets the ID of the question.
-     *
-     * @param questionId The question ID.
-     */
+
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
     }
 
-    /**
-     * Gets the main answer provided by the user.
-     *
-     * @return The user's answer.
-     */
+
     public String getAnswer() {
         return answer;
     }
 
-    /**
-     * Sets the main answer for the question.
-     *
-     * @param answer The user's answer.
-     */
+
     public void setAnswer(String answer) {
         this.answer = answer;
     }
 
-    /**
-     * Gets the sub-answer, if any, provided by the user.
-     *
-     * @return The user's sub-answer.
-     */
+
     public String getSubAnswer() {
         return subAnswer;
     }
 
-    /**
-     * Sets an optional sub-answer for the question.
-     *
-     * @param subAnswer The user's sub-answer.
-     */
     public void setSubAnswer(String subAnswer) {
         this.subAnswer = subAnswer;
     }

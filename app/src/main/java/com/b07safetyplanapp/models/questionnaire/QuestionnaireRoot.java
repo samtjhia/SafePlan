@@ -8,20 +8,10 @@ import java.util.Map;
  */
 public class QuestionnaireRoot {
 
-    /**
-     * The main questionnaire data, including warm-up, branch-specific, and follow-up questions.
-     */
     private QuestionnaireData questionnaire;
 
-    /**
-     * A map of tips associated with the questionnaire.
-     * The key is typically a question ID, and the value contains detailed tip data.
-     */
     private Map<String, TipData> tips;
 
-    /**
-     * Default constructor required for data binding or deserialization.
-     */
     public QuestionnaireRoot() {}
 
     /**
@@ -42,11 +32,7 @@ public class QuestionnaireRoot {
         this.questionnaire = questionnaire;
     }
 
-    /**
-     * Gets the map of tips associated with the questionnaire.
-     *
-     * @return a map where each key is a question ID and the value is its corresponding {@link TipData}.
-     */
+
     public Map<String, TipData> getTips() {
         return tips;
     }

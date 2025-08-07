@@ -66,11 +66,6 @@ public class EmergencyInfo extends Fragment{
         return view;
         }
 
-    /**
-     * Replaces the current fragment with the given fragment and adds it to the back stack.
-     *
-     * @param fragment the fragment to load
-     */
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);

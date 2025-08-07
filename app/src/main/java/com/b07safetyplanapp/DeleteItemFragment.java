@@ -74,12 +74,6 @@ public class DeleteItemFragment extends Fragment {
     }
 
 
-    /**
-     * Deletes an item from the Firebase database by matching the entered title
-     * under the selected category.
-     *
-     * @throws IllegalStateException if the title field is empty
-     */
     private void deleteItemByTitle() {
         String title = editTextTitle.getText().toString().trim();
         String category = spinnerCategory.getSelectedItem().toString().toLowerCase();

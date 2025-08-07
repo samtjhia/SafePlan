@@ -10,9 +10,6 @@ public class Branch {
     private String situation;
     private List<Question> questions;
 
-    /**
-     * Default constructor required for Firebase deserialization.
-     */
     public Branch() {}
 
     /**
@@ -26,38 +23,21 @@ public class Branch {
         this.questions = questions;
     }
 
-    /**
-     * Gets the situation associated with this branch.
-     *
-     * @return the situation label
-     */
+
     public String getSituation() {
         return situation;
     }
 
-    /**
-     * Sets the situation label for this branch.
-     *
-     * @param situation the situation to set
-     */
+
     public void setSituation(String situation) {
         this.situation = situation;
     }
 
-    /**
-     * Gets the list of questions associated with this branch.
-     *
-     * @return a list of {@link Question} objects
-     */
+
     public List<Question> getQuestions() {
         return questions;
     }
 
-    /**
-     * Sets the list of questions for this branch.
-     *
-     * @param questions a list of {@link Question} objects to set
-     */
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }

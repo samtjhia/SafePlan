@@ -9,9 +9,6 @@ public class QuestionField {
     private String question_id;
     private String question;
 
-    /**
-     * Default constructor required for Firebase deserialization.
-     */
     public QuestionField() {}
 
     /**
@@ -25,38 +22,19 @@ public class QuestionField {
         this.question = question;
     }
 
-    /**
-     * Gets the ID of the question.
-     *
-     * @return the question ID
-     */
+
     public String getQuestion_id() {
         return question_id;
     }
 
-    /**
-     * Sets the ID of the question.
-     *
-     * @param question_id the new question ID to set
-     */
     public void setQuestion_id(String question_id) {
         this.question_id = question_id;
     }
 
-    /**
-     * Gets the text of the question.
-     *
-     * @return the question text
-     */
     public String getQuestion() {
         return question;
     }
 
-    /**
-     * Sets the text of the question.
-     *
-     * @param question the new question text to set
-     */
     public void setQuestion(String question) {
         this.question = question;
     }

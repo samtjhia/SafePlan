@@ -29,11 +29,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Loads the given fragment into the fragment container and adds the transaction to the back stack.
-     *
-     * @param fragment The fragment to display.
-     */
     public void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
@@ -41,10 +36,7 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    /**
-     * Handles back button press. If there are multiple fragments in the back stack,
-     * it pops the top one. Otherwise, it exits the activity.
-     */
+
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {

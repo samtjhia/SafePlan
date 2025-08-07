@@ -74,10 +74,7 @@ public class MedicationsFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Adds a new medication entry to Firebase.
-     * Validates that name and dosage fields are not empty.
-     */
+
     private void addItem() {
         String name = editTextName.getText().toString().trim();
         String dosage = editTextDosage.getText().toString().trim();
@@ -98,10 +95,7 @@ public class MedicationsFragment extends Fragment {
         });
     }
 
-    /**
-     * Edits an existing medication in Firebase based on its name.
-     * Searches for a matching medication name and updates the dosage.
-     */
+
     private void editItem() {
         String name = editTextName.getText().toString().trim();
         String dosage = editTextDosage.getText().toString().trim();
@@ -142,9 +136,6 @@ public class MedicationsFragment extends Fragment {
         });
     }
 
-    /**
-     * Deletes a medication entry from Firebase based on name and dosage.
-     */
     private void deleteItem() {
         String name = editTextName.getText().toString().trim();
         String dosage = editTextDosage.getText().toString().trim();

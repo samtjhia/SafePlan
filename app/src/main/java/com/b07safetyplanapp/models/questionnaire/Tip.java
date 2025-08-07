@@ -6,14 +6,8 @@ package com.b07safetyplanapp.models.questionnaire;
  */
 public class Tip {
 
-    /**
-     * The title or headline of the tip.
-     */
     private String title;
 
-    /**
-     * The main content or message of the tip.
-     */
     private String body;
 
     /**
@@ -27,20 +21,10 @@ public class Tip {
         this.body = body;
     }
 
-    /**
-     * Returns the title of the tip.
-     *
-     * @return the tip title
-     */
     public String getTitle() {
         return title;
     }
 
-    /**
-     * Returns the body content of the tip.
-     *
-     * @return the tip body
-     */
     public String getBody() {
         return body;
     }

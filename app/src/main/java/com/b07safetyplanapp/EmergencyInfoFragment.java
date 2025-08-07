@@ -38,12 +38,6 @@
             return view;
         }
 
-        /**
-         * Sets up the click listeners for all buttons in the emergency info screen.
-         * Each button launches a corresponding activity with a transition animation.
-         *
-         * @param view the root view containing the buttons
-         */
         private void setupClickListeners(View view) {
             // Back button
             ImageButton backButton = view.findViewById(R.id.backButton);

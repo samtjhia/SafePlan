@@ -99,9 +99,6 @@ public class DocumentActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Sets up the Firebase Realtime Database reference for storing document metadata.
-     */
     private void setupFirebase() {
         String userId = currentUser.getUid();
         database = FirebaseDatabase.getInstance().getReference()
@@ -118,9 +115,6 @@ public class DocumentActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Initializes the UI components, sets up the RecyclerView and FAB listeners.
-     */
     private void setupUI() {
         recyclerView = findViewById(R.id.recyclerViewDocuments);
         fabAdd = findViewById(R.id.fabAddDocument);
@@ -190,9 +184,7 @@ public class DocumentActivity extends AppCompatActivity {
         addDocumentDialog.show();
     }
 
-    /**
-     * Launches a file picker for the user to select a file.
-     */
+
     private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
@@ -200,11 +192,7 @@ public class DocumentActivity extends AppCompatActivity {
         filePicker.launch(Intent.createChooser(intent, "Select Document"));
     }
 
-    /**
-     * Validates input fields and begins uploading a document.
-     *
-     * @throws IllegalStateException if title is empty or no file is selected
-     */
+
     private void uploadDocument() {
         String title = titleInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
@@ -230,12 +218,7 @@ public class DocumentActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Saves the selected document locally and uploads its metadata to Firebase.
-     *
-     * @param title the document title
-     * @param description the document description
-     */
+
     private void saveDocument(String title, String description) {
         new Thread(() -> {
             try {
@@ -311,18 +294,13 @@ public class DocumentActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Restores the upload button's enabled state and label.
-     */
+
     private void resetUploadButton() {
         uploadButton.setEnabled(true);
         uploadButton.setText("Upload Document");
     }
 
 
-    /**
-     * Loads document data from Firebase and updates the document list.
-     */
     private void loadDocuments() {
         database.addValueEventListener(new ValueEventListener() {
             @Override
@@ -385,11 +363,7 @@ public class DocumentActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Displays a dialog allowing the user to update a document's title or description.
-     *
-     * @param document the document to edit
-     */
+
     private void editDocument(Document document) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_document, null);
@@ -432,11 +406,7 @@ public class DocumentActivity extends AppCompatActivity {
                 .show();
     }
 
-    /**
-     * Deletes a document both locally and from Firebase after user confirmation.
-     *
-     * @param document the document to delete
-     */
+
     private void deleteDocument(Document document) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Document")

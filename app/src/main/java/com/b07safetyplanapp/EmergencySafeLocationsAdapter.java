@@ -24,15 +24,8 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
     private OnItemClickListener editListener;
     private OnItemClickListener deleteListener;
 
-    /**
-     * Interface for handling item click events such as edit or delete.
-     */
+
     public interface OnItemClickListener {
-        /**
-         * Callback when an item is clicked.
-         *
-         * @param safe_location The SafeLocation item clicked.
-         */
         void onClick(SafeLocation safe_location);
     }
 
@@ -51,9 +44,7 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         this.deleteListener = deleteListener;
     }
 
-    /**
-     * ViewHolder class representing each item view in the list.
-     */
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameText;
         private final TextView addressText;
@@ -61,11 +52,6 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         private final ImageButton editButton;
         private final ImageButton deleteButton;
 
-        /**
-         * ViewHolder constructor.
-         *
-         * @param itemView The view of the list item.
-         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameText = itemView.findViewById(R.id.tvLocationName);
@@ -75,27 +61,23 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
             deleteButton = itemView.findViewById(R.id.btnDeleteSafeLocation);
         }
 
-        /** @return TextView for the name. */
+
         public TextView getNameText() {
             return nameText;
         }
 
-        /** @return TextView for the address. */
         public TextView getAddressText() {
             return addressText;
         }
 
-        /** @return TextView for the notes. */
         public TextView getNotesText() {
             return notesText;
         }
 
-        /** @return ImageButton for edit action. */
         public ImageButton getEditButton() {
             return editButton;
         }
 
-        /** @return ImageButton for delete action. */
         public ImageButton getDeleteButton() {
             return deleteButton;
         }
@@ -143,11 +125,6 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         });
     }
 
-    /**
-     * Returns the total number of items in the dataset.
-     *
-     * @return The item count.
-     */
     @Override
     public int getItemCount() {
         return safe_locations.size();

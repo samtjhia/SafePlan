@@ -28,7 +28,6 @@ import java.util.List;
 
 /**
  * Activity for managing emergency contacts.
- * <p>
  * Allows users to add, edit, and delete contacts stored in Firebase.
  * Includes phone number validation, duplicate checking, and Firebase integration.
  */
@@ -58,9 +57,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
         loadContacts();
     }
 
-    /**
-     * Handles the custom animation when exiting the activity.
-     */
+
     @Override
     public void finish() { // back animation
         super.finish();
@@ -200,10 +197,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Displays a dialog for adding a new emergency contact.
-     * Validates input fields and saves the contact to Firebase.
-     */
+
     private void showAddContactDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_emergency_contact, null);
@@ -295,12 +289,6 @@ public class EmergencyContactActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Displays a dialog to edit an existing emergency contact.
-     * Validates changes and updates the contact in Firebase.
-     *
-     * @param contact the contact to edit
-     */
     private void editContact(EmergencyContact contact) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_emergency_contact, null);
@@ -352,11 +340,6 @@ public class EmergencyContactActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Displays a confirmation dialog and deletes a contact from Firebase.
-     *
-     * @param contact the contact to delete
-     */
     private void deleteContact(EmergencyContact contact) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Contact")
@@ -375,10 +358,6 @@ public class EmergencyContactActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Ensures the user is logged in when the activity becomes visible.
-     * If not, finishes the activity.
-     */
     @Override
     protected void onStart() {
         super.onStart();
