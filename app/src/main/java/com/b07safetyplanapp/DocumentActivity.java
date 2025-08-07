@@ -82,6 +82,12 @@ public class DocumentActivity extends AppCompatActivity {
         loadDocuments();
     }
 
+    @Override
+    public void finish() { // back animation
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     private void setupFirebase() {
         String userId = currentUser.getUid();
         database = FirebaseDatabase.getInstance().getReference()
@@ -140,12 +146,12 @@ public class DocumentActivity extends AppCompatActivity {
         selectedFileText = dialogView.findViewById(R.id.tvSelectedFileName);
         uploadButton = dialogView.findViewById(R.id.btnUploadDocument);
 
-        // Reset dialog state
+        // Reset dialog
         selectedFileUri = null;
         uploadButton.setEnabled(false);
         selectedFileText.setVisibility(View.GONE);
 
-        // Set up button clicks
+        // Set up buttons
         selectFileButton.setOnClickListener(v -> selectFile());
         uploadButton.setOnClickListener(v -> uploadDocument());
 
@@ -168,7 +174,7 @@ public class DocumentActivity extends AppCompatActivity {
         String title = titleInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
 
-        // Validate input has all fields filled
+        // Check all fields filled
         if (title.isEmpty()) {
             titleInput.setError("Please enter a title");
             return;
@@ -201,8 +207,7 @@ public class DocumentActivity extends AppCompatActivity {
                 File localFile = new File(documentsDir, localFileName);
                 copyFile(selectedFileUri, localFile);
 
-                // Save to Firebase
-                Document document = new Document(
+                Document document = new Document( // Save to Firebase
                         fileId,
                         title,
                         description,
@@ -236,10 +241,8 @@ public class DocumentActivity extends AppCompatActivity {
     private void saveToFirebase(Document document, String originalFileName) {
         database.child(document.getId()).setValue(document)
                 .addOnSuccessListener(aVoid -> {
-                    // Also save original filename
                     database.child(document.getId()).child("originalFileName").setValue(originalFileName);
 
-                    // Success
                     addDocumentDialog.dismiss();
                     Toast.makeText(this, "Document saved!", Toast.LENGTH_SHORT).show();
                 })
@@ -247,7 +250,6 @@ public class DocumentActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to save document", Toast.LENGTH_SHORT).show();
                     resetUploadButton();
 
-                    // Clean up local file
                     new File(document.getDownloadUrl()).delete();
                 });
     }
@@ -266,8 +268,7 @@ public class DocumentActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Document document = snapshot.getValue(Document.class);
                     if (document != null) {
-                        // Only add if file still exists
-                        File localFile = new File(document.getDownloadUrl());
+                        File localFile = new File(document.getDownloadUrl()); // check file exists
                         if (localFile.exists()) {
                             documentsList.add(document);
                         }
@@ -293,20 +294,14 @@ public class DocumentActivity extends AppCompatActivity {
                 return;
             }
 
-            // Create URI for file
             Uri fileUri = androidx.core.content.FileProvider.getUriForFile(
                     this, getPackageName() + ".fileprovider", file);
 
-            // Open with appropriate app
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(fileUri, getFileType(file.getName()));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(Intent.createChooser(intent, "Open with"));
-            } else {
-                Toast.makeText(this, "No app found to open this file", Toast.LENGTH_SHORT).show();
-            }
+            startActivity(Intent.createChooser(intent, "Open with"));
 
         } catch (Exception e) {
             Toast.makeText(this, "Cannot open document", Toast.LENGTH_SHORT).show();
@@ -323,7 +318,9 @@ public class DocumentActivity extends AppCompatActivity {
         titleInput.setText(document.getTitle());
         descriptionInput.setText(document.getDescription());
 
-        // Hide file selection components because it doesn't make sense for user to upload a new file; just create a new file
+        // Hide file selection components
+        // because it doesn't make sense for user to upload a new file;
+        // just create a new file
         dialogView.findViewById(R.id.btnSelectFile).setVisibility(View.GONE);
         dialogView.findViewById(R.id.btnUploadDocument).setVisibility(View.GONE);
         dialogView.findViewById(R.id.tvSelectedFileName).setVisibility(View.GONE);

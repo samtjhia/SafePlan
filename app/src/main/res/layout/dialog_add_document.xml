@@ -42,7 +42,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- File selection section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,7 +68,6 @@
 
     </LinearLayout>
 
-    <!-- Display selected file name -->
     <TextView
         android:id="@+id/tvSelectedFileName"
         android:layout_width="match_parent"

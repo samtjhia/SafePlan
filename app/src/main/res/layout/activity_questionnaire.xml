@@ -40,7 +40,7 @@
             android:name="com.b07safetyplanapp.EmergencyExitFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp" />
+            />
 
     </LinearLayout>
 
@@ -59,19 +59,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Completion Label -->
-    <TextView
-        android:id="@+id/progressText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/progress_text"
-        android:textSize="12sp"
-        android:textColor="@color/black_bean"
-        android:fontFamily="@font/inter_regular"
-        app:layout_constraintTop_toBottomOf="@id/progress_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp" />
-
     <!-- Question Text -->
     <TextView
         android:id="@+id/question_text"
@@ -83,7 +70,7 @@
         android:textColor="@color/black_bean"
         android:lineSpacingExtra="4dp"
         android:fontFamily="@font/inter_bold"
-        app:layout_constraintTop_toBottomOf="@id/progressText"
+        app:layout_constraintTop_toBottomOf="@id/progress_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="48dp"

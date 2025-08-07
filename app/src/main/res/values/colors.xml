@@ -19,6 +19,7 @@
     <color name="progress_background">#E0E0E0</color>
     <color name="icon_orange">#fb6400</color>
     <color name="icon_card">#f6ac6c</color>
+    <color name="disclaimer">#ef5510</color>
 
 
 </resources>

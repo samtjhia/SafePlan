@@ -16,14 +16,9 @@
                 "options": [
                     "Toronto",
                     "Vancouver",
-                    "Ottawa",
                     "Edmonton",
-                    "Calgary",
                     "Montreal",
-                    "Winnipeg",
-                    "Hamilton",
-                    "Quebec City",
-                    "Halifax"
+                    "Winnipeg"
                 ]
             },
             {

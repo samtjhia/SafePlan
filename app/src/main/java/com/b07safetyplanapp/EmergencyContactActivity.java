@@ -44,6 +44,12 @@ public class EmergencyContactActivity extends AppCompatActivity {
         loadContacts();
     }
 
+    @Override
+    public void finish() { // back animation
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     private void setupFirebase() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -139,7 +145,7 @@ public class EmergencyContactActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
-            return false; // Allow saving if there's an error
+            return false;
         }
     }
 

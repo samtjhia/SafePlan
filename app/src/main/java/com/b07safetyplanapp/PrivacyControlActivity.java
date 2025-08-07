@@ -1,8 +1,10 @@
 package com.b07safetyplanapp;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,19 +18,26 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class PrivacyControlActivity extends AppCompatActivity {
 
-    private Button deleteButton;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_privacy_control);
 
-        deleteButton = findViewById(R.id.btnDeleteAccount);
-
+        //Delete button creation
+        Button deleteButton = findViewById(R.id.btnDeleteAccount);
         deleteButton.setOnClickListener(v -> promptForReauth());
+
+        //Listener for back button from LinearLayout
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        //findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
 
+    //Pop-up window fo re-authorization
     private void promptForReauth() {
+
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "No user signed in.", Toast.LENGTH_SHORT).show();
@@ -66,13 +75,14 @@ public class PrivacyControlActivity extends AppCompatActivity {
             user.reauthenticate(credential)
                     .addOnSuccessListener(aVoid -> showConfirmationDialog())
                     .addOnFailureListener(e ->
-                            Toast.makeText(this, "❌ Re-authentication failed.", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(this, "Re-authentication failed.", Toast.LENGTH_SHORT).show());
         });
 
         builder.setNegativeButton("Cancel", null);
         builder.show();
     }
 
+    //Confirmation Dialog
     private void showConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Account & Data")
@@ -82,8 +92,11 @@ public class PrivacyControlActivity extends AppCompatActivity {
                 .show();
     }
 
+    //Deleting user's DATA from DB
     private void deleteUserData() {
+        //Getting user's instance (uid)
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //No user signed-in
         if (user == null) {
             Toast.makeText(this, "No user is signed in.", Toast.LENGTH_SHORT).show();
             return;
@@ -94,21 +107,23 @@ public class PrivacyControlActivity extends AppCompatActivity {
                 .getInstance("https://group8cscb07app-default-rtdb.firebaseio.com/")
                 .getReference("users")
                 .child(uid);
-
+        //remobing user and all user's children
         userRef.removeValue()
                 .addOnSuccessListener(aVoid -> deleteAuthUser())
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "❌ Failed to delete user data from database.", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Failed to delete user data from database.", Toast.LENGTH_SHORT).show());
     }
 
+
+    //Flow for delete fro user
     private void deleteAuthUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             user.delete()
                     .addOnSuccessListener(aVoid ->
-                            Toast.makeText(this, "✅ Account and data deleted.", Toast.LENGTH_LONG).show())
+                            Toast.makeText(this, "Account and data deleted.", Toast.LENGTH_LONG).show())
                     .addOnFailureListener(e ->
-                            Toast.makeText(this, "❌ Failed to delete user account.", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(this, "Failed to delete user account.", Toast.LENGTH_SHORT).show());
 
             finishAffinity(); // Close the app or return to Welcome/Login
         }

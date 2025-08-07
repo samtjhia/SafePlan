@@ -4,7 +4,7 @@
     android:id="@+id/pinSetupLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_peach"
+    android:background="@color/deep_champ"
     android:orientation="vertical"
     android:paddingTop="24dp"
     android:paddingStart="24dp"
@@ -62,6 +62,16 @@
             android:textSize="16sp"
             android:textColor="@color/black_bean"
             android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/reasonTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="16sp"
+            android:textColor="@color/black_bean"
+            android:layout_marginBottom="4dp" />
+
 
         <RadioGroup
             android:id="@+id/digitSelector"
