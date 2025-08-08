@@ -14,6 +14,14 @@ import androidx.fragment.app.Fragment;
 import com.b07safetyplanapp.reminders.ReminderScheduleActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * SettingsFragment provides a UI for users to manage application settings such as:
+ * - Navigating to privacy controls
+ * - Accessing reminder scheduling
+ * - Logging out of the app
+ *
+ * This fragment replaces the activity-based settings implementation for modularity.
+ */
 public class SettingsFragment extends Fragment {
 
     @Nullable

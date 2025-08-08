@@ -23,6 +23,13 @@ public class EmergencySafeLocationsAdapter extends RecyclerView.Adapter<Emergenc
         void onClick(SafeLocation safe_location);
     }
 
+    /**
+     * Constructor for the adapter.
+     *
+     * @param safe_locations List of SafeLocation items to display.
+     * @param editListener   Listener for handling edit clicks.
+     * @param deleteListener Listener for handling delete clicks.
+     */
     public EmergencySafeLocationsAdapter(List<SafeLocation> safe_locations,
                                    OnItemClickListener editListener,
                                    OnItemClickListener deleteListener) {

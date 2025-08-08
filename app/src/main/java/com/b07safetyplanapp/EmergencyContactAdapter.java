@@ -21,6 +21,13 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
         void onClick(EmergencyContact contact);
     }
 
+    /**
+     * Constructs a new EmergencyContactAdapter.
+     *
+     * @param contacts       the list of emergency contacts to display
+     * @param editListener   listener for editing a contact
+     * @param deleteListener listener for deleting a contact
+     */
     public EmergencyContactAdapter(List<EmergencyContact> contacts,
                                    OnItemClickListener editListener,
                                    OnItemClickListener deleteListener) {

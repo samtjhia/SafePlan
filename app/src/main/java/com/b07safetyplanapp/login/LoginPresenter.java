@@ -23,6 +23,12 @@ public class LoginPresenter implements LoginContract.Presenter{
         this.view = null;
     }
 
+    /**
+     * Handles logic when the user attempts to log in with email and password.
+     *
+     * @param email    the user's email address
+     * @param password the user's password
+     */
     @Override
     public void onEmailLoginClicked(String email, String password) {
         if (view == null) return;
@@ -65,6 +71,11 @@ public class LoginPresenter implements LoginContract.Presenter{
         });
     }
 
+    /**
+     * Handles logic when the user attempts to log in using a PIN.
+     *
+     * @param pin the PIN entered by the user
+     */
     @Override
     public void onPinLoginClicked(String pin) {
         if (view == null) return;

@@ -209,6 +209,11 @@ public class ReminderScheduleActivity extends AppCompatActivity {
     }
 
     //Schedulinng a notification via Reminder Receiver
+    /**
+     * Schedules a local notification for the given reminder based on its frequency and time.
+     *
+     * @param reminder The reminder to schedule.
+     */
     private void scheduleNotification(Reminder reminder) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, ReminderReceiver.class);
@@ -262,6 +267,13 @@ public class ReminderScheduleActivity extends AppCompatActivity {
     }
 
     //Notification Permission (new Android versions)
+    /**
+     * Callback after requesting runtime permissions.
+     *
+     * @param requestCode  The request code passed in requestPermissions().
+     * @param permissions  The requested permissions.
+     * @param results      The results for the corresponding permissions.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);

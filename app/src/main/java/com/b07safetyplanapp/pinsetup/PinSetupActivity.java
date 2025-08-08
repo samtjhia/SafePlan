@@ -157,6 +157,11 @@ public class PinSetupActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Encrypts and stores the user PIN securely in Android Keystore and SharedPreferences.
+     *
+     * @param pin The PIN entered by the user.
+     */
     private void saveEncryptedPin(String pin) {
         try {
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");

@@ -13,6 +13,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * WelcomeActivity serves as the entry point to the app.
+ * It determines whether the user should proceed to onboarding, login, or directly to the main app,
+ * based on Firebase authentication and shared preference flags for pin setup and questionnaire completion.
+ */
 public class WelcomeActivity extends AppCompatActivity {
 
     private Button getStartedButton;

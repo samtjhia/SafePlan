@@ -105,6 +105,13 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         super.onDestroy();
     }
 
+    /**
+     * Navigates the user to PIN setup if there's a mismatch between saved PIN and account.
+     *
+     * @param context          The context from which the navigation was triggered.
+     * @param decryptedEmail   The decrypted email from local storage.
+     * @param decryptedPassword The decrypted password from local storage.
+     */
     @Override
     public void navigateToPinSetupWithMismatch(Context context, String decryptedEmail, String decryptedPassword) {
         Intent intent = new Intent(context, PinSetupActivity.class);

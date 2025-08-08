@@ -95,6 +95,12 @@ public class SignupActivity extends AppCompatActivity implements SignupContract.
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Navigates the user to the PIN setup screen after successful sign-up.
+     *
+     * @param email    The user's email address.
+     * @param password The user's password.
+     */
     @Override
     public void navigateToPinSetup(String email, String password) {
         Intent intent = new Intent(SignupActivity.this, PinSetupActivity.class);
