@@ -1,4 +1,5 @@
 # SafePlan
+https://github.com/user-attachments/assets/53a029c9-47d6-42cc-81a0-2a6bf570c4a1
 ## Background
 Individuals who find themselves in abusive relationships lack a centralized and personalized support resource that helps them navigate through their high-risk situation. To our surprise, none of the apps currently available – Aspire News, myPlan, Bright Sky Canada – provide a tailored questionnaire, personalized plan, *and* ability to store emergency information all in *one* place.  
 
