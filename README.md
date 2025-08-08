@@ -10,7 +10,9 @@ SafePlan provides trauma-informed support to victims of abuse. Our app allows us
 Although a safety plan is a great start for an individual looking to escape their situation, SafePlan makes clear through its in-app disclaimer that it is not a substitute for emergency services. 
 
 ## Description of Features
-SafePlan provides a suite of features, including, but not limited to: a login method, emergency exit button, questionnaire, safety plan, ability to store emergency information, reminder scheduling, and links to local support resources. Details of each feature are described below. 
+SafePlan provides a suite of features. These include, but are not limited to: a login method, emergency exit button, questionnaire, safety plan, ability to store emergency information, reminder scheduling, and links to local support resources. 
+
+Details of each feature are described below. 
 
 ### PIN Setup, Storage, & Unlock Flow
 - User is prompted to login with Firebase by providing their name, email, and 4- or 6- digit PIN.
