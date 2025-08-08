@@ -11,6 +11,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ResourceParser {
+    /**
+     * Loads and parses the support_resources.json file from the assets folder.
+     *
+     * @param context The application context used to access the assets.
+     * @return A ResourceDirectory object representing the parsed support resources,
+     *         or null if an error occurs during loading or parsing.
+     */
     public static ResourceDirectory loadResourceDirectory(Context context) {
         try {
             InputStream inputStream = context.getAssets().open("support_resources.json");

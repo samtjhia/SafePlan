@@ -118,6 +118,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         findViewById(R.id.backButton).setOnClickListener(v -> finish());
     }
 
+    /**
+     * Loads the questionnaire structure from local assets using {@link QuestionnaireParser}.
+     * Populates warm-up questions initially.
+     * If in edit mode, loads all questions at once.
+     */
     private void loadQuestionnaire() {
         QuestionnaireRoot root = QuestionnaireParser.loadQuestionnaire(this);
         if (root != null) {
@@ -182,6 +187,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Based on the user's "situation" response, this method loads the appropriate
+     * branch-specific questions and follow-up questions.
+     * This ensures that only relevant parts of the questionnaire are shown.
+     */
     private void filterQuestionsBasedOnResponses() {
         // Use situation response to load branch questions
         for (UserResponse response : userResponses) {
@@ -210,6 +220,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
         followUpQuestionsAdded = true;
     }
 
+    /**
+     * Sets up click listeners for navigation and answer selection:
+     * - Handles "Next" and "Back" button actions.
+     * - Saves the current answer to Firebase and advances questions.
+     * - Detects changes in multiple-choice options to trigger sub-question visibility.
+     */
     private void setupClickListeners() {
         nextButton.setOnClickListener(v -> {
             try {
@@ -309,6 +325,10 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Changes the label of the "Next" button depending on whether
+     * the current question is the last in the list and if in edit mode.
+     */
     private void updateButtonStates() {
         if (backButton != null) {
             if (currentQuestionIndex > 0) {
@@ -372,6 +392,11 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handles the visibility of a sub-question based on the currently selected answer.
+     * If the selected option matches the sub-question condition, the sub-question UI is shown.
+     * Otherwise, it is hidden.
+     */
     private void handleSubQuestionVisibility() {
         try {
             if (currentQuestionIndex >= allQuestions.size()) return;
@@ -409,6 +434,12 @@ public class QuestionnaireActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Saves the current answer (and sub-answer if applicable) entered by the user.
+     * Validates input and updates or adds the user's response to the internal list.
+     *
+     * @return true if the answer was successfully saved; false otherwise
+     */
     private boolean saveCurrentAnswer() {
         try {
             if (currentQuestionIndex >= allQuestions.size()) {

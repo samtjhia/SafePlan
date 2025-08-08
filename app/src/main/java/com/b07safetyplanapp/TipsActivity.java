@@ -128,6 +128,10 @@ public class TipsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Generates a list of Tip objects based on user responses and corresponding TipData.
+     * Applies placeholder substitution where needed.
+     */
     private void generateTips() {
         if (userResponses == null || tipMap == null) return;
 
@@ -164,6 +168,13 @@ public class TipsActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Replaces placeholders in the tip text with the corresponding user answer.
+     * Format expected: "Some text {questionId} more text"
+     *
+     * @param s The raw tip string with placeholders.
+     * @return The formatted string with actual user answer.
+     */
     private String replacePlaceholders(String s) {
         if(!s.contains("{")) {
             return s;

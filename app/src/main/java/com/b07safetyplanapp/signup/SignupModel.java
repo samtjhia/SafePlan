@@ -22,6 +22,15 @@ public class SignupModel implements SignupContract.Model {
         this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
+    /**
+     * Attempts to create a new user with the provided information using Firebase Authentication.
+     * On success, writes user details to the Realtime Database under /users/{uid}.
+     *
+     * @param fullName User's full name
+     * @param email    User's email address
+     * @param password User's chosen password
+     * @param listener Callback to notify the presenter of success or failure
+     */
     @Override
     public void signup(String fullName, String email, String password, OnSignupFinishedListener listener) {
         firebaseAuth.createUserWithEmailAndPassword(email, password)

@@ -22,6 +22,13 @@ public class EmergencyMedicationsAdapter extends RecyclerView.Adapter<EmergencyM
         void onClick(Medication contact);
     }
 
+    /**
+     * Constructs a new EmergencyMedicationsAdapter.
+     *
+     * @param contacts       the list of medications to display
+     * @param editListener   listener for editing a medication
+     * @param deleteListener listener for deleting a medication
+     */
     public EmergencyMedicationsAdapter(List<Medication> contacts,
                                    OnItemClickListener editListener,
                                    OnItemClickListener deleteListener) {

@@ -11,6 +11,13 @@ import java.nio.charset.StandardCharsets;
 
 public class QuestionnaireParser {
 
+    /**
+     * Loads and parses the questionnaire.json file from the assets folder.
+     *
+     * @param context The context used to access the application's assets.
+     * @return A QuestionnaireRoot object representing the parsed questionnaire structure,
+     *         or null if an error occurs during loading or parsing.
+     */
     public static QuestionnaireRoot loadQuestionnaire(Context context) {
         try {
             InputStream inputStream = context.getAssets().open("questionnaire.json");

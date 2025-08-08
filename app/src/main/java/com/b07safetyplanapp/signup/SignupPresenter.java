@@ -21,6 +21,14 @@ public class SignupPresenter implements SignupContract.Presenter {
         this.view = null;
     }
 
+    /**
+     * Handles the sign-up button click by validating input and initiating the signup process.
+     *
+     * @param fullName        User's full name
+     * @param email           Email address
+     * @param password        Password input
+     * @param confirmPassword Confirm password input
+     */
     @Override
     public void onSignupClicked(String fullName, String email, String password, String confirmPassword) {
         if (view == null) return;

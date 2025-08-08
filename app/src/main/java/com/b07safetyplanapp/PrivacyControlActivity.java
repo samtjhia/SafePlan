@@ -116,6 +116,10 @@ public class PrivacyControlActivity extends AppCompatActivity {
 
 
     //Flow for delete fro user
+    /**
+     * Deletes the user's Firebase Authentication account.
+     * Finishes the app session afterward using `finishAffinity()`.
+     */
     private void deleteAuthUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {

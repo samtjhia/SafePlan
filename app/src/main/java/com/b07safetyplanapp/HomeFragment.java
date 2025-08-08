@@ -119,6 +119,11 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * Replaces the current fragment with the given fragment and sets custom animations.
+     *
+     * @param fragment The fragment to load.
+     */
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
         // animations

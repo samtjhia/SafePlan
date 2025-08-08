@@ -62,6 +62,12 @@ public class ReminderReceiver extends BroadcastReceiver {
     }
 
     //Create notification based on user's input
+    /**
+     * Creates a notification channel if it does not exist.
+     * Required for API 26+ to display high-priority notifications.
+     *
+     * @param context The application context used to access system services.
+     */
     private void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager manager = context.getSystemService(NotificationManager.class);

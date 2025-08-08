@@ -226,6 +226,13 @@ public class DocumentActivity extends AppCompatActivity {
         }).start();
     }
 
+    /**
+     * Copies the content of the selected file to a local file on the device.
+     *
+     * @param sourceUri the source URI of the selected file
+     * @param destinationFile the file to which the content will be saved
+     * @throws Exception if an I/O error occurs during copy
+     */
     private void copyFile(Uri sourceUri, File destinationFile) throws Exception {
         try (InputStream input = getContentResolver().openInputStream(sourceUri);
              FileOutputStream output = new FileOutputStream(destinationFile)) {
@@ -238,6 +245,12 @@ public class DocumentActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Saves the document metadata to Firebase.
+     *
+     * @param document the document metadata
+     * @param originalFileName the original name of the uploaded file
+     */
     private void saveToFirebase(Document document, String originalFileName) {
         database.child(document.getId()).setValue(document)
                 .addOnSuccessListener(aVoid -> {
@@ -285,6 +298,12 @@ public class DocumentActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens a document using the appropriate external app.
+     *
+     * @param document the document to open
+     * @throws Exception if the file cannot be opened
+     */
     private void openDocument(Document document) {
         try {
             File file = new File(document.getDownloadUrl());
